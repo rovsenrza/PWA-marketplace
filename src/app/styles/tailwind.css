@@ -1,0 +1,5 @@
+/* Tailwind, compiled at build time (it used to be a 400 KB runtime compiler in the browser).
+   It comes last, as the Play CDN used to inject it after the inline styles. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
