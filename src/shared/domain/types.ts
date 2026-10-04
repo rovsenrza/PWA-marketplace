@@ -138,3 +138,11 @@ export interface Marketplace {
   invoices: Invoice[];
   payments: Payment[];
 }
+
+/** The buyer's profile on this device (there is no account on a server yet). */
+export interface BuyerProfile {
+  name: string;
+  phone: string;
+  email: string;
+  city: string;
+}

@@ -12,8 +12,6 @@ declare global {
   const state: { cart?: unknown; userEmail?: string; userRole?: string; favorites?: string[]; [k: string]: unknown };
   /** core/data.js: каталог (SEED + localStorage) */
   const productsDb: Record<string, Product>;
-  /** core/buyer.js: профиль покупателя (переназначается в loadBuyerProfile) */
-  let buyerProfile: { name: string; phone: string; email?: string; [k: string]: unknown };
 
   interface Window {
     /* функции app-core.js, вызываемые из модулей */

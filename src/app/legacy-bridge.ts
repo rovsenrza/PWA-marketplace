@@ -11,6 +11,8 @@ import { cartLegacyApi } from './features/cart/actions';
 import { favoritesStore } from './features/favorites/favorites-store';
 import { favoritesLegacyApi } from './features/favorites/actions';
 import { ordersLegacyApi } from './features/orders/actions';
+import { buyerStore } from './features/buyer/buyer-store';
+import { buyerLegacyApi } from './features/buyer/profile';
 
 exposeToLegacy({ parsePrice, formatPrice, formatRub, getBadgeHtml, getPriceHtml });
 
@@ -31,3 +33,7 @@ exposeToLegacy(ordersLegacyApi);
 /* избранное: state.favorites — аксессор на FavoritesStore */
 favoritesStore.installLegacyAccessor(typeof state !== 'undefined' ? state : undefined);
 exposeToLegacy(favoritesLegacyApi);
+
+/* профиль покупателя: buyerProfile — аксессор на BuyerStore (auth.js присваивает его целиком) */
+buyerStore.installLegacyAccessor();
+exposeToLegacy(buyerLegacyApi);

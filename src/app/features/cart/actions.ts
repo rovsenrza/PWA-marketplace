@@ -6,8 +6,7 @@
 import { addItem, removeItem, setQty, snapshotOf } from '../../../shared/orders/cart';
 import { cleanContact, createCheckout, makeUid } from '../../../shared/orders/checkout';
 import { expireOverdue } from '../../../shared/orders/store-order';
-import { StorageKeys } from '../../../shared/storage/keys';
-import { writeJSON } from '../../../shared/storage/local-store';
+import { buyerStore } from '../buyer/buyer-store';
 import { cartStore as store } from './cart-store';
 
 const toast = (msg: string) => window.showSmsToast?.(msg);
@@ -66,11 +65,7 @@ export function submitCheckout(): void {
   if (!contact) { toast('Укажите имя и телефон'); return; }
 
   /* гость: имя и телефон запоминаются на этом устройстве, иначе «Мои заказы» не находят его заказ */
-  if (!buyerProfile.phone || !buyerProfile.name) {
-    buyerProfile.phone ||= contact.phone;
-    buyerProfile.name ||= contact.name;
-    writeJSON(StorageKeys.buyer, buyerProfile);
-  }
+  buyerStore.rememberGuest(contact);
 
   const { checkout, storeOrders } = createCheckout({ items, contact, userId: state.userEmail || contact.phone });
   store.marketplace.checkouts.push(checkout);

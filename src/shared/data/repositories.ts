@@ -3,7 +3,7 @@
  * under the existing keys (compatible with the prototype); with a backend, an HTTP
  * implementation of the same interface will appear, and the code above it won't change.
  */
-import type { CartItem, Marketplace } from '../domain/types';
+import type { BuyerProfile, CartItem, Marketplace } from '../domain/types';
 import { StorageKeys } from '../storage/keys';
 import { readJSON, writeJSON } from '../storage/local-store';
 
@@ -45,4 +45,21 @@ export const localMarketplaceRepository: MarketplaceRepository = {
 export const localFavoritesRepository: FavoritesRepository = {
   loadRaw: () => readJSON<unknown>(StorageKeys.favorites, []),
   save: (ids) => writeJSON(StorageKeys.favorites, ids),
+};
+
+export interface BuyerRepository {
+  load(): BuyerProfile;
+  save(p: BuyerProfile): void;
+}
+
+/** Always all four fields as trimmed strings: older saves and broken records give empty fields. */
+export function normalizeBuyer(raw: unknown): BuyerProfile {
+  const d = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+  return { name: str(d.name), phone: str(d.phone), email: str(d.email), city: str(d.city) };
+}
+
+export const localBuyerRepository: BuyerRepository = {
+  load: () => normalizeBuyer(readJSON<unknown>(StorageKeys.buyer, null)),
+  save: (p) => writeJSON(StorageKeys.buyer, p),
 };
