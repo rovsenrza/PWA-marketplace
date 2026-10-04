@@ -36,7 +36,7 @@ Local, not national: real stores of one region with their storefront photos, add
 
 ## Capabilities and Constraints
 
-- Current implementation: one static `index.html` (~17.8k lines, Tailwind via `vendor/tailwindcss.js`, inline JS), `admin.html`, `data.js` (localStorage data), `sw.js`, `manifest.json`. There is no backend yet.
+- Current implementation: Vite + TypeScript, static build (`dist/`). The buyer app is `index.html` with legacy classic scripts in `src/app/legacy/` and typed modules in `src/app/features/`; the admin is `admin.html` + `src/admin/`; one starting dataset lives in `src/shared/legacy/seed.js`. There is no backend yet; data lives in localStorage (key registry: `src/shared/storage/keys.ts`). Details: `docs/ARCHITECTURE.md`.
 - The redesign restyles the existing app in place; every current function and screen must keep working.
 - Sections: Главная, Каталог (товары, магазины, специалисты, спецтехника, дизайнеры, компании, вакансии, недвижимость, ландшафт, прочее, лайфхаки, калькуляторы), Корзина, Избранное, Профиль.
 - Undecided: product import format (1C vs Excel), stock sync, backend stack.

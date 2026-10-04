@@ -383,7 +383,7 @@ Cool, low-chroma neutrals with one saturated blue for action and one hot accent 
 
 In dark, depth comes from a lighter surface (page → card → raised) plus a 1px white-4% ring, never from black shadows on cards.
 
-### The glass recipe (`.lg` in index.html)
+### The glass recipe (`.lg`, `src/app/styles/glass.css`)
 Translucent tint (`--glass-tint`, ~62% white / ~55% navy) + `backdrop-filter: blur(18px) saturate(180%)`, a 1px bright inner top rim and a faint bottom rim, a 0.5px edge ring, a soft outer shadow, and a `::before` specular sheen (light top-left, reflection bottom-right). Pressed: scale .94 on a spring curve. `prefers-reduced-transparency` swaps glass for opaque card surfaces.
 
 **Rims.** A layered stack of inset shadows (`--lg-rims`, small variant `--lg-rims-sm`) draws the lit top-left edge, the darker inner bottom edge and the soft drop. Two knobs set its strength per theme: `--glass-reflex-light` (1 light, .3 dark) and `--glass-reflex-dark` (1 light, 2 dark). This part works in every browser, iPhone included.
@@ -401,7 +401,7 @@ Variants: `.lg--circle` (40px icon buttons), `.lg--pill` (search, chips), `.lg--
 
 ## Motion & Gestures
 
-All motion lives in `ui-motion.js`. It watches `hidden` class changes, so app code keeps calling its usual open/close functions. Easing is the iOS navigation curve `cubic-bezier(.32,.72,0,1)`. Durations: 380–420 ms in, 300–340 ms out. `prefers-reduced-motion` reduces everything to a 120 ms fade.
+All motion lives in `src/app/features/` (`motion/transitions.ts`, `swipe-to-delete.ts`, `notifications/`, `tab-lens.ts`). It watches `hidden` class changes, so app code keeps calling its usual open/close functions. Easing is the iOS navigation curve `cubic-bezier(.32,.72,0,1)`. Durations: 380–420 ms in, 300–340 ms out. `prefers-reduced-motion` reduces everything to a 120 ms fade.
 
 - **Pages:** switching tabs fades the page in and lifts it 10px. Going deeper (subviews, the category page) pushes in from the right, and going back slides in from the left.
 - **Overlays:** full-screen pages (product, store showcase, company, assistant…) push from the right while the page behind shifts back. Bottom sheets rise over a fading scrim. Centred dialogs scale from .9 on a spring. The lightbox zooms.
