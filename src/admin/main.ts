@@ -1,5 +1,30 @@
 /**
- * Admin panel entry point. Styles come in as a module; the logic is still the classic
- * admin.js, which reads the shared seed and data layer (src/shared/legacy).
+ * Admin panel entry point. The catalogue is the same CatalogStore as in the app (one set of merge
+ * and save rules); legacy admin.js works with productsDb / shopsProfileDb / storiesData / promoData
+ * through accessors. admin.js starts on DOMContentLoaded, by which time the store is already loaded.
  */
 import './styles/admin.css';
+import { CatalogStore, seedFromLegacy } from '../shared/data/catalog-store';
+import type { CatalogPart } from '../shared/data/catalog';
+import { exposeToLegacy } from '../shared/legacy/expose';
+
+const ADMIN_PARTS: CatalogPart[] = ['products', 'shops', 'stories', 'promo'];
+const catalog = new CatalogStore(seedFromLegacy);
+catalog.installLegacyAccessors(['productsDb', 'shopsProfileDb', 'storiesData', 'promoData']);
+catalog.load();
+
+exposeToLegacy({
+  DB_load: () => catalog.load(),
+  /* панель сохраняет только свои части: данные приложения (справочник, лайфхаки, …) не затираются */
+  DB_save: () => {
+    const r = catalog.save(ADMIN_PARTS);
+    const toast = window.toast as ((m: string) => void) | undefined;
+    if (r.quotaExceeded) toast?.('Не хватило места в браузере: часть данных не сохранилась');
+  },
+});
+
+/* the app or another admin tab saved the catalogue → reload and redraw */
+catalog.onExternalChange(() => {
+  catalog.load();
+  (window.onDataUpdated as (() => void) | undefined)?.();
+});

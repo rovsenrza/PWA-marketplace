@@ -6,7 +6,7 @@
 
         // ========== ОЧЕРЕДЬ МОДЕРАЦИИ ВИТРИН ==========
 // Здесь хранятся заявки магазинов на изменение витрины
-let showcaseModerationDb = [];
+/* showcaseModerationDb: данные в CatalogStore (src/shared/data/catalog-store.ts); здесь — аксессор на window */
 
 
 // Админка

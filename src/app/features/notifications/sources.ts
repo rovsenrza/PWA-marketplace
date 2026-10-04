@@ -7,6 +7,7 @@ import { StorageKeys } from '../../../shared/storage/keys';
 import { readSet } from '../../../shared/storage/local-store';
 import { statusLabel } from '../../../shared/orders/store-order';
 import { cartStore } from '../cart/cart-store';
+import { catalog } from '../../data/catalog';
 
 export type NotificationAction =
   | { type: 'tab'; tab: 'cart' }
@@ -59,7 +60,7 @@ function fromCart(): AppNotification[] {
 }
 
 function fromStories(): AppNotification[] {
-  const stories = (typeof storiesData !== 'undefined' && storiesData) || [];
+  const stories = catalog.state.stories;
   return stories
     .filter((s) => s.status === 'published' || !s.status)
     .map((s) => ({

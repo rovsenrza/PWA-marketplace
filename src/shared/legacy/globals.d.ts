@@ -3,16 +3,14 @@
  * Only what new code actually uses is declared here. Every new dependency on legacy code
  * gets a line here first, so the list shows what still has to be ported.
  */
-import type { CartItem, Product, Shop, Story } from '../domain/types';
+import type { CartItem, Product, Shop } from '../domain/types';
 
 declare global {
   /* глобальные let из legacy (общая лексическая область классических скриптов; живые привязки) */
-  const storiesData: Story[] | undefined;
   /** core/data.js: общее состояние покупателя (cart — аксессор на CartStore) */
   const state: { cart?: unknown; userEmail?: string; userRole?: string; currentShop?: string; favorites?: string[]; [k: string]: unknown };
-  /** core/data.js: каталог (SEED + localStorage) */
+  /** каталог: аксессоры на CatalogStore (src/shared/data/catalog-store.ts) */
   const productsDb: Record<string, Product>;
-  /** core/data.js: профили магазинов */
   const shopsProfileDb: Record<string, Shop>;
 
   interface Window {
@@ -31,6 +29,10 @@ declare global {
     renderPmRecent?: () => void;
     updateShopStats?: () => void;
     currentCatalogShop?: string;
+    applyShopLocalBanners?: () => void;
+    applyPromoToHome?: () => void;
+    loadLhEngageState?: () => void;
+    hydrateLifehacksEngage?: () => void;
     openProductModal?: (id: string) => void;
     openAssistant?: () => void;
     renderFavorites?: () => void;

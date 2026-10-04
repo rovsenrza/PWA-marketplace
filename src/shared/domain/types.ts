@@ -7,6 +7,7 @@
 export type PublicationStatus = 'published' | 'pending' | 'rejected' | 'draft';
 
 export interface Product {
+  [field: string]: unknown;
   id: string;
   title: string;
   /** Price as display text: '57 240 ₽'. Normalising to a number is stage 3. */
@@ -24,6 +25,7 @@ export interface Product {
 }
 
 export interface Shop {
+  [field: string]: unknown;
   name: string;
   status: PublicationStatus;
   category?: string;
@@ -39,6 +41,7 @@ export interface Shop {
 }
 
 export interface Story {
+  [field: string]: unknown;
   id: string;
   name: string;
   status?: PublicationStatus;
@@ -49,6 +52,7 @@ export interface Story {
 }
 
 export interface PromoSlide {
+  [field: string]: unknown;
   title: string;
   image: string;
 }
@@ -146,3 +150,15 @@ export interface BuyerProfile {
   email: string;
   city: string;
 }
+
+/* ---- справочник и контент (форма как в прототипе; поля, которые код не трогает, сохраняются как есть) ---- */
+type Loose = { [field: string]: unknown };
+
+export interface Specialist extends Loose { id: string; name?: string; craft?: string }
+/** Directory: sections with lists; only specialists are merged on load. */
+export interface Directory extends Loose { specialists?: Specialist[] }
+export interface Vacancy extends Loose { id: string; title?: string; company?: string; salary?: string }
+export interface Lifehack extends Loose { id: string; title?: string; status?: PublicationStatus; category?: string }
+export interface OnboardingSlide extends Loose { title?: string; image?: string }
+/** A store's request to publish or change its showcase (moderation queue). */
+export interface ShowcaseRequest extends Loose { id: string; shop?: string; status?: string }

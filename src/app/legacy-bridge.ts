@@ -3,6 +3,7 @@
  * once it's empty, the bridge is no longer needed.
  */
 import { exposeToLegacy } from '../shared/legacy/expose';
+import { catalog, loadAllData, saveAllData } from './data/catalog';
 import { esc, escJsArg } from '../shared/ui/html';
 import { parsePrice, formatPrice, formatRub } from '../shared/format/price';
 import { STORE_ORDER_SLA_MS, confirmedAmount, expireOverdue, recalcStatus, statusLabel } from '../shared/orders/store-order';
@@ -19,6 +20,10 @@ import { buyerStore } from './features/buyer/buyer-store';
 import { buyerLegacyApi } from './features/buyer/profile';
 
 exposeToLegacy({ parsePrice, formatPrice, formatRub, getBadgeHtml, getPriceHtml });
+
+/* каталог: productsDb, storiesData, … — аксессоры на CatalogStore; сохранение и загрузка — через репозиторий */
+catalog.installLegacyAccessors();
+exposeToLegacy({ loadAllData, saveAllData });
 
 /* экранирование для legacy-рендеров: данные в HTML и в JS-строке внутри onclick */
 exposeToLegacy({ escHtml: esc, escJsArg });

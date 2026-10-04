@@ -69,13 +69,20 @@ a new cache name, and the old cache is deleted on activation.
   instead of overwriting each other's functions. `app:cart-changed` comes from `refreshCartSurfaces`
   (every cart mutation), `app:favorites-changed` from `toggleFavorite`.
 
-### Data: one store per domain
+### Data: stores and repositories
 
-`CartStore` (`app/features/cart/cart-store.ts`) owns the cart lines and the orders and persists them through
-`CartRepository` / `MarketplaceRepository` (`shared/data/repositories.ts`, localStorage implementation over the
-old keys `meb_cart`, `meb_marketplace`). For legacy code it installs accessors: `state.cart` and the global
-`marketplace` read from and write to the same store, so there are no two copies. A backend means a new
-repository implementation; the store and the screens stay as they are.
+- **Catalogue** (`shared/data/catalog*.ts`): products, stores, stories, promo, directory, vacancies,
+  onboarding, showcase requests, lifehacks. One `CatalogStore` per page (app and admin) with **one set of
+  merge rules** «saved wins, seed fills the gaps» (`catalog.ts`, unit tests) and a `CatalogRepository`
+  (localStorage over the old keys). Each part is saved independently; after saving there's the
+  `meb_updated` stamp, from which the open admin tab reloads the data.
+- **Seed** (`shared/legacy/seed.js`): all starting data in one place. That's also the initial database
+  content for a server.
+- **Cart and orders** (`CartStore`), **favourites** (`FavoritesStore`), **profile** (`BuyerStore`):
+  the same pattern, each with its own repository.
+- **Legacy access:** the old globals (`productsDb`, `storiesData`, `state.cart`, `buyerProfile`, …) are
+  accessors onto the stores. Catalogue ones return the live object (legacy mutates it in place); none of them
+  is declared with `let` in legacy any more.
 
 ### Already ported to modules
 
@@ -85,6 +92,7 @@ repository implementation; the store and the screens stay as they are.
 | store order rules from `core/cart.js` (statuses, recalculation, SLA, total) | `shared/orders/store-order.ts` | unit (all transitions) + e2e checkout |
 | favourites screen and «Отправить менеджеру»: `core/favorites.js` (deleted) | `shared/catalog/favorites.ts` (groups, message), `app/features/favorites/render.ts` | unit + e2e (injection, Telegram link, clicks) |
 | cart, «Мои заказы» and store-order rendering: `core/cart.js` (deleted) | `app/features/cart/render.ts` through `html`…``, buttons through `data-action` (`ui-actions.ts`) | unit (`html`, order selection) + e2e (markup injection, real clicks) |
+| catalogue data layer: `persistence.js` (`saveAllData`/`loadAllData`) and admin `data.js` (deleted) | `shared/data/catalog.ts`, `catalog-repository.ts`, `catalog-store.ts`; app `app/data/catalog.ts`, admin `admin/main.ts` | unit (merging, per-part saving, quota) + e2e (admin edit in the app, live sync) |
 | buyer profile `core/buyer.js` (entire file) | `app/features/buyer/` (BuyerStore + card and editor), `BuyerRepository` | unit + e2e (editor, reload, registration through auth.js) |
 | order actions `so*` from `core/cart.js`: store answers, new price, invoice, payment, cancel, return to cart | `shared/orders/store-order-actions.ts` (rules + guards), `app/features/orders/actions.ts` | unit (every transition and refusal) + e2e (full cycle) |
 | favourites from `core/favorites.js`: state, toggle, clear, remove a store | `shared/catalog/favorites.ts`, `app/features/favorites/` (store + actions, one `commit()` for every change) | unit + e2e (reload, hearts after «очистить» and «убрать магазин») |

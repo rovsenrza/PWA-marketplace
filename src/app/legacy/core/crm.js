@@ -72,14 +72,7 @@ function updateAdminStats() {
 
 
         // ========== ДАННЫЕ ОНБОРДИНГА (до 20 слайдов) ==========
-let onboardingData = [
-    { title: 'Кухня Вашей Мечты', desc: 'Рассчитайте стоимость, пройдите короткий опрос и получите ценный подарок.', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600', badge: 'АКЦИЯ АВГУСТА', badgeColor: 'bg-amber-500' },
-    { title: 'Современные Решения', desc: 'Готовые кухонные гарнитуры напрямую от лучших фабрик региона.', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', badge: 'ПРЕМИУМ', badgeColor: 'bg-blue-600' },
-    { title: 'Мебель Люкс Класса', desc: 'Премиальные дизайнерские кровати для безупречного комфорта.', image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600', badge: 'ЭСТЕТИКА СНА', badgeColor: 'bg-emerald-600' },
-    { title: 'Надежные мастера', desc: 'Проверенные бригады и дизайнеры для вашего идеального ремонта.', image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600', badge: 'СПЕЦИАЛИСТЫ', badgeColor: 'bg-red-600' },
-    { title: 'Стильные гостиные', desc: 'Мягкая мебель и декор для уютной атмосферы в вашем доме.', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600', badge: 'НОВИНКА', badgeColor: 'bg-violet-600' },
-    { title: 'Ванная мечты', desc: 'Сантехника и плитка от проверенных производителей.', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600', badge: 'ХИТ', badgeColor: 'bg-pink-600' }
-];
+/* onboardingData: данные в CatalogStore (src/shared/data/catalog-store.ts); здесь — аксессор на window */
 
 
 // Сколько слайдов показывать за один заход
@@ -91,7 +84,7 @@ let onboardingSlides = [];
 
         // ========== УПРАВЛЕНИЕ ПРОМО-БАННЕРАМИ ==========
 // Собираем данные баннеров из HTML в массив (один раз)
-let promoData = SEED.promo();
+/* promoData: данные в CatalogStore (src/shared/data/catalog-store.ts); здесь — аксессор на window */
 
 
 function renderCrmPromoList() {

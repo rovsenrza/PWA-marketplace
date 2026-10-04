@@ -2,7 +2,7 @@
    состояние с вычисляемой инициализацией, обработчики событий, window.onload.
    Подключается после файлов доменов. */
 
-let lifehackCategories = DEFAULT_LIFEHACK_CATEGORIES.slice();
+/* lifehackCategories: данные в CatalogStore (src/shared/data/catalog-store.ts); здесь — аксессор на window */
 
 
             window.onload = function() {
@@ -28,7 +28,7 @@ let lifehackCategories = DEFAULT_LIFEHACK_CATEGORIES.slice();
     try { renderHomeShopPromo(); } catch(e) {}
 };
 
-let storiesData = getDefaultStories();
+/* storiesData: данные в CatalogStore (src/shared/data/catalog-store.ts); здесь — аксессор на window */
 
 
 window.specCraftFilter = 'все';

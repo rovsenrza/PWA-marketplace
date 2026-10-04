@@ -163,8 +163,6 @@ function resetImport() {
     ui.imp = { step: 1, store: 'Постройка', file: '', rows: 1248, photos: '', decisions: {} };
 }
 resetImport();
-// демо: у лайфхака из стартовых данных указываем автора
-storiesData.forEach(s => { if (s.isLifehack && !s.author) s.author = '@remont_lifehacks'; });
 
 // ---------- Навигация ----------
 const NAV = {
@@ -1457,4 +1455,9 @@ document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     ['entry-modal', 'reject-modal', 'prod-modal', 'shop-modal', 'banner-modal', 'story-modal'].forEach(id => { if (!$(id).classList.contains('hidden')) closeOverlay(id); });
 });
-renderAll();
+/* старт после загрузки каталога: его поднимает модуль src/admin/main.ts (модули выполняются до DOMContentLoaded) */
+document.addEventListener('DOMContentLoaded', function () {
+    // демо: у лайфхака из стартовых данных указываем автора
+    storiesData.forEach(s => { if (s.isLifehack && !s.author) s.author = '@remont_lifehacks'; });
+    renderAll();
+});
