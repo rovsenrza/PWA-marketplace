@@ -54,3 +54,30 @@ test('lifehack: «Собрать в корзину» (legacy writes state.cart) 
   expect(n).toBeGreaterThan(0);
   await expect(app.locator('#cart-badge')).toBeVisible();
 });
+
+test('store and buyer: new price → acceptance → invoice → payment; refusals on a locked order', async ({ app }) => {
+  app.on('dialog', (d) => d.accept('50000'));
+  await app.evaluate(() => { const w = window as any; w.addToCart('prod-2'); w.addToCart('prod-4'); w.switchTab('cart'); });
+  await app.fill('#chk-name', 'Тест');
+  await app.fill('#chk-phone', '+7 900 111-22-33');
+  await app.evaluate(() => (window as any).submitCheckout());
+  const so = (store: string) => app.evaluate((s) => JSON.parse(JSON.stringify(eval('marketplace').storeOrders.find((o: any) => o.storeId === s))), store);
+
+  const ld = await so('Любимый Дом');
+  await app.evaluate(([id, p]) => (window as any).soProposePrice(id, p), [ld.id, 'prod-2']);
+  expect((await so('Любимый Дом')).status).toBe('awaiting_buyer');
+  await app.evaluate((id) => (window as any).soAcceptPrice(id), ld.id);
+  expect((await so('Любимый Дом')).lines[0].quotedPrice).toBe(50000);
+  await app.evaluate((id) => { (window as any).soIssueInvoice(id); (window as any).soIssueInvoice(id); }, ld.id);
+  expect(await app.evaluate(() => eval('marketplace').invoices.length)).toBe(1);
+  await app.evaluate((id) => (window as any).soMarkPaid(id), ld.id);
+  await app.evaluate((id) => (window as any).soRejectAll(id), ld.id);
+  expect((await so('Любимый Дом')).status).toBe('paid');
+
+  /* второй магазин: нет в наличии → покупатель возвращает позицию в корзину */
+  const ps = await so('Постройка');
+  await app.evaluate(([id, p]) => (window as any).soMarkUnavailable(id, p), [ps.id, 'prod-4']);
+  expect((await so('Постройка')).status).toBe('rejected');
+  await app.evaluate((id) => (window as any).soReturnToCart(id), ps.id);
+  expect(await app.evaluate(() => (window as any).getCartItems().map((i: any) => i.productId))).toEqual(['prod-4']);
+});

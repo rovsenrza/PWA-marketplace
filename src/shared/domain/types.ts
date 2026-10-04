@@ -110,11 +110,31 @@ export interface StoreOrder {
   updatedAt?: number;
   slaDeadline?: number;
   contact?: BuyerContact;
+  invoiceId?: string;
+}
+
+export interface Invoice {
+  id: string;
+  storeOrderId: string;
+  amount: number;
+  currency: 'RUB';
+  channel: 'in_app';
+  status: 'issued' | 'paid';
+  createdAt: number;
+}
+
+export interface Payment {
+  id: string;
+  invoiceId: string;
+  provider: 'manual';
+  status: 'succeeded';
+  amount: number;
+  paidAt: number;
 }
 
 export interface Marketplace {
   checkouts: Checkout[];
   storeOrders: StoreOrder[];
-  invoices: unknown[];
-  payments: unknown[];
+  invoices: Invoice[];
+  payments: Payment[];
 }

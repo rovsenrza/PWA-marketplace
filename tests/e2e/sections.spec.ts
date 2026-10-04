@@ -80,7 +80,7 @@ test('events app:favorites-changed / app:cart-changed: the recommendations and t
 
 test('in-app CRM: lists render', async ({ app }) => {
   for (const fn of ['renderCrmPromoList', 'renderCrmStoryList', 'renderCrmOnbList', 'renderCrmLifehackList',
-    'renderCrmShopList', 'renderCrmSpecList', 'renderCrmProductList', 'renderAdminModerationList', 'updateAdminStats']) {
+    'renderCrmShopList', 'renderCrmSpecList', 'renderCrmProductList', 'renderAdminModerationList', 'updateAdminStats', 'renderShopOrders', 'renderBuyerOrders']) {
     await app.evaluate(`typeof window[${JSON.stringify(fn)}] === 'function' && window[${JSON.stringify(fn)}]()`);
   }
 });
