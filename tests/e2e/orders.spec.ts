@@ -81,3 +81,13 @@ test('store and buyer: new price → acceptance → invoice → payment; refusal
   await app.evaluate((id) => (window as any).soReturnToCart(id), ps.id);
   expect(await app.evaluate(() => (window as any).getCartItems().map((i: any) => i.productId))).toEqual(['prod-4']);
 });
+
+test('price with kopecks: the cart counts it correctly (before, «1 299,90 ₽» became 129 990)', async ({ app }) => {
+  await app.evaluate(() => {
+    eval('productsDb')['prod-4'].price = '1 299,90 ₽';
+    (window as any).addToCart('prod-4', 2);
+    (window as any).switchTab('cart');
+  });
+  await expect(app.locator('#cart-list .cart-total')).toHaveText('Итого: 2 599,80 ₽');
+  await expect(app.locator('#cart-list .cart-card-price').first()).toHaveText('1 299,90 ₽');
+});
