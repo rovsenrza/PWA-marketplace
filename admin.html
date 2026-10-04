@@ -6,35 +6,11 @@
     <title>Супер-Апп · Управление</title>
     <meta name="theme-color" content="#F2F3F6">
     <meta name="color-scheme" content="light dark">
-    <script>
-        /* Тема общая с приложением: localStorage 'ui-theme' = system | light | dark */
-        (function () {
-            var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-            function pref() { try { return localStorage.getItem('ui-theme') || 'system'; } catch (e) { return 'system'; } }
-            function apply() {
-                var p = pref(), t = p === 'light' || p === 'dark' ? p : (mq && mq.matches ? 'dark' : 'light');
-                document.documentElement.setAttribute('data-theme', t);
-                var m = document.querySelector('meta[name="theme-color"]');
-                if (m) m.setAttribute('content', t === 'dark' ? '#0A0F1C' : '#F2F3F6');
-            }
-            window.toggleUiTheme = function () {
-                var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                try { localStorage.setItem('ui-theme', next); } catch (e) {}
-                apply();
-            };
-            if (mq) {
-                var on = function () { if (pref() === 'system') apply(); };
-                if (mq.addEventListener) mq.addEventListener('change', on); else if (mq.addListener) mq.addListener(on);
-            }
-            window.addEventListener('storage', function (e) { if (e.key === 'ui-theme') apply(); });
-            apply();
-        })();
-    </script>
+    <script src="/src/shared/legacy/theme-bootstrap.js"></script>
     <link rel="icon" type="image/png" href="icons/icon-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
@@ -260,7 +236,9 @@
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js"></script>
-<script src="admin.js"></script>
+<script src="/src/shared/legacy/seed.js"></script>
+<script src="/src/shared/legacy/data.js"></script>
+<script src="/src/admin/legacy/admin.js"></script>
+<script type="module" src="/src/admin/main.ts"></script>
 </body>
 </html>

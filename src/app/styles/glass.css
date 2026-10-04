@@ -1,0 +1,601 @@
+/* Liquid Glass и тёмная тема: токены обеих тем, рецепт стекла, размещение на элементах управления.
+   Порядок подключения важен: base → market → glass → motion → tailwind (src/app/main.ts). */
+
+/* =====================================================================
+   Liquid Glass · светлая и тёмная тема (запрос заказчика, макет MarketSpace)
+   Стекло — только слой навигации и управления (как .glassEffect() в SwiftUI):
+   таббар, кнопки шапки, поиск, плавающие кнопки, шиты, чипсы.
+   Контент (карточки, баннеры, списки) — сплошные поверхности.
+   ===================================================================== */
+#phone-container[data-ui] {
+    --mk-page: #F3F5FA;
+    --mk-sunk: #EEF1F6;
+    --mk-raised: #FFFFFF;
+    --mk-on-brand: #FFFFFF;
+    --mk-chevron: #A3ABB8;
+    --mk-well: #F3F5FA;
+    --mk-cat: #FFFFFF;
+    --glass-tint: rgba(255, 255, 255, 0.62);
+    --glass-tint-strong: rgba(255, 255, 255, 0.78);
+    --glass-blur: 18px;
+    --glass-sat: 180%;
+    --glass-rim: rgba(255, 255, 255, 0.95);
+    --glass-rim-low: rgba(255, 255, 255, 0.35);
+    --glass-edge: rgba(11, 26, 46, 0.08);
+    --glass-sheen: rgba(255, 255, 255, 0.7);
+    --glass-sheen-low: rgba(255, 255, 255, 0.25);
+    --glass-shadow: 0 6px 22px rgba(11, 26, 46, 0.10), 0 1px 3px rgba(11, 26, 46, 0.06);
+    --glass-lens: rgba(18, 89, 245, 0.12);
+    --lg-spring: cubic-bezier(.34, 1.56, .64, 1);
+    --glass-tint-refract: rgba(255, 255, 255, 0.5);
+    --glass-reflex-light: 1;
+    --glass-reflex-dark: 1;
+    --lg-rims:
+        inset 0 0 0 1px color-mix(in srgb, #fff calc(var(--glass-reflex-light) * 10%), transparent),
+        inset 1.8px 3px 0 -2px color-mix(in srgb, #fff calc(var(--glass-reflex-light) * 90%), transparent),
+        inset -2px -2px 0 -2px color-mix(in srgb, #fff calc(var(--glass-reflex-light) * 80%), transparent),
+        inset -3px -8px 1px -6px color-mix(in srgb, #fff calc(var(--glass-reflex-light) * 60%), transparent),
+        inset -0.3px -1px 4px 0 color-mix(in srgb, #000 calc(var(--glass-reflex-dark) * 12%), transparent),
+        inset -1.5px 2.5px 0 -2px color-mix(in srgb, #000 calc(var(--glass-reflex-dark) * 20%), transparent),
+        inset 0 3px 4px -2px color-mix(in srgb, #000 calc(var(--glass-reflex-dark) * 20%), transparent),
+        inset 2px -6.5px 1px -4px color-mix(in srgb, #000 calc(var(--glass-reflex-dark) * 10%), transparent),
+        0 1px 5px 0 color-mix(in srgb, #000 calc(var(--glass-reflex-dark) * 10%), transparent),
+        0 6px 16px 0 color-mix(in srgb, #000 calc(var(--glass-reflex-dark) * 8%), transparent);
+    --lg-rims-sm:
+        inset 0 0 0 1px color-mix(in srgb, #fff calc(var(--glass-reflex-light) * 10%), transparent),
+        inset 2px 1px 0 -1px color-mix(in srgb, #fff calc(var(--glass-reflex-light) * 90%), transparent),
+        inset -1.5px -1px 0 -1px color-mix(in srgb, #fff calc(var(--glass-reflex-light) * 80%), transparent),
+        inset -2px -6px 1px -5px color-mix(in srgb, #fff calc(var(--glass-reflex-light) * 60%), transparent),
+        inset -1px 2px 3px -1px color-mix(in srgb, #000 calc(var(--glass-reflex-dark) * 20%), transparent),
+        inset 0 -4px 1px -2px color-mix(in srgb, #000 calc(var(--glass-reflex-dark) * 10%), transparent),
+        0 3px 6px 0 color-mix(in srgb, #000 calc(var(--glass-reflex-dark) * 8%), transparent);
+    color-scheme: light;
+}
+html[data-theme="dark"] #phone-container[data-ui] {
+    --mk-page: #0A0F1C;
+    --mk-card: #131B2E;
+    --mk-sunk: #0F1627;
+    --mk-raised: #172138;
+    --mk-well: #1C2741;
+    --mk-cat: #151E33;
+    --mk-ink: #F2F5FB;
+    --mk-ink-2: #B3BCCE;
+    --mk-ink-3: #8D98AE;
+    --mk-line: rgba(255, 255, 255, 0.08);
+    --mk-brand: #3A70FF;
+    --mk-brand-2: #2C5BE0;
+    --mk-brand-soft: rgba(58, 112, 255, 0.18);
+    --mk-sale: #FF3D7A;
+    --mk-sale-soft: rgba(255, 61, 122, 0.16);
+    --mk-ok: #22C17E;
+    --mk-ok-soft: rgba(34, 193, 126, 0.16);
+    --mk-chevron: #5F6A80;
+    --mk-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+    --mk-shadow-up: 0 -1px 0 rgba(255, 255, 255, 0.05);
+    --mk-sheet: 0 -10px 40px rgba(0, 0, 0, 0.55);
+    --glass-tint: rgba(28, 38, 62, 0.55);
+    --glass-tint-strong: rgba(20, 28, 48, 0.80);
+    --glass-sat: 160%;
+    --glass-rim: rgba(255, 255, 255, 0.16);
+    --glass-rim-low: rgba(255, 255, 255, 0.04);
+    --glass-edge: rgba(255, 255, 255, 0.07);
+    --glass-sheen: rgba(255, 255, 255, 0.12);
+    --glass-sheen-low: rgba(255, 255, 255, 0.03);
+    --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
+    --glass-lens: rgba(58, 112, 255, 0.22);
+    --glass-tint-refract: rgba(22, 31, 52, 0.55);
+    --glass-reflex-light: 0.3;
+    --glass-reflex-dark: 2;
+    color-scheme: dark;
+}
+html[data-theme="dark"] body { background: #05080F; }
+html[data-theme="dark"] #phone-container[data-ui] { border-color: #05080F !important; }
+
+/* ---------- Рецепт стекла ---------- */
+#phone-container[data-ui] .lg {
+    isolation: isolate;
+    background: var(--glass-tint) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    border: 0 !important;
+    box-shadow: var(--lg-rims) !important;
+    transition: transform .35s var(--lg-spring), background-color .2s var(--mk-ease), box-shadow .2s var(--mk-ease);
+}
+/* блик: свет сверху-слева, отражение снизу-справа */
+#phone-container[data-ui] .lg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+    background: linear-gradient(140deg, var(--glass-sheen) 0%, transparent 38%, transparent 68%, var(--glass-sheen-low) 100%);
+}
+/* Преломление: размытие слабее, ободок линзы искажает фон (Chromium; Safari — только размытие) */
+html.lg-refract #phone-container[data-ui] #app-tabbar.lg--refract {
+    --glass-tint-strong: var(--glass-tint-refract);
+    backdrop-filter: blur(8px) url(#lg-tab) saturate(var(--glass-sat));
+}
+html.lg-refract #phone-container[data-ui] .rec-photo .rec-fav.lg,
+html.lg-refract #phone-container[data-ui] .pc-fav,
+html.lg-refract #phone-container[data-ui] .pm-hero-nav,
+html.lg-refract #phone-container[data-ui] .home-strip-go.lg {
+    backdrop-filter: blur(3px) url(#lg-circle) saturate(170%);
+}
+#phone-container[data-ui] .lg--circle,
+#phone-container[data-ui] .lg--pill { position: relative; }
+#phone-container[data-ui] .lg--circle {
+    width: 40px; height: 40px;
+    border-radius: 999px !important;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--mk-ink) !important;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+#phone-container[data-ui] .lg--circle svg { width: 20px; height: 20px; }
+#phone-container[data-ui] .lg--pill { border-radius: 999px !important; }
+#phone-container[data-ui] button.lg:active,
+#phone-container[data-ui] .lg--circle:active { transform: scale(0.94); }
+#phone-container[data-ui] .lg--tinted {
+    background: color-mix(in srgb, var(--mk-brand) 82%, transparent) !important;
+    color: #fff !important;
+}
+
+/* ---------- Шапка ---------- */
+#phone-container[data-ui] > header {
+    background: var(--mk-page) !important;
+    box-shadow: none !important;
+    padding-bottom: 6px !important;
+}
+#phone-container[data-ui] .lg-brand { display: flex; flex-direction: column; min-width: 0; line-height: 1; }
+#phone-container[data-ui] .lg-wordmark {
+    font-size: 25px; font-weight: 800; letter-spacing: -0.035em;
+    color: var(--mk-ink); white-space: nowrap;
+}
+#phone-container[data-ui] .lg-wordmark b { font-weight: 800; color: var(--mk-brand); }
+#phone-container[data-ui] .lg-tagline {
+    margin-top: 5px; font-size: 12.5px; font-weight: 500;
+    color: var(--mk-ink-3); letter-spacing: 0; white-space: nowrap;
+}
+#phone-container[data-ui] > header .assistant-side-tab.lg {
+    width: 40px !important; height: 40px !important;
+    background: var(--glass-tint) !important;
+    color: var(--mk-brand) !important;
+    box-shadow: var(--lg-rims) !important;
+    position: relative !important;
+    inset: auto !important;
+    padding: 0 !important;
+    z-index: auto !important;
+}
+#phone-container[data-ui] > header .assistant-side-tab[hidden] { display: none !important; }
+#phone-container[data-ui] .lg-bell .lg-dot {
+    position: absolute; top: 9px; right: 10px;
+    width: 8px; height: 8px; border-radius: 999px;
+    background: var(--mk-brand); box-shadow: 0 0 0 2px var(--mk-page);
+}
+#phone-container[data-ui] .lg-theme-btn .lg-ico-sun { display: none; }
+html[data-theme="dark"] #phone-container[data-ui] .lg-theme-btn .lg-ico-sun { display: block; }
+html[data-theme="dark"] #phone-container[data-ui] .lg-theme-btn .lg-ico-moon { display: none; }
+
+/* ---------- Поиск ---------- */
+#phone-container[data-ui] .lg-search {
+    height: 50px;
+    border-radius: 16px !important;
+    padding: 0 3px 0 0;
+    gap: 0 !important;
+}
+#phone-container[data-ui] .lg-search #search-input {
+    background: transparent !important;
+    border: 0 !important;
+    height: 50px;
+    border-radius: 16px !important;
+    padding-left: 44px !important;
+    font-size: 15px !important;
+    box-shadow: none !important;
+}
+#phone-container[data-ui] .lg-search #search-input:focus { box-shadow: none !important; }
+#phone-container[data-ui] .lg-search:focus-within {
+    box-shadow: inset 0 1px 0 var(--glass-rim), 0 0 0 2px var(--mk-brand), var(--glass-shadow) !important;
+}
+#phone-container[data-ui] .lg-search > div > span { padding-left: 16px !important; color: var(--mk-ink-3) !important; }
+#phone-container[data-ui] .lg-search > div > span svg { width: 19px; height: 19px; }
+#phone-container[data-ui] #view-catalog .lg-search button.lg-search-filter {
+    width: 44px !important; height: 44px !important;
+    border-radius: 13px !important;
+    background: transparent !important;
+    color: var(--mk-ink-2) !important;
+    box-shadow: none !important;
+}
+#phone-container[data-ui] #view-catalog .lg-search button.lg-search-filter svg { color: var(--mk-ink-2) !important; width: 21px; height: 21px; }
+
+/* ---------- Плитки категорий ---------- */
+#phone-container[data-ui] .home-cats-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+#phone-container[data-ui] .home-cats { display: flex; gap: 10px; padding: 2px 20px 4px; width: max-content; }
+#phone-container[data-ui] .home-cat {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    width: 66px; padding: 0; border: 0; background: none; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+#phone-container[data-ui] .home-cat-ico {
+    width: 64px; height: 56px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--mk-cat); color: var(--mk-ink);
+    box-shadow: var(--mk-shadow);
+    transition: transform .35s var(--lg-spring);
+}
+html[data-theme="dark"] #phone-container[data-ui] .home-cat-ico { box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 0 0 1px rgba(255,255,255,.04); }
+#phone-container[data-ui] .home-cat-ico svg { width: 26px; height: 26px; }
+#phone-container[data-ui] .home-cat:active .home-cat-ico { transform: scale(0.93); }
+#phone-container[data-ui] .home-cat.on .home-cat-ico {
+    background: var(--mk-brand); color: #fff;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--mk-brand) 38%, transparent), inset 0 1px 0 rgba(255,255,255,.28);
+}
+#phone-container[data-ui] .home-cat-label {
+    font-size: 11.5px; font-weight: 500; color: var(--mk-ink-2);
+    max-width: 72px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#phone-container[data-ui] .home-cat.on .home-cat-label { color: var(--mk-ink); font-weight: 600; }
+
+/* ---------- Истории ---------- */
+#phone-container[data-ui] #stories-container img { border-color: var(--mk-page) !important; }
+#phone-container[data-ui] #stories-container .bg-slate-300,
+#phone-container[data-ui] #stories-container .bg-gray-300 { background: var(--mk-line) !important; }
+#phone-container[data-ui] #stories-scroll ~ button {
+    background: var(--glass-tint) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(170%);
+    backdrop-filter: blur(14px) saturate(170%);
+    border: 0 !important;
+    color: var(--mk-ink) !important;
+    box-shadow: var(--lg-rims) !important;
+}
+
+/* ---------- Промо-баннер: фото во всю карточку ---------- */
+#phone-container[data-ui] .home-promo-card {
+    height: 196px !important;
+    background: #0B1220 !important;
+    border-radius: 22px !important;
+    box-shadow: var(--mk-shadow) !important;
+}
+#phone-container[data-ui] .home-promo-card > .absolute.top-0 { height: 100% !important; }
+#phone-container[data-ui] .promo-slide { background: #0B1220; }
+#phone-container[data-ui] .promo-veil {
+    background:
+        linear-gradient(90deg, rgba(6, 12, 28, 0.88) 0%, rgba(6, 12, 28, 0.62) 46%, rgba(6, 12, 28, 0.05) 100%),
+        linear-gradient(0deg, rgba(6, 12, 28, 0.45) 0%, rgba(6, 12, 28, 0) 50%);
+}
+#phone-container[data-ui] .promo-copy { padding: 0 44% 30px 20px; gap: 0; }
+#phone-container[data-ui] .promo-slide h4.promo-name {
+    color: #fff !important; font-size: 21px !important; font-weight: 800 !important;
+    line-height: 1.12; letter-spacing: -0.025em; white-space: normal;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+#phone-container[data-ui] .promo-slide p.promo-desc {
+    color: #8FB2FF !important; font-size: 13px !important; font-weight: 500; margin-top: 6px !important;
+}
+#phone-container[data-ui] .promo-slide button.promo-go {
+    margin-top: 14px; align-self: flex-start;
+    height: 38px; padding: 0 22px; border-radius: 999px !important;
+    background: #fff !important; color: #0B1A2E !important;
+    font-size: 14px !important; font-weight: 700 !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+    transition: transform .35s var(--lg-spring);
+}
+#phone-container[data-ui] .promo-slide button.promo-go:active { transform: scale(0.95); }
+#phone-container[data-ui] #promo-dots { top: auto !important; bottom: 12px; gap: 6px !important; }
+#phone-container[data-ui] #promo-dots > div { height: 6px !important; width: 6px !important; background: rgba(255,255,255,.35) !important; }
+#phone-container[data-ui] #promo-dots > div.w-4 { width: 18px !important; background: #fff !important; }
+
+/* ---------- Заголовки секций ---------- */
+#phone-container[data-ui] #view-catalog h3,
+#phone-container[data-ui] #view-catalog .oz-h2 { font-size: 20px !important; color: var(--mk-ink) !important; }
+#phone-container[data-ui] .home-see-all {
+    display: inline-flex; align-items: center; gap: 2px;
+    font-size: 14px; font-weight: 500; color: var(--mk-brand) !important;
+    border: 0; background: none; padding: 0; cursor: pointer;
+}
+#phone-container[data-ui] .home-see-all svg { width: 16px; height: 16px; color: var(--mk-ink-3); }
+
+/* ---------- Популярное: горизонтальная лента ---------- */
+#phone-container[data-ui] .rec-rail {
+    display: flex; gap: 10px; overflow-x: auto; padding: 2px 20px 16px;
+    scroll-snap-type: x mandatory; scroll-padding-left: 20px; -webkit-overflow-scrolling: touch;
+}
+#phone-container[data-ui] .rec-rail .rec-card {
+    position: relative; flex: 0 0 152px; scroll-snap-align: start;
+    background: var(--mk-raised); border-radius: 20px; padding: 8px;
+    box-shadow: var(--mk-shadow);
+}
+html[data-theme="dark"] #phone-container[data-ui] .rec-rail .rec-card { box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 0 0 1px rgba(255,255,255,.04); }
+#phone-container[data-ui] .rec-rail .rec-photo {
+    aspect-ratio: 1 / 1; border-radius: 14px; background: var(--mk-well);
+}
+#phone-container[data-ui] .rec-rail .rec-body { padding: 10px 4px 2px; }
+#phone-container[data-ui] .rec-rail .rec-price { font-size: 16px; }
+#phone-container[data-ui] .rec-rail .rec-title { -webkit-line-clamp: 1; font-weight: 500 !important; margin-top: 3px; }
+#phone-container[data-ui] .rec-meta,
+#phone-container[data-ui] .rec-store {
+    margin: 2px 0 0; font-size: 12px; color: var(--mk-ink-3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 38px;
+}
+#phone-container[data-ui] .rec-store { font-size: 11.5px; }
+#phone-container[data-ui] .rec-photo .rec-fav.lg {
+    position: absolute; top: 6px; right: 6px; width: 32px; height: 32px;
+    color: var(--mk-ink) !important; z-index: 2;
+}
+#phone-container[data-ui] .rec-photo .rec-fav svg { width: 18px; height: 18px; stroke-width: 1.75; }
+#phone-container[data-ui] .rec-photo .rec-fav.on { color: var(--mk-brand) !important; }
+#phone-container[data-ui] .rec-add {
+    position: absolute; right: 10px; bottom: 10px;
+    width: 34px; height: 34px; border-radius: 999px; border: 0; padding: 0;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    background: var(--mk-brand); color: #fff;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--mk-brand) 45%, transparent), inset 0 1px 0 rgba(255,255,255,.28);
+    transition: transform .35s var(--lg-spring);
+}
+#phone-container[data-ui] .rec-add.in { background: var(--mk-ok); box-shadow: inset 0 1px 0 rgba(255,255,255,.28); }
+#phone-container[data-ui] .rec-add:active { transform: scale(0.9); }
+#phone-container[data-ui] .rec-add svg { width: 18px; height: 18px; }
+
+/* ---------- Сетка товаров ---------- */
+#phone-container[data-ui] .pc-card { background: var(--mk-raised) !important; border-radius: 20px !important; }
+#phone-container[data-ui] .pc-photo { background: var(--mk-well) !important; border-radius: 20px 20px 0 0; }
+html[data-theme="dark"] #phone-container[data-ui] .pc-photo img { mix-blend-mode: normal; }
+#phone-container[data-ui] .pc-cart:not(.in) {
+    border-radius: 999px !important;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--mk-brand) 40%, transparent), inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+#phone-container[data-ui] .pc-cart.in { border-radius: 999px !important; }
+#phone-container[data-ui] .pc-fav {
+    width: 32px !important; height: 32px !important; border-radius: 999px !important;
+    display: flex !important; align-items: center; justify-content: center;
+    background: var(--glass-tint) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(170%);
+    backdrop-filter: blur(14px) saturate(170%);
+    color: var(--mk-ink) !important; filter: none !important;
+    box-shadow: var(--lg-rims-sm) !important;
+}
+#phone-container[data-ui] .pc-fav.on { color: var(--mk-brand) !important; }
+
+/* ---------- Вторая промо-полоса ---------- */
+#phone-container[data-ui] .home-strip { position: relative; }
+#phone-container[data-ui] .home-strip #home-brand-banner { border-radius: 20px !important; }
+#phone-container[data-ui] .home-strip-go.lg {
+    position: absolute; right: 12px; top: 50%; margin-top: -21px;
+    width: 42px; height: 42px; color: #fff !important;
+    background: rgba(255, 255, 255, 0.22) !important;
+    pointer-events: none;
+}
+#phone-container[data-ui] .home-strip-go svg { width: 20px; height: 20px; }
+
+/* ---------- Таббар: плавающая стеклянная капсула ---------- */
+#phone-container[data-ui] #app-tabbar {
+    left: 12px !important; right: 12px !important;
+    bottom: 10px !important;
+    height: 66px !important; min-height: 0 !important;
+    padding: 0 6px !important;
+    border-radius: 33px !important;
+    background: var(--glass-tint-strong) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(var(--glass-sat));
+    backdrop-filter: blur(28px) saturate(var(--glass-sat));
+    border: 0 !important;
+    box-shadow: var(--lg-rims) !important;
+    isolation: isolate;
+}
+#phone-container[data-ui] #app-tabbar::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
+    background: linear-gradient(140deg, var(--glass-sheen) 0%, transparent 35%, transparent 70%, var(--glass-sheen-low) 100%);
+}
+@media (max-width: 720px), (display-mode: standalone) {
+    #phone-container[data-ui] #app-tabbar {
+        bottom: calc(8px + var(--sab)) !important;
+        left: calc(12px + var(--sal)) !important; right: calc(12px + var(--sar)) !important;
+        padding-bottom: 0 !important;
+    }
+    #phone-container[data-ui] #main-scroll-container { padding-bottom: calc(100px + var(--sab)) !important; }
+}
+#phone-container[data-ui] #app-tabbar > button {
+    position: relative; height: 54px; border-radius: 27px;
+    color: var(--mk-ink-2) !important;
+    transition: color .2s var(--mk-ease), background-color .25s var(--mk-ease), transform .35s var(--lg-spring);
+}
+#phone-container[data-ui] #app-tabbar > button:active { transform: scale(0.94); }
+/* активная вкладка — стеклянная линза, перетекает между вкладками */
+#phone-container[data-ui] #app-tabbar > button { z-index: 1; }
+#phone-container[data-ui] #app-tabbar > button.text-blue-600 { color: var(--mk-brand) !important; }
+#phone-container[data-ui] #app-tabbar .tab-lens {
+    position: absolute; top: 6px; left: 0; z-index: 0;
+    height: 54px; width: 64px; border-radius: 27px;
+    background: var(--glass-lens);
+    box-shadow: var(--lg-rims-sm);
+    pointer-events: none; opacity: 0;
+    transition: translate .42s cubic-bezier(1, 0, .4, 1), width .42s cubic-bezier(1, 0, .4, 1), opacity .2s;
+}
+#phone-container[data-ui] #app-tabbar .tab-lens.go { animation: lgLensStretch .44s ease; }
+@keyframes lgLensStretch { 0% { scale: 1 1; } 50% { scale: 1.22 .92; } 100% { scale: 1 1; } }
+#phone-container[data-ui] #app-tabbar > button svg { width: 24px; height: 24px; }
+#phone-container[data-ui] #app-tabbar > button span:not(#cart-badge) { font-size: 10.5px !important; margin-top: 2px; }
+#phone-container[data-ui] #cart-badge {
+    background: var(--mk-brand) !important;
+    box-shadow: 0 0 0 2px var(--mk-card) !important;
+    top: 4px !important;
+}
+
+/* Ассистент вне шапки (на подэкранах) — стеклянная круглая кнопка */
+#phone-container[data-ui] .assistant-side-tab:not(.lg) {
+    background: var(--glass-tint-strong) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    backdrop-filter: blur(18px) saturate(170%);
+    box-shadow: var(--lg-rims) !important;
+    bottom: 88px !important;
+}
+
+/* ---------- Профиль: настройки ---------- */
+#phone-container[data-ui] .prof-settings {
+    background: var(--mk-card); border-radius: 20px; padding: 4px 16px;
+    box-shadow: var(--mk-shadow);
+}
+#phone-container[data-ui] .prof-set-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    min-height: 54px; width: 100%; border: 0; background: none; padding: 0;
+    color: var(--mk-ink); text-align: left;
+}
+#phone-container[data-ui] .prof-set-row + .prof-set-row { border-top: 1px solid var(--mk-line); }
+#phone-container[data-ui] .prof-set-label { font-size: 15px; font-weight: 500; color: var(--mk-ink); }
+#phone-container[data-ui] .prof-set-link { cursor: pointer; }
+#phone-container[data-ui] .prof-set-link svg { color: var(--mk-chevron); }
+#phone-container[data-ui] .lg-seg {
+    display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px;
+    background: var(--mk-sunk);
+    box-shadow: inset 0 0 0 1px var(--mk-line);
+}
+#phone-container[data-ui] .lg-seg button {
+    height: 32px; padding: 0 11px; border: 0; border-radius: 999px; cursor: pointer;
+    background: transparent; color: var(--mk-ink-2);
+    font-size: 12.5px; font-weight: 500;
+    transition: background-color .25s var(--mk-ease), color .2s var(--mk-ease), transform .35s var(--lg-spring);
+}
+#phone-container[data-ui] .lg-seg button.on {
+    background: var(--mk-raised); color: var(--mk-ink); font-weight: 600;
+    box-shadow: inset 0 1px 0 var(--glass-rim), 0 1px 3px rgba(11, 26, 46, 0.12), 0 0 0 0.5px var(--glass-edge);
+}
+html[data-theme="dark"] #phone-container[data-ui] .lg-seg button.on { background: #24304C; }
+#phone-container[data-ui] .lg-seg button:active { transform: scale(0.95); }
+
+/* ---------- Стекло на элементах управления по всему приложению ---------- */
+/* нижние панели товара и шиты — стекло, тело — сплошное */
+#phone-container[data-ui] #product-modal .pm-bottom-bar {
+    background: var(--glass-tint-strong) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(var(--glass-sat));
+    backdrop-filter: blur(22px) saturate(var(--glass-sat));
+    box-shadow: inset 0 1px 0 var(--glass-rim), 0 -0.5px 0 var(--glass-edge) !important;
+}
+#phone-container[data-ui] .mk-back {
+    border-radius: 999px !important;
+    background: var(--glass-tint) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(170%);
+    backdrop-filter: blur(14px) saturate(170%);
+    box-shadow: var(--lg-rims) !important;
+}
+/* круглые кнопки поверх фото (назад, поделиться, избранное) */
+#phone-container[data-ui] .rounded-full.bg-white\/80,
+#phone-container[data-ui] .rounded-full.bg-white\/90,
+#phone-container[data-ui] .rounded-full.bg-black\/30,
+#phone-container[data-ui] .rounded-full.bg-black\/40,
+#phone-container[data-ui] .rounded-full.bg-black\/50 {
+    background: var(--glass-tint) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(170%);
+    backdrop-filter: blur(14px) saturate(170%);
+    color: var(--mk-ink) !important;
+    box-shadow: var(--lg-rims) !important;
+}
+/* выбранные чипсы и сегменты */
+#phone-container[data-ui] .pm-sheet-pill.on,
+#phone-container[data-ui] .comm-chip.on,
+#phone-container[data-ui] #portfolio-modal .co-room.on {
+    background: var(--mk-brand) !important; color: #fff !important; border-color: transparent !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25) !important;
+}
+
+/* ---------- Тёмная тема: сопоставление классов Tailwind ---------- */
+html[data-theme="dark"] #phone-container[data-ui] .bg-white:not(.rounded-full),
+html[data-theme="dark"] #phone-container[data-ui] .bg-surface,
+html[data-theme="dark"] #phone-container[data-ui] .bg-\[\#fff\],
+html[data-theme="dark"] #phone-container[data-ui] .bg-\[\#ffffff\],
+html[data-theme="dark"] #phone-container[data-ui] .bg-\[\#FFFFFF\] { background-color: var(--mk-card) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .bg-white\/80,
+html[data-theme="dark"] #phone-container[data-ui] .bg-white\/90,
+html[data-theme="dark"] #phone-container[data-ui] .bg-white\/95 { background-color: var(--glass-tint-strong) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .bg-slate-50,
+html[data-theme="dark"] #phone-container[data-ui] .bg-gray-50,
+html[data-theme="dark"] #phone-container[data-ui] .bg-slate-100,
+html[data-theme="dark"] #phone-container[data-ui] .bg-gray-100,
+html[data-theme="dark"] #phone-container[data-ui] .bg-surface-page,
+html[data-theme="dark"] #phone-container[data-ui] .bg-surface-input,
+html[data-theme="dark"] #phone-container[data-ui] .bg-\[\#F2F3F6\],
+html[data-theme="dark"] #phone-container[data-ui] .bg-\[\#f8fafc\],
+html[data-theme="dark"] #phone-container[data-ui] .bg-\[\#fafafa\],
+html[data-theme="dark"] #phone-container[data-ui] .bg-\[\#f5f5f5\] { background-color: var(--mk-sunk) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .bg-slate-200,
+html[data-theme="dark"] #phone-container[data-ui] .bg-gray-200 { background-color: var(--mk-raised) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .bg-slate-300,
+html[data-theme="dark"] #phone-container[data-ui] .bg-gray-300 { background-color: #2A3550 !important; }
+html[data-theme="dark"] #phone-container[data-ui] .hover\:bg-slate-50:hover,
+html[data-theme="dark"] #phone-container[data-ui] .hover\:bg-slate-100:hover,
+html[data-theme="dark"] #phone-container[data-ui] .hover\:bg-gray-50:hover { background-color: var(--mk-raised) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .text-slate-900,
+html[data-theme="dark"] #phone-container[data-ui] .text-slate-800,
+html[data-theme="dark"] #phone-container[data-ui] .text-gray-900,
+html[data-theme="dark"] #phone-container[data-ui] .text-gray-800,
+html[data-theme="dark"] #phone-container[data-ui] .text-black,
+html[data-theme="dark"] #phone-container[data-ui] .text-ink { color: var(--mk-ink) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .text-slate-700,
+html[data-theme="dark"] #phone-container[data-ui] .text-slate-600,
+html[data-theme="dark"] #phone-container[data-ui] .text-gray-700,
+html[data-theme="dark"] #phone-container[data-ui] .text-gray-600,
+html[data-theme="dark"] #phone-container[data-ui] .text-ink-secondary { color: var(--mk-ink-2) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .text-slate-500,
+html[data-theme="dark"] #phone-container[data-ui] .text-slate-400,
+html[data-theme="dark"] #phone-container[data-ui] .text-slate-300,
+html[data-theme="dark"] #phone-container[data-ui] .text-gray-500,
+html[data-theme="dark"] #phone-container[data-ui] .text-gray-400,
+html[data-theme="dark"] #phone-container[data-ui] .text-ink-muted,
+html[data-theme="dark"] #phone-container[data-ui] .text-ink-faint { color: var(--mk-ink-3) !important; }
+html[data-theme="dark"] #phone-container[data-ui] [class*="border-slate-"],
+html[data-theme="dark"] #phone-container[data-ui] [class*="border-gray-"],
+html[data-theme="dark"] #phone-container[data-ui] .border-surface-line,
+html[data-theme="dark"] #phone-container[data-ui] [class*="divide-slate-"] > * + *,
+html[data-theme="dark"] #phone-container[data-ui] [class*="divide-gray-"] > * + * { border-color: var(--mk-line) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .border-white { border-color: var(--mk-card) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .from-white { --tw-gradient-from: var(--mk-page) !important; --tw-gradient-to: transparent !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .bg-red-50,
+html[data-theme="dark"] #phone-container[data-ui] .bg-rose-50,
+html[data-theme="dark"] #phone-container[data-ui] .bg-pink-50 { background-color: var(--mk-sale-soft) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .bg-green-50,
+html[data-theme="dark"] #phone-container[data-ui] .bg-emerald-50 { background-color: var(--mk-ok-soft) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .bg-amber-50,
+html[data-theme="dark"] #phone-container[data-ui] .bg-yellow-50,
+html[data-theme="dark"] #phone-container[data-ui] .bg-orange-50 { background-color: rgba(245, 158, 11, 0.14) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .bg-blue-50,
+html[data-theme="dark"] #phone-container[data-ui] .bg-indigo-50,
+html[data-theme="dark"] #phone-container[data-ui] .bg-sky-50 { background-color: var(--mk-brand-soft) !important; }
+html[data-theme="dark"] #phone-container[data-ui] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-theme="dark"] #phone-container[data-ui] select,
+html[data-theme="dark"] #phone-container[data-ui] textarea { background-color: var(--mk-sunk); color: var(--mk-ink); }
+html[data-theme="dark"] #phone-container[data-ui] .lg-search #search-input { background-color: transparent !important; }
+html[data-theme="dark"] #phone-container[data-ui] #view-cart .cart-field:focus { background: var(--mk-raised) !important; }
+html[data-theme="dark"] #phone-container[data-ui] #rec-modal .rec-room-ring { background: var(--mk-card); }
+html[data-theme="dark"] #phone-container[data-ui] #shop-catalog-partner { background: var(--mk-raised) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .pc-photos { background: rgba(0, 0, 0, .55) !important; }
+html[data-theme="dark"] #phone-container[data-ui] ::selection { background: rgba(58, 112, 255, .4); color: #fff; }
+html[data-theme="dark"] #phone-container[data-ui] .shadow-sm,
+html[data-theme="dark"] #phone-container[data-ui] .shadow-md,
+html[data-theme="dark"] #phone-container[data-ui] .shadow-lg,
+html[data-theme="dark"] #phone-container[data-ui] .shadow-xl { box-shadow: var(--mk-shadow) !important; }
+/* картинки-логотипы на белом в тёмной теме — оставляем светлую подложку */
+html[data-theme="dark"] #phone-container[data-ui] img.object-contain { background-color: #fff; }
+
+html[data-theme="dark"] #phone-container[data-ui] > header#app-header,
+html[data-theme="dark"] #phone-container[data-ui] #main-scroll-container.bg-white { background-color: var(--mk-page) !important; }
+
+html[data-theme="dark"] #phone-container[data-ui] .pm-hero,
+html[data-theme="dark"] #phone-container[data-ui] .pm-spec-tile,
+html[data-theme="dark"] #phone-container[data-ui] .pm-qty { background: var(--mk-card) !important; color: var(--mk-ink) !important; box-shadow: 0 0 0 1px var(--mk-line) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .pm-spec-ico,
+html[data-theme="dark"] #phone-container[data-ui] .pm-chip { background: var(--mk-raised) !important; color: var(--mk-ink) !important; }
+html[data-theme="dark"] #phone-container[data-ui] #pm-manager-btn { background: var(--mk-brand-soft) !important; color: #9DB9FF !important; }
+html[data-theme="dark"] #phone-container[data-ui] button.rounded-full.bg-white { background-color: var(--mk-card) !important; color: var(--mk-ink-2) !important; }
+html[data-theme="dark"] #phone-container[data-ui] #stories-container .bg-white { background-color: var(--mk-page) !important; }
+
+#phone-container[data-ui] .pm-hero-nav,
+#phone-container[data-ui] .pm-head button.rounded-full {
+    background: var(--glass-tint) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(170%);
+    backdrop-filter: blur(14px) saturate(170%);
+    color: var(--mk-ink) !important;
+    box-shadow: var(--lg-rims) !important;
+}
+html[data-theme="dark"] #phone-container[data-ui] .pm-seller { background: var(--mk-card) !important; box-shadow: 0 0 0 1px var(--mk-line) !important; }
+html[data-theme="dark"] #phone-container[data-ui] .pm-seller .text-slate-900 { color: var(--mk-ink) !important; }
+
+#phone-container[data-ui] .text-slate-400,
+#phone-container[data-ui] .text-gray-400 { color: var(--mk-ink-3) !important; }
