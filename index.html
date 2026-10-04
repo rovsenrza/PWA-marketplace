@@ -3040,7 +3040,13 @@
 </div>
 
 <script src="/src/app/legacy/assistant.js"></script>
-<script src="/src/app/legacy/app-features.js"></script>
+<!-- доп. разделы по доменам; boot.js (обёртки toggleFavorite/addToCart, window.onload) последним -->
+<script src="/src/app/legacy/features/feedback.js"></script>
+<script src="/src/app/legacy/features/assistant-ui.js"></script>
+<script src="/src/app/legacy/features/home-sections.js"></script>
+<script src="/src/app/legacy/features/calculators.js"></script>
+<script src="/src/app/legacy/features/realestate-catalog.js"></script>
+<script src="/src/app/legacy/features/boot.js"></script>
 <!-- /МОДАЛКА -->
 <script src="/src/app/legacy/pwa-install.js"></script>
 <script type="module" src="/src/app/main.ts"></script>

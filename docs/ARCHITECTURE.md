@@ -28,7 +28,10 @@ without rewriting screens. We get there in stages; **every screen works at every
 1. `<head>`: `theme-bootstrap.js` sets the theme before the first paint (no light flash in dark mode).
 2. Start of `<body>`: `image-fallback.js` catches broken images before they render.
 3. Classic scripts stay where the inline blocks used to be: `promo-slider`, `home-banner`, then
-   `seed.js` → `app-core.js` → `assistant.js` → `app-features.js` → `pwa-install.js`.
+   `seed.js` → `core/*.js` (25 domains + `boot.js`) → `assistant.js` → `features/*.js` (5 domains + `boot.js`) → `pwa-install.js`.
+   Domain files hold only declarations; everything that runs at load time sits in that group's `boot.js`,
+   which comes last. So the order of the domain files doesn't matter, and the build joins each group into
+   one file (`app-core`, `app-features`) without changing behaviour.
 4. `src/app/main.ts` (module, deferred) loads styles and starts the features once all the legacy code has run.
 
 Legacy scripts stay **classic** on purpose: their top-level functions are called from the markup's inline
@@ -74,10 +77,14 @@ a new cache name, and the old cache is deleted on activation.
 (~16 MB) removed; one seed for app and admin; storage key registry; typed motion, gesture and notification
 modules; service worker built from the real output; Playwright tests.
 
-**Stage 2 — split `app-core.js` (540 KB) by domain.** Move by sections into `src/app/features/<domain>/`
-(catalog, product, shops, cart, favorites, stories, profile, directory, onboarding) and turn them into
-modules. Inline `onclick` handlers become `data-action` attributes and one event delegator, and only then
-do the functions stop being global. One domain per PR, each with its tests.
+**Stage 2a — done.** `app-core.js` (540 KB) and `app-features.js` (100 KB) are split by domain into
+`src/app/legacy/core/` and `src/app/legacy/features/`, with acorn checking that every statement is kept.
+Three unreachable duplicate functions removed. Tests cover every directory section, the calculators,
+the deeper screens and the in-app CRM.
+
+**Stage 2b — handlers and modules.** Inline `onclick` handlers become `data-action` attributes and one event
+delegator; then the domain files one by one become TypeScript modules in `src/app/features/<domain>/`, and
+their functions stop being global. One domain per PR, each with its tests.
 
 **Stage 3 — data layer as a repository.** A `CatalogRepository` / `OrdersRepository` interface with a
 localStorage implementation over today's keys; screens work only through it. Prices as numbers instead of

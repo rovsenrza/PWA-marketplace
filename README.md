@@ -24,7 +24,7 @@ src/app/                   buyer app
   main.ts                  module entry: styles in cascade order + feature init
   features/                typed modules (motion, swipe to delete, notifications, tab lens)
   styles/                  CSS layers: base → market → glass → motion → tailwind
-  legacy/                  classic scripts of the prototype (being ported to modules gradually)
+  legacy/core/, features/  prototype code by domain (classic scripts, ported to modules gradually)
 src/admin/                 admin panel (main.ts, styles, legacy/admin.js)
 src/shared/                shared by both pages
   domain/types.ts          domain model types

@@ -95,7 +95,7 @@ function serviceWorker(): Plugin {
 export default defineConfig({
   /* относительные пути: сборку можно положить в любую папку любого статического хостинга */
   base: './',
-  plugins: [legacyScripts({ 'src/app/legacy/core/': 'app-core' }), serviceWorker()],
+  plugins: [legacyScripts({ 'src/app/legacy/core/': 'app-core', 'src/app/legacy/features/': 'app-features' }), serviceWorker()],
   build: {
     target: 'es2020',
     outDir: 'dist',
