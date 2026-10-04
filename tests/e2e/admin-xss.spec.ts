@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 /* The admin panel moderates content from stores and agencies: their data must not turn into markup
    in the administrator's session. All pages of all three roles, plus the editor drawers. */

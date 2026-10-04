@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 const hideOnboarding = (page: import('@playwright/test').Page) =>
   page.evaluate(() => { const o = document.getElementById('screen-onboarding'); if (o) o.style.display = 'none'; });

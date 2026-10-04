@@ -19,6 +19,27 @@ export const MAX_SIDE: Record<MediaPurpose, number> = {
   'story-slide': 1920, 'lifehack-cover': 1600, 'lifehack-gallery': 1600,
 };
 
+/** Size budget after compression: the browser holds ~5 MB for everything, so each photo has a limit. */
+export const MAX_BYTES: Record<MediaPurpose, number> = {
+  'shop-banner': 350 * 1024, 'shop-gallery': 300 * 1024, 'shop-about': 250 * 1024, 'shop-logo': 120 * 1024,
+  'story-slide': 400 * 1024, 'lifehack-cover': 350 * 1024, 'lifehack-gallery': 300 * 1024,
+};
+
+/**
+ * The compression plan: first lower the quality, then the size. Every step is smaller than the last;
+ * the first one that fits the budget is used. A pure function: the plan is tested without a browser.
+ */
+export function compressionSteps(w: number, h: number, maxSide: number): Array<{ w: number; h: number; quality: number }> {
+  const steps: Array<{ w: number; h: number; quality: number }> = [];
+  let side = maxSide;
+  for (let round = 0; round < 4; round++) {
+    const size = fitWithin(w, h, side);
+    for (const quality of [0.82, 0.72, 0.62, 0.52]) steps.push({ ...size, quality });
+    side = Math.round(side * 0.75);
+  }
+  return steps;
+}
+
 /** Video without a server: only small clips (browser storage holds ~5 MB in total). */
 export const MAX_VIDEO_BYTES = 2.5 * 1024 * 1024;
 /** GIF and SVG are not compressed (animation, vectors): a size limit instead. */

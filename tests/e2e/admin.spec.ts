@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test('admin sees the same catalogue as the app (shared seed)', async ({ page }) => {
   const errors: string[] = [];
