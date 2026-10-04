@@ -77,7 +77,7 @@ function fillShopCatalogExtras(s) {
                 '<img src="' + photo + '" alt="" class="shop-person-photo" onclick="openAvatarModal(\'' + photo + '\')">' +
                 '<div class="shop-person-body">' +
                 '<button type="button" class="shop-person-cta" onclick="shopContactDept(\'' + p.role + '\', \'' + p.phone + '\')">' + p.cta + '</button>' +
-                '<p class="shop-person-name">' + p.name + '</p>' +
+                '<p class="shop-person-name">' + escHtml(p.name) + '</p>' +
                 '<a class="shop-person-link" href="' + shopTelHref(p.phone) + '"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>' + p.phone + '</a>' +
                 '<a class="shop-person-link" href="mailto:' + p.email + '"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>' + p.email + '</a>' +
                 '</div>' +
@@ -366,17 +366,17 @@ function renderShopCatalogProducts(storeName) {
         prodHtml += `
             <div onclick="openProductModal('${prod.id}')" class="bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform flex flex-col">
                 <div class="relative w-full h-40 bg-slate-100">
-                    <img src="${prod.image}" class="w-full h-full object-cover">
-                    <button onclick="event.stopPropagation(); toggleFavorite('${prod.id}'); renderShopCatalogProducts('${storeName}')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm ${isFav ? 'text-[#f43f5e]' : 'text-slate-300'}">
+                    <img src="${escHtml(prod.image)}" class="w-full h-full object-cover">
+                    <button onclick="event.stopPropagation(); toggleFavorite('${prod.id}'); renderShopCatalogProducts('${escJsArg(storeName)}')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm ${isFav ? 'text-[#f43f5e]' : 'text-slate-300'}">
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     </button>
                 </div>
                 <div class="p-3 flex items-end justify-between gap-2">
                     <div class="min-w-0">
-                        <h5 class="oz-title line-clamp-1">${prod.title}</h5>
-                        <p class="oz-price mt-1">${prod.price}</p>
+                        <h5 class="oz-title line-clamp-1">${escHtml(prod.title)}</h5>
+                        <p class="oz-price mt-1">${escHtml(prod.price)}</p>
                     </div>
-                    <button onclick="event.stopPropagation(); addToCart('${prod.id}'); renderShopCatalogProducts('${storeName}')" class="w-9 h-9 rounded-full ${inCart ? 'bg-[#e11d48]' : 'bg-[#1c3a34]'} text-white flex items-center justify-center shrink-0 shadow-sm active:scale-90 transition-transform">
+                    <button onclick="event.stopPropagation(); addToCart('${prod.id}'); renderShopCatalogProducts('${escJsArg(storeName)}')" class="w-9 h-9 rounded-full ${inCart ? 'bg-[#e11d48]' : 'bg-[#1c3a34]'} text-white flex items-center justify-center shrink-0 shadow-sm active:scale-90 transition-transform">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     </button>
                 </div>

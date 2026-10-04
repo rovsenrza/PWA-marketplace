@@ -154,13 +154,13 @@ function renderLandscapingList() {
         const s = row.s;
         const meta = LS_ATELIER[row.name] || { focus: 'Сад', rate: 15000 };
         const est = lsMoney(meta.rate * plot);
-        return '<div onclick="openLandscapeStudio(\'' + row.name + '\')" class="ls-list-card">' +
-            '<img src="' + (s.banner || '') + '" alt="">' +
+        return '<div onclick="openLandscapeStudio(\'' + escJsArg(row.name) + '\')" class="ls-list-card">' +
+            '<img src="' + (escHtml(s.banner || '')) + '" alt="">' +
             '<div class="veil"></div>' +
             '<span class="tag">от ' + est + '</span>' +
             '<div class="copy">' +
-                '<div><h4>' + row.name + '</h4><p>' + (meta.focus || s.description || '') + '</p></div>' +
-                '<button type="button" class="go" onclick="event.stopPropagation();openLandscapeStudio(\'' + row.name + '\')">Паспорт участка</button>' +
+                '<div><h4>' + escHtml(row.name) + '</h4><p>' + (meta.focus || s.description || '') + '</p></div>' +
+                '<button type="button" class="go" onclick="event.stopPropagation();openLandscapeStudio(\'' + escJsArg(row.name) + '\')">Паспорт участка</button>' +
             '</div></div>';
     }).join('');
 }
@@ -263,10 +263,10 @@ function fillLandscapeStudio() {
     const works = offers.map(function (o) {
         const idx = (s.offers || []).indexOf(o);
         const match = season === 'all' || lsOfferSeason(o.title) === season || lsOfferSeason(o.title) === 'all';
-        return '<div class="ls-work' + (match ? '' : ' off') + '" onclick="requestLandscapeOffer(\'' + name + '\', ' + idx + ')">' +
+        return '<div class="ls-work' + (match ? '' : ' off') + '" onclick="requestLandscapeOffer(\'' + escJsArg(name) + '\', ' + idx + ')">' +
             '<i>' + String(idx + 1).padStart(2, '0') + '</i>' +
-            '<div><h4>' + o.title + '</h4><em>' + (match ? 'в этом сезоне' : 'можно заложить в график') + '</em></div>' +
-            '<b>' + o.price + '</b></div>';
+            '<div><h4>' + escHtml(o.title) + '</h4><em>' + (match ? 'в этом сезоне' : 'можно заложить в график') + '</em></div>' +
+            '<b>' + escHtml(o.price) + '</b></div>';
     }).join('');
     const mosaic = lsPhotoSet(s).slice(0, 3);
     while (mosaic.length < 3) mosaic.push(hero);
@@ -275,7 +275,7 @@ function fillLandscapeStudio() {
     }).join('');
     root.innerHTML =
         '<div class="ls-pass-top">' +
-            '<div><p class="ls-kicker">Паспорт участка</p><h2>' + s.name + '</h2></div>' +
+            '<div><p class="ls-kicker">Паспорт участка</p><h2>' + escHtml(s.name) + '</h2></div>' +
             '<button type="button" class="ls-close" onclick="closeLandscapeStudio()"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg></button>' +
         '</div>' +
         '<div class="ls-pass-hero">' +
@@ -290,8 +290,8 @@ function fillLandscapeStudio() {
             '<div class="ls-zones">' + zones + '</div>' +
             '<p class="ls-note">' + (LS_SEASON_NOTE[season] || LS_SEASON_NOTE.all) + '</p>' +
             '<p class="ls-sec">В график студии</p>' + works +
-            '<button type="button" class="ls-arch" onclick="lsCallArchitect()"><img src="' + staff.photo + '" alt=""><div><p>Ландшафтный архитектор</p><strong>' + staff.name + '</strong><span>' + staff.phone + '</span></div></button>' +
-            '<button type="button" class="ls-addr" onclick="lsOpenMap()">' + (s.address || '') + (site ? ' · ' + site : '') + '</button>' +
+            '<button type="button" class="ls-arch" onclick="lsCallArchitect()"><img src="' + staff.photo + '" alt=""><div><p>Ландшафтный архитектор</p><strong>' + escHtml(staff.name) + '</strong><span>' + staff.phone + '</span></div></button>' +
+            '<button type="button" class="ls-addr" onclick="lsOpenMap()">' + (escHtml(s.address || '')) + (site ? ' · ' + site : '') + '</button>' +
         '</div>' +
         '<div class="ls-bar">' +
             '<button type="button" class="ls-bar-main" onclick="lsRequestVisit()">Выезд на участок</button>' +

@@ -15,17 +15,17 @@
         if (shopData.kind === 'landscape') continue;
         const badge = shopData.isRealEstate ? (shopData.category || 'Недвижимость') : 'Магазин';
         const btnText = shopData.isRealEstate ? 'Перейти к каталогу' : 'Витрина';
-        const clickAction = shopData.isRealEstate ? `openRealEstateCatalog('${store}')` : `openShopCatalogModal('${store}')`;
+        const clickAction = shopData.isRealEstate ? `openRealEstateCatalog('${escJsArg(store)}')` : `openShopCatalogModal('${escJsArg(store)}')`;
         const imgClass = shopData.bannerFit === 'contain' ? 'object-contain bg-[#132337]' : 'object-cover';
         const cardHtml = `
             <div onclick="${clickAction}" class="relative w-full h-44 rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.99] transition-transform mb-3">
-                <img src="${shopData.banner}" class="absolute inset-0 w-full h-full ${imgClass}">
+                <img src="${escHtml(shopData.banner)}" class="absolute inset-0 w-full h-full ${imgClass}">
                 <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent"></div>
                 <div class="absolute top-3 right-3 bg-black/50 backdrop-blur-md text-white text-[10px] font-medium px-3 py-1.5 rounded-full">${badge}</div>
                 <div class="absolute inset-0 p-4 flex flex-col justify-between max-w-[68%]">
                     <div>
-                        <h4 class="text-white font-semibold text-xl leading-tight drop-shadow">${store}</h4>
-                        <p class="text-white/90 text-xs mt-1.5 leading-snug line-clamp-2">${shopData.description}</p>
+                        <h4 class="text-white font-semibold text-xl leading-tight drop-shadow">${escHtml(store)}</h4>
+                        <p class="text-white/90 text-xs mt-1.5 leading-snug line-clamp-2">${escHtml(shopData.description)}</p>
                     </div>
                     <span class="text-[12px] font-medium text-sky-200/90">${btnText}</span>
                 </div>
@@ -57,24 +57,24 @@
         const icon = compData.icon || compName.slice(0, 2).toUpperCase();
         
         companiesHtml += `
-            <div onclick="openCompanyCatalogModal('${compName}')" class="rounded-2xl border border-slate-100 bg-white overflow-hidden shadow-sm cursor-pointer hover:border-slate-300 transition-all flex mb-3">
+            <div onclick="openCompanyCatalogModal('${escJsArg(compName)}')" class="rounded-2xl border border-slate-100 bg-white overflow-hidden shadow-sm cursor-pointer hover:border-slate-300 transition-all flex mb-3">
                 <div class="flex-1 p-3.5 flex flex-col justify-between min-w-0">
                     <div>
-                        <h4 class="font-extrabold text-slate-900 text-base leading-tight mk-name">${compName}<svg class="mk-verified" viewBox="0 0 24 24" aria-label="Проверенная компания"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></h4>
-                        <p class="text-[11px] text-slate-500 leading-snug mt-1 line-clamp-2">${compData.description}</p>
+                        <h4 class="font-extrabold text-slate-900 text-base leading-tight mk-name">${escHtml(compName)}<svg class="mk-verified" viewBox="0 0 24 24" aria-label="Проверенная компания"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></h4>
+                        <p class="text-[11px] text-slate-500 leading-snug mt-1 line-clamp-2">${escHtml(compData.description)}</p>
                         <div class="flex items-center gap-1.5 mt-2 text-[10px] text-slate-500">
                             <span class="mk-rating"><svg class="mk-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg></span>
-                            <span class="font-bold text-slate-700">${rating}</span>
+                            <span class="font-bold text-slate-700">${escHtml(rating)}</span>
                             <span class="text-slate-300">·</span>
-                            <span>${years}</span>
+                            <span>${escHtml(years)}</span>
                         </div>
                     </div>
                     <span class="text-[11px] text-[#1e6091] font-bold mt-2">Подробнее</span>
                 </div>
                 <div class="relative w-32 shrink-0 bg-slate-100">
-                    <img src="${compData.banner}" class="w-full h-full object-cover">
-                    <div class="absolute top-2 right-2 w-10 h-10 rounded-full ${iconColor} flex items-center justify-center text-white text-[11px] font-bold shadow-md">${icon}</div>
-                    <div class="absolute bottom-2 right-2 left-2 bg-black/70 text-white text-[9px] font-bold px-2 py-1 rounded-lg text-center leading-tight">${category}</div>
+                    <img src="${escHtml(compData.banner)}" class="w-full h-full object-cover">
+                    <div class="absolute top-2 right-2 w-10 h-10 rounded-full ${iconColor} flex items-center justify-center text-white text-[11px] font-bold shadow-md">${escHtml(icon)}</div>
+                    <div class="absolute bottom-2 right-2 left-2 bg-black/70 text-white text-[9px] font-bold px-2 py-1 rounded-lg text-center leading-tight">${escHtml(category)}</div>
                 </div>
             </div>`;
     }
@@ -110,9 +110,9 @@
                         </div>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-slate-900 text-sm leading-tight">${des.name}</h4>
-                        <p class="text-[11px] text-[#5b9bd5] font-medium mt-0.5">${des.title}</p>
-                        <p class="text-[11px] text-slate-400 mt-1 leading-snug line-clamp-2">${des.description}</p>
+                        <h4 class="font-bold text-slate-900 text-sm leading-tight">${escHtml(des.name)}</h4>
+                        <p class="text-[11px] text-[#5b9bd5] font-medium mt-0.5">${escHtml(des.title)}</p>
+                        <p class="text-[11px] text-slate-400 mt-1 leading-snug line-clamp-2">${escHtml(des.description)}</p>
                         <div class="flex flex-wrap gap-1.5 mt-2">${tagsHtml}</div>
                     </div>
                     <div class="flex flex-col items-center shrink-0 pt-1">
@@ -136,10 +136,10 @@
                 <div onclick="openVacancyModal('${vac.id}')" class="sc-firm">
                     <div class="sc-firm-body">
                         <div>
-                            <h4 class="sc-firm-title">${vac.title}</h4>
-                            <p class="sc-firm-salary">${vac.salary || 'Зарплата по договорённости'}</p>
-                            <p class="sc-firm-co">${vac.company}</p>
-                            <p class="sc-firm-desc">${vac.desc}</p>
+                            <h4 class="sc-firm-title">${escHtml(vac.title)}</h4>
+                            <p class="sc-firm-salary">${escHtml(vac.salary || 'Зарплата по договорённости')}</p>
+                            <p class="sc-firm-co">${escHtml(vac.company)}</p>
+                            <p class="sc-firm-desc">${escHtml(vac.desc)}</p>
                         </div>
                         <span class="sc-firm-go">Подробнее</span>
                     </div>
@@ -209,11 +209,11 @@ function renderTools() {
     let html = '';
     toolsData.forEach(item => {
         html += `
-            <div onclick="openLightbox('${item.image}')" class="goods-sub-row">
+            <div onclick="openLightbox('${escJsArg(item.image)}')" class="goods-sub-row">
                 <div class="goods-sub-thumb">
-                    <img src="${item.image}" class="w-full h-full object-cover">
+                    <img src="${escHtml(item.image)}" class="w-full h-full object-cover">
                 </div>
-                <span class="text-slate-800 text-sm font-medium leading-snug">${item.name}</span>
+                <span class="text-slate-800 text-sm font-medium leading-snug">${escHtml(item.name)}</span>
             </div>`;
     });
     document.getElementById('tools-grid').innerHTML = html;
@@ -233,11 +233,11 @@ function renderLandscape() {
     let html = '';
     landscapeData.forEach(item => {
         html += `
-            <div onclick="openLightbox('${item.image}')" class="goods-sub-row">
+            <div onclick="openLightbox('${escJsArg(item.image)}')" class="goods-sub-row">
                 <div class="goods-sub-thumb">
-                    <img src="${item.image}" class="w-full h-full object-cover">
+                    <img src="${escHtml(item.image)}" class="w-full h-full object-cover">
                 </div>
-                <span class="text-slate-800 text-sm font-medium leading-snug">${item.name}</span>
+                <span class="text-slate-800 text-sm font-medium leading-snug">${escHtml(item.name)}</span>
             </div>`;
     });
     document.getElementById('landscape-grid').innerHTML = html;
@@ -279,11 +279,11 @@ function renderAccessories() {
     let html = '';
     accessoriesData.forEach(item => {
         html += `
-            <div onclick="openLightbox('${item.image}')" class="goods-sub-row">
+            <div onclick="openLightbox('${escJsArg(item.image)}')" class="goods-sub-row">
                 <div class="goods-sub-thumb">
-                    <img src="${item.image}" class="w-full h-full object-cover">
+                    <img src="${escHtml(item.image)}" class="w-full h-full object-cover">
                 </div>
-                <span class="text-slate-800 text-sm font-medium leading-snug">${item.name}</span>
+                <span class="text-slate-800 text-sm font-medium leading-snug">${escHtml(item.name)}</span>
             </div>`;
     });
     document.getElementById('accessories-grid').innerHTML = html;
@@ -322,11 +322,11 @@ function renderPlumbing() {
     let html = '';
     plumbingData.forEach(item => {
         html += `
-            <div onclick="openLightbox('${item.image}')" class="goods-sub-row">
+            <div onclick="openLightbox('${escJsArg(item.image)}')" class="goods-sub-row">
                 <div class="goods-sub-thumb">
-                    <img src="${item.image}" class="w-full h-full object-cover">
+                    <img src="${escHtml(item.image)}" class="w-full h-full object-cover">
                 </div>
-                <span class="text-slate-800 text-sm font-medium leading-snug">${item.name}</span>
+                <span class="text-slate-800 text-sm font-medium leading-snug">${escHtml(item.name)}</span>
             </div>`;
     });
     document.getElementById('plumbing-grid').innerHTML = html;
@@ -369,11 +369,11 @@ function renderFurniture() {
     let html = '';
     furnitureData.forEach(item => {
         html += `
-            <div onclick="openLightbox('${item.image}')" class="goods-sub-row">
+            <div onclick="openLightbox('${escJsArg(item.image)}')" class="goods-sub-row">
                 <div class="goods-sub-thumb">
-                    <img src="${item.image}" class="w-full h-full object-cover">
+                    <img src="${escHtml(item.image)}" class="w-full h-full object-cover">
                 </div>
-                <span class="text-slate-800 text-sm font-medium leading-snug">${item.name}</span>
+                <span class="text-slate-800 text-sm font-medium leading-snug">${escHtml(item.name)}</span>
             </div>`;
     });
     document.getElementById('furniture-grid').innerHTML = html;
@@ -417,11 +417,11 @@ function renderFinishingMaterials() {
     let html = '';
     finishingMaterialsData.forEach(item => {
         html += `
-            <div onclick="openLightbox('${item.image}')" class="goods-sub-row">
+            <div onclick="openLightbox('${escJsArg(item.image)}')" class="goods-sub-row">
                 <div class="goods-sub-thumb">
-                    <img src="${item.image}" class="w-full h-full object-cover">
+                    <img src="${escHtml(item.image)}" class="w-full h-full object-cover">
                 </div>
-                <span class="text-slate-800 text-sm font-medium leading-snug">${item.name}</span>
+                <span class="text-slate-800 text-sm font-medium leading-snug">${escHtml(item.name)}</span>
             </div>`;
     });
     document.getElementById('finishing-materials-grid').innerHTML = html;
@@ -465,11 +465,11 @@ function renderBuildingMaterials() {
     let html = '';
     buildingMaterialsData.forEach(item => {
         html += `
-            <div onclick="openLightbox('${item.image}')" class="goods-sub-row">
+            <div onclick="openLightbox('${escJsArg(item.image)}')" class="goods-sub-row">
                 <div class="goods-sub-thumb">
-                    <img src="${item.image}" class="w-full h-full object-cover">
+                    <img src="${escHtml(item.image)}" class="w-full h-full object-cover">
                 </div>
-                <span class="text-slate-800 text-sm font-medium leading-snug">${item.name}</span>
+                <span class="text-slate-800 text-sm font-medium leading-snug">${escHtml(item.name)}</span>
             </div>`;
     });
     document.getElementById('building-materials-grid').innerHTML = html;

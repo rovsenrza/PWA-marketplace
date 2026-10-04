@@ -110,7 +110,8 @@ repository implementation; the store and the screens stay as they are.
    `openNotifications`) and is declared in `globals.d.ts`.
 4. Storage only through `StorageKeys` + `local-store.ts`. Entity types only from `shared/domain/types.ts`.
 5. Rendering through `html`…``, buttons through `data-action`. No `innerHTML = '…' + data`,
-   no new inline `onclick`.
+   no new inline `onclick`. When editing legacy code: data into HTML only through `escHtml(…)`, into
+   a JS string inside an attribute through `escJsArg(…)`. The XSS sweep checks this.
 6. Colours only through tokens (`--mk-*` in the app, plain names in `admin.css`). Never a raw colour that
    could appear in both themes.
 7. Business rules are pure functions in `src/shared/<domain>/` with unit tests (`tests/unit`, Vitest);
@@ -139,10 +140,11 @@ localStorage implementation over today's keys; screens work only through it. Pri
 **Stage 4 — backend.** A second repository implementation over HTTP (the API stack is not chosen yet);
 authentication for stores and agencies; image uploads instead of URLs; product import from 1C/Excel on the server.
 
-**Known issue — escaping.** Fixed for the cart, «Мои заказы», store orders and favourites; `getPriceHtml` escapes the price for every caller (`tests/e2e/xss.spec.ts`).
-The remaining legacy renderers (product cards and page, store showcases, lifehacks, CRM) still insert data
-into HTML without escaping. Stores edit their cards, so it must be closed before they get access: domain by
-domain, through `html`…``, with a test in `xss.spec.ts`.
+**Escaping — closed and guarded.** Every renderer of the buyer app escapes data: modules through
+`html`…``, legacy code through the `escHtml` / `escJsArg` globals (the latter for values inside
+`onclick="fn('…')"`). The admin panel escapes too. Two sweeps in `tests/e2e/xss-sweep.spec.ts` and
+`admin-xss.spec.ts` put a payload into every string field of every entity and visit every screen, every
+admin page and editor; a renderer that inserts data unescaped fails the test.
 
 **Separately:** compress `public/pc-arts` (7.4 MB of PNG) and `public/icons` (2.4 MB) to WebP/AVIF at the
 right sizes; replace the 30 dead Unsplash photo links with real product photos.

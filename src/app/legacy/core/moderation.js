@@ -39,14 +39,14 @@ let showcaseModerationDb = [];
 function buildShowcaseModCard(item) {
     const p = item.proposed;
     const img = p.banner
-        ? `<img src="${p.banner}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">`
+        ? `<img src="${escHtml(p.banner)}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">`
         : `<div class="w-11 h-11 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 text-[10px] shrink-0">Фото</div>`;
     return `
         <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm space-y-2">
             <div onclick="previewShowcaseModeration('${item.id}')" class="flex items-center gap-2 cursor-pointer active:opacity-70">
                 ${img}
                 <div class="flex-1 min-w-0">
-                    <h5 class="font-bold text-xs text-slate-800 truncate">${p.name}</h5>
+                    <h5 class="font-bold text-xs text-slate-800 truncate">${escHtml(p.name)}</h5>
                     <p class="text-[10px] text-slate-400 truncate">Витрина · ${item.shopName}</p>
                 </div>
                 <span class="text-[10px] text-[#1e6091] font-bold whitespace-nowrap">Открыть</span>
@@ -95,7 +95,7 @@ function previewShowcaseModeration(id) {
     // Товары магазина
     let prodHtml = '';
     Object.values(productsDb).filter(pr => pr.store === item.shopName && pr.status === 'published').forEach(prod => {
-        prodHtml += `<div class="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm"><div class="w-full h-28 bg-slate-50 relative"><img src="${prod.image}" class="w-full h-full object-cover"></div><div class="p-2"><h5 class="font-bold text-[11px] text-slate-800 line-clamp-1">${prod.title}</h5><span class="font-bold text-xs text-slate-900">${prod.price}</span></div></div>`;
+        prodHtml += `<div class="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm"><div class="w-full h-28 bg-slate-50 relative"><img src="${escHtml(prod.image)}" class="w-full h-full object-cover"></div><div class="p-2"><h5 class="font-bold text-[11px] text-slate-800 line-clamp-1">${escHtml(prod.title)}</h5><span class="font-bold text-xs text-slate-900">${escHtml(prod.price)}</span></div></div>`;
     });
     document.getElementById('shop-catalog-grid').innerHTML = prodHtml;
 

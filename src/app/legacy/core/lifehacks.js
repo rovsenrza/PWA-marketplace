@@ -316,7 +316,7 @@ function lifehackCardHtml(item, variant) {
             <img src="${lhEsc(item.image || '')}" alt="">
             <div class="scrim"></div>
             <div class="meta">
-                <span class="lh-fmt ${meta.cls}">${meta.label}</span>
+                <span class="lh-fmt ${meta.cls}">${escHtml(meta.label)}</span>
                 <p class="text-[13px] font-extrabold leading-snug mt-1.5 line-clamp-3">${lhEsc(item.title)}</p>
                 <p class="text-[11px] font-bold mt-1.5 text-white/90">${action} →</p>
             </div>
@@ -337,7 +337,7 @@ function lifehackCardHtml(item, variant) {
         return `<button type="button" onclick="openLifehackArticle('${item.id}')" class="shrink-0 w-[148px] bg-[#eef3f8] rounded-2xl overflow-hidden text-left">
             <img src="${lhEsc(item.image || '')}" class="w-full h-[86px] object-cover bg-slate-100" alt="">
             <div class="p-2.5">
-                <span class="lh-fmt ${meta.cls}">${meta.label}</span>
+                <span class="lh-fmt ${meta.cls}">${escHtml(meta.label)}</span>
                 <p class="text-[12px] font-extrabold text-slate-900 leading-snug mt-1.5 line-clamp-3">${lhEsc(item.title)}</p>
             </div>
         </button>`;
@@ -346,7 +346,7 @@ function lifehackCardHtml(item, variant) {
         <img src="${lhEsc(item.image || '')}" alt="" class="lh-row-img">
         <div class="min-w-0 flex-1 py-0.5">
             <div class="flex items-center gap-1.5">
-                <span class="lh-fmt ${meta.cls}">${meta.label}</span>
+                <span class="lh-fmt ${meta.cls}">${escHtml(meta.label)}</span>
                 <span class="text-[10px] font-bold text-slate-400">${lhEsc(item.category || '')}</span>
             </div>
             <h4 class="font-extrabold text-[13px] text-slate-900 leading-snug mt-1 line-clamp-2">${lhEsc(item.title)}</h4>
@@ -390,7 +390,7 @@ function renderLifehacksFormatChips() {
     ];
     box.innerHTML = chips.map(function (c) {
         const active = lifehackActiveFormat === c.id;
-        return `<button type="button" data-fmt="${c.id}" onclick="filterLifehacksFormat('${c.id}')" class="lh-fmt-tile${active ? ' on' : ''}"><span>${c.label}</span></button>`;
+        return `<button type="button" data-fmt="${c.id}" onclick="filterLifehacksFormat('${c.id}')" class="lh-fmt-tile${active ? ' on' : ''}"><span>${escHtml(c.label)}</span></button>`;
     }).join('');
 }
 
@@ -540,7 +540,7 @@ function renderLhArticleJumps(item) {
     if (!chips.length) { box.innerHTML = ''; box.classList.add('hidden'); return; }
     box.classList.remove('hidden');
     box.innerHTML = chips.map(function (c) {
-        return '<button type="button" class="lh-jump" onclick="scrollLhSection(\'' + c.id + '\')">' + c.label + ' ↓</button>';
+        return '<button type="button" class="lh-jump" onclick="scrollLhSection(\'' + c.id + '\')">' + escHtml(c.label) + ' ↓</button>';
     }).join('');
 }
 

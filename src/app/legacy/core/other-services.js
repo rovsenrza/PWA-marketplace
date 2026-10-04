@@ -35,12 +35,12 @@ function renderOtherProfiles() {
                 <div class="flex items-center space-x-3 min-w-0">
                     <div class="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center bg-[#1e6091] text-white font-bold text-xs flex-shrink-0">${spec.avatarPhoto ? `<img src="${spec.avatarPhoto}" class="w-full h-full object-cover">` : spec.avatar}</div>
                     <div class="min-w-0">
-                        <h4 class="font-bold text-slate-800 text-sm truncate">${spec.name}</h4>
-                        <p class="text-[10px] text-[#1e6091] font-semibold">${spec.title}</p>
+                        <h4 class="font-bold text-slate-800 text-sm truncate">${escHtml(spec.name)}</h4>
+                        <p class="text-[10px] text-[#1e6091] font-semibold">${escHtml(spec.title)}</p>
                     </div>
                 </div>
             </div>
-            <p class="text-xs text-slate-500 line-clamp-2">${spec.description}</p>
+            <p class="text-xs text-slate-500 line-clamp-2">${escHtml(spec.description)}</p>
             <span class="text-[10px] text-[#1e6091] font-bold block text-right">Открыть анкету</span>
         </div>`;
     }).join('');

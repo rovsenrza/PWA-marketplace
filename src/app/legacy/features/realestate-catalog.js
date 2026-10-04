@@ -29,10 +29,10 @@ function openRealEstateCatalog(storeName) {
         agentsHtml += `
             <div class="w-[140px] shrink-0 bg-white rounded-[20px] shadow-sm border border-slate-100 flex flex-col overflow-hidden cursor-pointer active:scale-[0.98] transition-transform">
                 <div class="w-full h-[120px] bg-slate-200">
-                    <img src="${agent.image}" class="w-full h-full object-cover object-top">
+                    <img src="${escHtml(agent.image)}" class="w-full h-full object-cover object-top">
                 </div>
                 <div class="p-3 flex flex-col flex-1 bg-white">
-                    <h5 class="text-[12px] font-bold text-slate-900 leading-tight">${agent.name}</h5>
+                    <h5 class="text-[12px] font-bold text-slate-900 leading-tight">${escHtml(agent.name)}</h5>
                     <p class="text-[10px] text-slate-500 mt-1 leading-snug flex-1">${agent.role}</p>
                     <div class="mt-3 flex gap-1.5 w-full">
                         <button onclick="event.stopPropagation(); window.open('tel:${agent.phone}')" class="flex-1 h-7 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-[#16332c] hover:text-white transition-colors border border-slate-100 shadow-sm"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1.3 1.3 0 01-.321.988l-1.305 1.305a12.01 12.01 0 005.168 5.168l1.305-1.305a1.3 1.3 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></button>
@@ -161,18 +161,18 @@ function applyReFilters() {
             objsHtml += `
                 <div onclick="openProductModal('${obj.id}')" class="w-[150px] shrink-0 bg-white rounded-[20px] shadow-sm overflow-hidden border border-slate-100 flex flex-col cursor-pointer active:scale-95 transition-transform">
                     <div class="relative w-full h-[110px] bg-slate-200">
-                        <img src="${obj.image}" class="w-full h-full object-cover">
+                        <img src="${escHtml(obj.image)}" class="w-full h-full object-cover">
                         <button onclick="event.stopPropagation(); toggleFavorite('${obj.id}'); applyReFilters();" class="absolute top-2 right-2 w-7 h-7 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm transition-colors ${isFav ? 'text-[#f43f5e]' : 'text-slate-300'} hover:text-[#f43f5e]">
                             <svg class="w-4 h-4 ${isFav ? 'fill-current' : ''}" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         </button>
                         <div class="absolute bottom-2 left-2 bg-black/50 backdrop-blur-md text-white text-[9px] font-bold px-2 py-1 rounded-md capitalize">${obj.reType || 'Объект'}</div>
                     </div>
                     <div class="p-3">
-                        <p class="text-[10px] text-slate-500 font-medium truncate mb-1">${specs}</p>
-                        <p class="text-[13px] font-extrabold text-slate-900 leading-none mb-2">${obj.price}</p>
+                        <p class="text-[10px] text-slate-500 font-medium truncate mb-1">${escHtml(specs)}</p>
+                        <p class="text-[13px] font-extrabold text-slate-900 leading-none mb-2">${escHtml(obj.price)}</p>
                         <div class="flex items-center gap-1 text-[9px] text-slate-400 truncate">
                             <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <span>${obj.reLocation || 'Не указано'}</span>
+                            <span>${escHtml(obj.reLocation || 'Не указано')}</span>
                         </div>
                     </div>
                 </div>`;
@@ -418,16 +418,16 @@ function renderCommListings() {
         const cmpOn = (window.commCompare || []).indexOf(obj.id) !== -1;
         return '<div onclick="openProductModal(\'' + obj.id + '\')" class="flex gap-3 bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm cursor-pointer active:scale-[0.99] transition-transform">' +
             '<div class="relative w-[118px] h-[118px] shrink-0 bg-slate-200">' +
-            '<img src="' + (obj.image || '') + '" class="w-full h-full object-cover" alt="">' +
+            '<img src="' + (escHtml(obj.image || '')) + '" class="w-full h-full object-cover" alt="">' +
             '<span class="absolute top-2 left-2 bg-[#1e6091] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">' + deal + '</span>' +
             '<button type="button" onclick="event.stopPropagation(); toggleFavorite(\'' + obj.id + '\'); renderCommListings();" class="absolute top-2 right-2 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center shadow-sm ' + (isFav ? 'text-[#f43f5e]' : 'text-slate-300') + '">' +
             '<svg class="w-4 h-4 ' + (isFav ? 'fill-current' : '') + '" fill="' + (isFav ? 'currentColor' : 'none') + '" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>' +
             '</div>' +
             '<div class="flex-1 py-2.5 pr-3 min-w-0 flex flex-col">' +
-            '<p class="text-[16px] font-extrabold text-slate-900 leading-none">' + (obj.price || '') + priceNote + '</p>' +
-            '<p class="text-[13px] text-slate-800 mt-1.5 leading-snug line-clamp-2">' + (obj.title || '') + '</p>' +
-            '<p class="text-[11px] text-slate-400 mt-1">' + [area, commTypeLabel(obj.reType), info.biz ? 'Бизнес' : 'Помещение'].filter(Boolean).join(' · ') + '</p>' +
-            '<p class="text-[11px] text-slate-400 truncate mt-1">' + commPostedLabel(obj.id) + ' · ' + loc + '</p>' +
+            '<p class="text-[16px] font-extrabold text-slate-900 leading-none">' + (escHtml(obj.price || '')) + priceNote + '</p>' +
+            '<p class="text-[13px] text-slate-800 mt-1.5 leading-snug line-clamp-2">' + (escHtml(obj.title || '')) + '</p>' +
+            '<p class="text-[11px] text-slate-400 mt-1">' + escHtml([area, commTypeLabel(obj.reType), info.biz ? 'Бизнес' : 'Помещение'].filter(Boolean).join(' · ')) + '</p>' +
+            '<p class="text-[11px] text-slate-400 truncate mt-1">' + commPostedLabel(obj.id) + ' · ' + escHtml(loc) + '</p>' +
             '<button type="button" onclick="event.stopPropagation(); toggleCommCompare(\'' + obj.id + '\')" class="mt-auto self-start text-[11px] font-bold ' + (cmpOn ? 'text-[#1e6091]' : 'text-slate-400') + '">' + (cmpOn ? 'В сравнении' : 'Сравнить') + '</button>' +
             '</div></div>';
     }).join('');

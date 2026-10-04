@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { esc, html, raw } from '../../src/shared/ui/html';
+import { esc, escJsArg, html, raw } from '../../src/shared/ui/html';
 
 describe('html`…`: escaping by default', () => {
   it('data cannot inject a tag or break out of an attribute', () => {
@@ -13,4 +13,14 @@ describe('html`…`: escaping by default', () => {
     expect(html`<ul>${items}${null}${raw('<hr>')}</ul>`.toString()).toBe('<ul><li>a&lt;b</li><li>c</li><hr></ul>');
   });
   it('esc also covers quotes and the backtick', () => expect(esc(`'"\``)).toBe('&#39;&quot;&#96;'));
+});
+
+describe('escJsArg: a JS string inside an attribute', () => {
+  it('a quote does not break out of the string, and the attribute stays whole', () => {
+    const v = escJsArg(`O'Neil "Дом" \\ </script>`);
+    expect(v).toBe('O\\&#39;Neil &quot;Дом&quot; \\\\ &lt;\\/script&gt;');
+    /* what the JS engine sees after the browser decodes the entities */
+    const decoded = v.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    expect(eval(`'${decoded}'`)).toBe(`O'Neil "Дом" \\ </script>`);
+  });
 });

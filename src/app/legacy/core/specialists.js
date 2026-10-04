@@ -60,13 +60,13 @@ function renderSpecialistsList() {
                 <div class="flex items-center space-x-3 min-w-0">
                     <div class="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center bg-[#1e6091] text-white font-bold text-xs flex-shrink-0">${spec.avatarPhoto ? `<img src="${spec.avatarPhoto}" class="w-full h-full object-cover">` : spec.avatar}</div>
                     <div class="min-w-0">
-                        <h4 class="font-medium text-slate-800 text-sm serif-font truncate">${spec.name}</h4>
-                        <p class="text-[10px] text-slate-400">${spec.title}</p>
+                        <h4 class="font-medium text-slate-800 text-sm serif-font truncate">${escHtml(spec.name)}</h4>
+                        <p class="text-[10px] text-slate-400">${escHtml(spec.title)}</p>
                     </div>
                 </div>
                 <span class="shrink-0 text-[10px] font-bold px-2 py-1 rounded-full bg-[#e8f1fc] text-[#1e6091]">${craft}</span>
             </div>
-            <p class="text-xs text-slate-500 line-clamp-2">${spec.description}</p>
+            <p class="text-xs text-slate-500 line-clamp-2">${escHtml(spec.description)}</p>
             <span class="text-[10px] text-[#1e6091] font-bold block text-right">Посмотреть портфолио</span>
         </div>`;
     }).join('');
@@ -88,17 +88,17 @@ function renderSpecCompaniesList() {
     }
     el.innerHTML = firms.map(function (item, i) {
         const c = item.c;
-        return '<div onclick="openCompanyCatalogModal(\'' + item.name + '\')" class="sc-firm">' +
+        return '<div onclick="openCompanyCatalogModal(\'' + escJsArg(item.name) + '\')" class="sc-firm">' +
             '<div class="sc-firm-body">' +
                 '<div>' +
-                    '<h4 class="sc-firm-title">' + item.name + '</h4>' +
+                    '<h4 class="sc-firm-title">' + escHtml(item.name) + '</h4>' +
                     '<p class="sc-firm-co">Ремонт под ключ</p>' +
-                    '<p class="sc-firm-desc">' + (c.description || '') + '</p>' +
+                    '<p class="sc-firm-desc">' + (escHtml(c.description || '')) + '</p>' +
                 '</div>' +
                 '<span class="sc-firm-go">Открыть профиль</span>' +
             '</div>' +
             '<div class="sc-firm-photo">' +
-                '<img src="' + (c.banner || '') + '" alt="">' +
+                '<img src="' + (escHtml(c.banner || '')) + '" alt="">' +
             '</div>' +
         '</div>';
     }).join('');

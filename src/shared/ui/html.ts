@@ -12,6 +12,17 @@ export function esc(value: unknown): string {
   return String(value ?? '').replace(/[&<>"'`]/g, (c) => ESCAPES[c]);
 }
 
+/**
+ * A value for a JS string inside an HTML attribute: onclick="fn('${escJsArg(v)}')".
+ * First escaping for a single-quoted JS string, then HTML escaping
+ * (the browser decodes the entities before running the code). For legacy markup only;
+ * new code uses data-action.
+ */
+export function escJsArg(value: unknown): string {
+  const js = String(value ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r?\n/g, '\\n').replace(/<\//g, '<\\/');
+  return esc(js);
+}
+
 /** Already-safe markup. Created only by html`…` and raw(). */
 export class SafeHtml {
   constructor(readonly value: string) {}

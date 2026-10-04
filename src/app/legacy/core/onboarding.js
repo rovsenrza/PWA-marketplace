@@ -58,11 +58,11 @@ function renderOnboarding() {
         slidesHtml += `
             <div id="onb-slide-${i + 1}" class="slide-item w-full ${hidden} flex flex-col items-center animate-scaleUp">
                 <div class="w-full max-w-[300px] h-[380px] bg-slate-100 rounded-3xl overflow-hidden shadow-md mb-4 relative border border-slate-100">
-                    <img src="${s.image}" class="w-full h-full object-cover">
+                    <img src="${escHtml(s.image)}" class="w-full h-full object-cover">
                     ${badgeHtml}
                 </div>
-                <h2 class="text-xl font-bold text-slate-900 mb-1.5">${s.title || ''}</h2>
-                <p class="text-xs text-slate-500 max-w-[280px] leading-relaxed">${s.desc || ''}</p>
+                <h2 class="text-xl font-bold text-slate-900 mb-1.5">${escHtml(s.title || '')}</h2>
+                <p class="text-xs text-slate-500 max-w-[280px] leading-relaxed">${escHtml(s.desc || '')}</p>
             </div>`;
 
         const dotActive = i === 0 ? 'bg-[#1e6091] w-6' : 'bg-slate-200 w-2.5';

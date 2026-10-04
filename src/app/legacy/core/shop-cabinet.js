@@ -135,10 +135,10 @@ function renderShopMyProducts() {
             : '<span class="text-[9px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full">Опубликован</span>';
         html += `
             <div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-2">
-                <img src="${p.image}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
+                <img src="${escHtml(p.image)}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
                 <div class="flex-1 min-w-0">
-                    <h5 class="font-bold text-xs text-slate-800 truncate">${p.title}</h5>
-                    <p class="text-[10px] text-slate-400 truncate">${p.price}</p>
+                    <h5 class="font-bold text-xs text-slate-800 truncate">${escHtml(p.title)}</h5>
+                    <p class="text-[10px] text-slate-400 truncate">${escHtml(p.price)}</p>
                     ${badge}
                 </div>
                 <div class="flex flex-col gap-1 shrink-0">
@@ -224,7 +224,7 @@ function renderShopMyStories() {
             <div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-2">
                 <img src="${s.slides[0]}" class="w-11 h-11 rounded-full object-cover shrink-0 bg-slate-100">
                 <div class="flex-1 min-w-0">
-                    <h5 class="font-bold text-xs text-slate-800 truncate">${s.name}</h5>
+                    <h5 class="font-bold text-xs text-slate-800 truncate">${escHtml(s.name)}</h5>
                     <p class="text-[10px] text-slate-400">${s.slides.length} фото</p>
                     ${badge}
                 </div>

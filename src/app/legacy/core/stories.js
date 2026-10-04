@@ -82,7 +82,7 @@ function enableStoriesDragScroll() {
                         <img src="${s.slides ? s.slides[0] : s.image}" class="w-14 h-14 rounded-full object-cover">
                     </div>
                 </div>
-                <span class="text-[10px] font-bold text-slate-600 truncate w-full text-center">${s.name}</span>
+                <span class="text-[10px] font-bold text-slate-600 truncate w-full text-center">${escHtml(s.name)}</span>
             </div>`;
     });
 

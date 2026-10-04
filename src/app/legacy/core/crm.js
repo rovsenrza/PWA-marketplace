@@ -99,10 +99,10 @@ function renderCrmPromoList() {
     promoData.forEach((p, i) => {
         html += `
             <div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-2">
-                <img src="${p.image}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
+                <img src="${escHtml(p.image)}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
                 <div class="flex-1 min-w-0">
                     <p class="text-[9px] text-slate-400">Слайд ${i + 1}</p>
-                    <h5 class="font-bold text-xs text-slate-800 truncate">${p.title}</h5>
+                    <h5 class="font-bold text-xs text-slate-800 truncate">${escHtml(p.title)}</h5>
                 </div>
                 <button onclick="openPromoEditor(${i})" class="bg-[#1e6091] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shrink-0">Редактировать</button>
             </div>`;
@@ -162,7 +162,7 @@ function renderCrmStoryList() {
             <div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-2">
                 <img src="${cover}" class="w-11 h-11 rounded-full object-cover shrink-0 bg-slate-100">
                 <div class="flex-1 min-w-0">
-                    <h5 class="font-bold text-xs text-slate-800 truncate">${s.name}</h5>
+                    <h5 class="font-bold text-xs text-slate-800 truncate">${escHtml(s.name)}</h5>
                     <p class="text-[10px] text-slate-400">${count} фото</p>
                 </div>
                 <div class="flex flex-col gap-1 shrink-0">
@@ -214,7 +214,7 @@ function buildStoryShopDropdown() {
     if (!list) return;
     let html = '';
     for (const name in shopsProfileDb) {
-        html += `<div onclick="pickStoryShop('${name.replace(/'/g, "\\'")}')" class="px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer">${name}</div>`;
+        html += `<div onclick="pickStoryShop('${escJsArg(name)}')" class="px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer">${escHtml(name)}</div>`;
     }
     list.innerHTML = html || '<div class="px-3 py-2.5 text-sm text-slate-400">Магазинов нет</div>';
 }
@@ -359,10 +359,10 @@ function renderCrmOnbList() {
             : '';
         html += `
             <div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-2">
-                <img src="${s.image}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
+                <img src="${escHtml(s.image)}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
                 <div class="flex-1 min-w-0">
                     <p class="text-[9px] text-slate-400">Слайд ${i + 1}</p>
-                    <h5 class="font-bold text-xs text-slate-800 truncate">${s.title}</h5>
+                    <h5 class="font-bold text-xs text-slate-800 truncate">${escHtml(s.title)}</h5>
                     ${badgeHtml}
                 </div>
                 <div class="flex flex-col gap-1 shrink-0">
@@ -451,14 +451,14 @@ function renderCrmShopList() {
         const s = shopsProfileDb[name];
         html += `
             <div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-2">
-                <img src="${s.banner}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
+                <img src="${escHtml(s.banner)}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
                 <div class="flex-1 min-w-0">
-                    <h5 class="font-bold text-xs text-slate-800 truncate">${s.name}</h5>
-                    <p class="text-[10px] text-slate-400 truncate">${s.address || ''}</p>
+                    <h5 class="font-bold text-xs text-slate-800 truncate">${escHtml(s.name)}</h5>
+                    <p class="text-[10px] text-slate-400 truncate">${escHtml(s.address || '')}</p>
                 </div>
                 <div class="flex flex-col gap-1 shrink-0">
-                    <button onclick="openShopEditor('${name}')" class="bg-[#1e6091] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">Редактировать</button>
-                    <button onclick="deleteShop('${name}')" class="bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">Удалить</button>
+                    <button onclick="openShopEditor('${escJsArg(name)}')" class="bg-[#1e6091] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">Редактировать</button>
+                    <button onclick="deleteShop('${escJsArg(name)}')" class="bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">Удалить</button>
                 </div>
             </div>`;
     }
@@ -704,8 +704,8 @@ function renderCrmSpecList() {
             <div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-2">
                 ${img}
                 <div class="flex-1 min-w-0">
-                    <h5 class="font-bold text-xs text-slate-800 truncate">${s.name}</h5>
-                    <p class="text-[10px] text-slate-400 truncate">${s.title || ''}</p>
+                    <h5 class="font-bold text-xs text-slate-800 truncate">${escHtml(s.name)}</h5>
+                    <p class="text-[10px] text-slate-400 truncate">${escHtml(s.title || '')}</p>
                 </div>
                 <div class="flex flex-col gap-1 shrink-0">
                     <button onclick="openSpecEditor('${s.id}')" class="bg-[#1e6091] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">Редактировать</button>
@@ -817,10 +817,10 @@ function renderCrmProductList() {
             : '<span class="text-[9px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full">Опубликован</span>';
         html += `
             <div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm flex items-center gap-2">
-                <img src="${p.image}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
+                <img src="${escHtml(p.image)}" class="w-11 h-11 rounded-lg object-cover shrink-0 bg-slate-100">
                 <div class="flex-1 min-w-0">
-                    <h5 class="font-bold text-xs text-slate-800 truncate">${p.title}</h5>
-                    <p class="text-[10px] text-slate-400 truncate">${p.price} · ${p.store}</p>
+                    <h5 class="font-bold text-xs text-slate-800 truncate">${escHtml(p.title)}</h5>
+                    <p class="text-[10px] text-slate-400 truncate">${escHtml(p.price)} · ${escHtml(p.store)}</p>
                     ${badge}
                 </div>
                 <div class="flex flex-col gap-1 shrink-0">

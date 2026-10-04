@@ -90,7 +90,7 @@ function renderSpectech() {
         quickEl.innerHTML = ST_QUICK.map(q => {
             const on = s.quick === q.id ? ' on' : '';
             const mark = q.id === 'all' ? 'Все' : q.label.slice(0, 2);
-            return `<button type="button" class="st-quick${on}" onclick="setStQuick('${q.id}')"><span class="st-quick-ico text-[12px] font-extrabold tracking-wide">${mark}</span><span class="text-[10px] font-bold text-slate-600">${q.label}</span></button>`;
+            return `<button type="button" class="st-quick${on}" onclick="setStQuick('${q.id}')"><span class="st-quick-ico text-[12px] font-extrabold tracking-wide">${mark}</span><span class="text-[10px] font-bold text-slate-600">${escHtml(q.label)}</span></button>`;
         }).join('');
     }
     if (chipsEl) {
@@ -122,14 +122,14 @@ function renderSpectech() {
                 <button type="button" onclick="toggleStFav('${item.id}', event)" class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-black/35 backdrop-blur text-white text-sm flex items-center justify-center" style="color:${fav ? '#E5195E' : '#fff'}">${fav ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>'}</button>
                 <span class="absolute top-2.5 left-2.5 text-[9px] font-extrabold uppercase tracking-wider bg-[#1e6091] text-white px-2 py-1 rounded-full">${item.cat}</span>
                 <div class="absolute bottom-2.5 left-3 right-3 flex items-end justify-between">
-                    <h4 class="text-white font-extrabold text-[15px] leading-tight drop-shadow pr-2">${item.name}</h4>
+                    <h4 class="text-white font-extrabold text-[15px] leading-tight drop-shadow pr-2">${escHtml(item.name)}</h4>
                     <span class="shrink-0 text-[12px] font-extrabold text-sky-200">${price}</span>
                 </div>
             </div>
             <div class="px-3.5 py-3 flex items-center justify-between gap-2">
                 <div class="min-w-0">
-                    <p class="text-[11px] font-semibold text-slate-700 truncate">${item.company}</p>
-                    <p class="text-[10px] text-slate-400">${item.crew ? 'С экипажем' : 'Без экипажа'} · <span class="mk-rating"><svg class="mk-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>${item.rating}</span></p>
+                    <p class="text-[11px] font-semibold text-slate-700 truncate">${escHtml(item.company)}</p>
+                    <p class="text-[10px] text-slate-400">${item.crew ? 'С экипажем' : 'Без экипажа'} · <span class="mk-rating"><svg class="mk-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>${escHtml(item.rating)}</span></p>
                 </div>
                 <span class="st-avail${wait ? ' wait' : ''} shrink-0"><i></i>${stAvailText(item.available)}</span>
             </div>
@@ -190,7 +190,7 @@ function fillSpectechModal(item) {
     av.innerHTML = '<i></i>' + stAvailText(item.available);
     document.getElementById('st-modal-company').textContent = item.company;
     document.getElementById('st-modal-loc').textContent = item.loc || 'Волгодонск';
-    document.getElementById('st-modal-rating').innerHTML = '<svg class="mk-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg><span>' + item.rating + '</span>';
+    document.getElementById('st-modal-rating').innerHTML = '<svg class="mk-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg><span>' + escHtml(item.rating) + '</span>';
     document.getElementById('st-modal-desc').textContent = item.desc + (item.extra ? ' ' + item.extra : '');
     document.getElementById('st-modal-specs').innerHTML = (item.specs || []).map(sp => `<div class="st-spec"><p class="text-[10px] text-slate-400">${sp[0]}</p><p class="font-bold text-slate-800 mt-0.5">${sp[1]}</p></div>`).join('');
     document.getElementById('st-modal-includes').innerHTML = (item.includes || []).map(t => `<span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[#e8f1fc] text-[#1e6091]">${t}</span>`).join('');

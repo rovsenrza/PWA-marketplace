@@ -282,7 +282,7 @@ function pcInit() {
     if (list && !list.dataset.ready) {
         list.innerHTML = PC_MIXES.map(m => `
             <button type="button" id="pc-mix-${m.id}" onclick="pcSetMix('${m.id}')" class="w-full text-left p-3 rounded-xl border-2 ${m.id === 'gips' ? 'border-[#1e6091] bg-[#1e6091]/5' : 'border-slate-100'}">
-                <p class="font-bold text-[12px]">${m.name}</p>
+                <p class="font-bold text-[12px]">${escHtml(m.name)}</p>
             </button>`).join('');
         list.dataset.ready = '1';
     }
@@ -412,9 +412,9 @@ function pcRenderResults() {
         { step: 4, title: 'Результат', val: pcRub(r.total), sub: 'с резервом бюджета', art: 'total', hl: true }
     ];
     cards.innerHTML = items.map(c => `
-        <button type="button" onclick="pcFocusStep(${c.step}, '${c.title}')" class="text-center rounded-2xl border p-3 ${c.hl ? 'border-[#1e6091] bg-[#e8f1f8]' : 'border-slate-200 bg-white'}">
+        <button type="button" onclick="pcFocusStep(${c.step}, '${escJsArg(c.title)}')" class="text-center rounded-2xl border p-3 ${c.hl ? 'border-[#1e6091] bg-[#e8f1f8]' : 'border-slate-200 bg-white'}">
             ${pcArt(c.art)}
-            <p class="text-[10px] font-bold text-slate-800">${c.title}</p>
+            <p class="text-[10px] font-bold text-slate-800">${escHtml(c.title)}</p>
             <p class="text-[16px] font-bold">${c.val}</p>
             <p class="text-[10px] text-slate-400 mt-0.5">${c.sub}</p>
         </button>`).join('');
@@ -449,8 +449,8 @@ function pcRenderResults() {
         { name: 'Резерв бюджета', vol: pcN('pc-budget-res') + '%', cost: pcRub(r.reserve), com: 'резерв на уточнения и добор', s: 4 }
     ];
     if (body) body.innerHTML = rows.map(row => `
-        <tr onclick="pcFocusStep(${row.s}, '${row.name}')" class="border-t border-slate-100 cursor-pointer hover:bg-blue-50">
-            <td class="p-2">${row.name}</td>
+        <tr onclick="pcFocusStep(${row.s}, '${escJsArg(row.name)}')" class="border-t border-slate-100 cursor-pointer hover:bg-blue-50">
+            <td class="p-2">${escHtml(row.name)}</td>
             <td class="p-2 font-bold">${row.vol}</td>
             <td class="p-2">${row.cost}</td>
             <td class="p-2 text-slate-500">${row.com}</td>
@@ -674,7 +674,7 @@ function rcRender() {
     if (!wrap) return;
     wrap.innerHTML = rcData.groups.map((g, gi) => `
         <div>
-            <h6 class="text-[14px] font-bold text-[#1e6091] pb-1 mb-2 border-b border-[#1e6091]/40">${g.name}</h6>
+            <h6 class="text-[14px] font-bold text-[#1e6091] pb-1 mb-2 border-b border-[#1e6091]/40">${escHtml(g.name)}</h6>
             <div class="space-y-2">${g.items.map((it, ii) => rcCardHtml(it, 'work', gi, ii)).join('')}</div>
         </div>`).join('');
     const ex = document.getElementById('rc-extras');

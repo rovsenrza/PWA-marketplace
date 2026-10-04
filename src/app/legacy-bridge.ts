@@ -3,6 +3,7 @@
  * once it's empty, the bridge is no longer needed.
  */
 import { exposeToLegacy } from '../shared/legacy/expose';
+import { esc, escJsArg } from '../shared/ui/html';
 import { parsePrice, formatPrice, formatRub } from '../shared/format/price';
 import { STORE_ORDER_SLA_MS, confirmedAmount, expireOverdue, recalcStatus, statusLabel } from '../shared/orders/store-order';
 import { getBadgeHtml, getPriceHtml } from './ui/product-badges';
@@ -18,6 +19,9 @@ import { buyerStore } from './features/buyer/buyer-store';
 import { buyerLegacyApi } from './features/buyer/profile';
 
 exposeToLegacy({ parsePrice, formatPrice, formatRub, getBadgeHtml, getPriceHtml });
+
+/* экранирование для legacy-рендеров: данные в HTML и в JS-строке внутри onclick */
+exposeToLegacy({ escHtml: esc, escJsArg });
 
 /* заказы по магазинам: имена — как их вызывает legacy (core/cart.js, shop-cabinet.js) */
 exposeToLegacy({

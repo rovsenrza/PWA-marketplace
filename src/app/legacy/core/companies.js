@@ -73,7 +73,7 @@ function fillCompanyTeam(c) {
             '<img src="' + photo + '" alt="">' +
             '<div class="px-3 py-2.5">' +
             '<p class="text-[10px] font-extrabold uppercase tracking-[0.12em] text-sky-200/80">' + p.role + '</p>' +
-            '<p class="text-[13px] font-bold text-white mt-0.5 leading-tight">' + p.name + '</p>' +
+            '<p class="text-[13px] font-bold text-white mt-0.5 leading-tight">' + escHtml(p.name) + '</p>' +
             '</div></div>';
     }).join('');
 }
@@ -91,9 +91,9 @@ function fillCompanyPrice(c) {
     svc.innerHTML = list.map(function (name) {
         const key = String(name || '').toLowerCase();
         const price = COMPANY_PRICE[key] || 'по смете';
-        return '<button type="button" class="co-price-row" onclick="shopRequestService(\'' + name + '\')">' +
+        return '<button type="button" class="co-price-row" onclick="shopRequestService(\'' + escJsArg(name) + '\')">' +
             '<span class="co-price-ico">' + companyServiceIcon(name) + '</span>' +
-            '<span class="flex-1 min-w-0"><span class="block text-[13px] font-bold text-white leading-tight">' + name + '</span><span class="block text-[11px] text-white/50 mt-0.5">Работа под ключ</span></span>' +
+            '<span class="flex-1 min-w-0"><span class="block text-[13px] font-bold text-white leading-tight">' + escHtml(name) + '</span><span class="block text-[11px] text-white/50 mt-0.5">Работа под ключ</span></span>' +
             '<span class="text-[12px] font-extrabold text-sky-200 shrink-0">' + price + '</span>' +
             '</button>';
     }).join('');
@@ -251,8 +251,8 @@ if (item.avatarPhoto) {
     let pricesHtml = '';
     list.forEach(p => {
         pricesHtml += isDes
-            ? `<div class="des-price-row"><span class="des-price-name">${p.service}</span><span class="des-price-cost">${p.cost}</span></div>`
-            : `<div class="flex justify-between"><span class="text-slate-600">${p.service}</span><span class="font-bold text-slate-800">${p.cost}</span></div>`;
+            ? `<div class="des-price-row"><span class="des-price-name">${escHtml(p.service)}</span><span class="des-price-cost">${p.cost}</span></div>`
+            : `<div class="flex justify-between"><span class="text-slate-600">${escHtml(p.service)}</span><span class="font-bold text-slate-800">${p.cost}</span></div>`;
     });
     document.getElementById('portfolio-prices').innerHTML = pricesHtml;
 
