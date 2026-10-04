@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { OrderLine, StoreOrder } from '../../src/shared/domain/types';
-import { STORE_ORDER_SLA_MS, confirmedAmount, expireOverdue, recalcStatus, statusLabel } from '../../src/shared/orders/store-order';
+import {
+  STORE_ORDER_SLA_MS, buyerFacingAmount, confirmedAmount, expireOverdue, ordersForBuyer, ordersForStore, recalcStatus, statusLabel,
+} from '../../src/shared/orders/store-order';
 
 const line = (lineStatus: OrderLine['lineStatus'], quotedPrice = 1000, qty = 1, proposedPrice: number | null = null): OrderLine =>
   ({ productId: `p${Math.random()}`, qty, quotedPrice, proposedPrice, lineStatus });
@@ -45,5 +47,27 @@ describe('statusLabel', () => {
   it('known status gives text, unknown is returned as is', () => {
     expect(statusLabel('expired')).toBe('Магазин не ответил');
     expect(statusLabel('weird')).toBe('weird');
+  });
+});
+
+describe('ordersForBuyer / ordersForStore', () => {
+  const o = (id: string, checkoutId: string, storeId: string, createdAt: number, phone?: string): StoreOrder =>
+    ({ id, checkoutId, storeId, status: 'pending_review', lines: [], createdAt, contact: phone ? { name: 'x', phone } : undefined });
+  const m = {
+    checkouts: [{ id: 'c1', userId: 'anna@x.ru' }, { id: 'c2', userId: '+7 900' }, { id: 'c3', userId: 'other' }],
+    storeOrders: [o('a', 'c1', 'S1', 1), o('b', 'c2', 'S2', 3), o('c', 'c3', 'S1', 2, '+7 900'), o('d', 'c3', 'S1', 4)],
+  };
+  it('by account, by phone through the checkout and through the contact; newest first', () => {
+    expect(ordersForBuyer(m, { userId: 'anna@x.ru', phone: '+7 900' }).map((x) => x.id)).toEqual(['b', 'c', 'a']);
+  });
+  it('without an account and a phone, nothing (an empty phone does not match empty contacts)', () => {
+    expect(ordersForBuyer(m, { userId: undefined, phone: '' })).toEqual([]);
+  });
+  it('store orders', () => expect(ordersForStore(m.storeOrders, 'S1').map((x) => x.id)).toEqual(['d', 'c', 'a']));
+  it('amount for the buyer: confirmed, otherwise at checkout prices', () => {
+    const lines: OrderLine[] = [line('pending', 100, 2), line('pending', 50, 1)];
+    expect(buyerFacingAmount({ lines })).toBe(250);
+    lines[0].lineStatus = 'confirmed';
+    expect(buyerFacingAmount({ lines })).toBe(200);
   });
 });

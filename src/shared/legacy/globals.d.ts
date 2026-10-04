@@ -9,7 +9,7 @@ declare global {
   /* глобальные let из legacy (общая лексическая область классических скриптов; живые привязки) */
   const storiesData: Story[] | undefined;
   /** core/data.js: общее состояние покупателя (cart — аксессор на CartStore) */
-  const state: { cart?: unknown; userEmail?: string; userRole?: string; favorites?: string[]; [k: string]: unknown };
+  const state: { cart?: unknown; userEmail?: string; userRole?: string; currentShop?: string; favorites?: string[]; [k: string]: unknown };
   /** core/data.js: каталог (SEED + localStorage) */
   const productsDb: Record<string, Product>;
 
@@ -21,6 +21,14 @@ declare global {
     refreshCartSurfaces?: () => void;
     updateCartBadge?: () => void;
     renderProductGrid?: () => void;
+    renderRecommendations?: () => void;
+    renderCategoryProducts?: () => void;
+    renderShopCatalogProducts?: (shop: string) => void;
+    renderCatalogProducts?: (query: string) => void;
+    pmRefreshCart?: () => void;
+    renderPmRecent?: () => void;
+    updateShopStats?: () => void;
+    currentCatalogShop?: string;
     renderFavorites?: () => void;
     updateBuyerFavCount?: () => void;
     currentProductId?: string | null;

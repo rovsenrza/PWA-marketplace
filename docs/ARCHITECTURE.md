@@ -83,12 +83,22 @@ repository implementation; the store and the screens stay as they are.
 |---|---|---|
 | `core/format.js`: prices, badges | `shared/format/price.ts`, `app/ui/product-badges.ts` | unit + e2e |
 | store order rules from `core/cart.js` (statuses, recalculation, SLA, total) | `shared/orders/store-order.ts` | unit (all transitions) + e2e checkout |
+| cart, «Мои заказы» and store-order rendering: `core/cart.js` (deleted) | `app/features/cart/render.ts` through `html`…``, buttons through `data-action` (`ui-actions.ts`) | unit (`html`, order selection) + e2e (markup injection, real clicks) |
 | buyer profile `core/buyer.js` (entire file) | `app/features/buyer/` (BuyerStore + card and editor), `BuyerRepository` | unit + e2e (editor, reload, registration through auth.js) |
 | order actions `so*` from `core/cart.js`: store answers, new price, invoice, payment, cancel, return to cart | `shared/orders/store-order-actions.ts` (rules + guards), `app/features/orders/actions.ts` | unit (every transition and refusal) + e2e (full cycle) |
 | favourites from `core/favorites.js`: state, toggle, clear, remove a store | `shared/catalog/favorites.ts`, `app/features/favorites/` (store + actions, one `commit()` for every change) | unit + e2e (reload, hearts after «очистить» and «убрать магазин») |
 | cart state and operations, checkout, cart and order storage from `core/cart.js` | `shared/orders/cart.ts`, `shared/orders/checkout.ts`, `shared/data/repositories.ts`, `app/features/cart/` (CartStore + actions) | unit (operations, checkout, store with an in-memory repository) + e2e (reload, lifehack estimate) |
 | function overwriting in `features/boot.js` | events `app:cart-changed` / `app:favorites-changed` | e2e |
 | motion, swipe to delete, notifications, tab lens, SW registration | `app/features/*` | e2e |
+
+### Rendering and buttons
+
+- **`html`…``** (`shared/ui/html.ts`): a template that escapes every interpolation by default. Only the
+  result of another `html`…`` or an explicit `raw()` (for the code's own markup: icons, constants)
+  goes in unescaped. New renderers write only this way.
+- **`data-action`** (`shared/ui/actions.ts`): a button carries `data-action="name"` and `data-*`
+  parameters; one delegated listener calls the registered handler. No `onclick="fn('…')"`: data
+  doesn't pass through JavaScript strings in attributes.
 
 ## Rules for new code
 
@@ -98,11 +108,13 @@ repository implementation; the store and the screens stay as they are.
 3. If the markup needs a function from a module, it goes on `window` explicitly in the module (as with
    `openNotifications`) and is declared in `globals.d.ts`.
 4. Storage only through `StorageKeys` + `local-store.ts`. Entity types only from `shared/domain/types.ts`.
-5. Colours only through tokens (`--mk-*` in the app, plain names in `admin.css`). Never a raw colour that
+5. Rendering through `html`…``, buttons through `data-action`. No `innerHTML = '…' + data`,
+   no new inline `onclick`.
+6. Colours only through tokens (`--mk-*` in the app, plain names in `admin.css`). Never a raw colour that
    could appear in both themes.
-6. Business rules are pure functions in `src/shared/<domain>/` with unit tests (`tests/unit`, Vitest);
+7. Business rules are pure functions in `src/shared/<domain>/` with unit tests (`tests/unit`, Vitest);
    screen behaviour is covered by browser tests (`tests/e2e`, Playwright). `npm test` runs both.
-7. Domains don't overwrite each other's functions: notify through `src/shared/events.ts`.
+8. Domains don't overwrite each other's functions: notify through `src/shared/events.ts`.
 
 ## Roadmap
 
@@ -126,10 +138,10 @@ localStorage implementation over today's keys; screens work only through it. Pri
 **Stage 4 — backend.** A second repository implementation over HTTP (the API stack is not chosen yet);
 authentication for stores and agencies; image uploads instead of URLs; product import from 1C/Excel on the server.
 
-**Known issue — escaping.** Legacy renderers insert product, store and lifehack data into HTML without
-escaping (`'<p>' + p.title + '</p>'`). Today the data comes from the seed and from the admin, but stores can
-edit their cards, so this is an XSS risk. Fix it per domain as it moves to modules: rendering goes only through
-`shared/ui/html.ts` (`esc`), with a test that an injection is printed as text. Do it before stores are given access.
+**Known issue — escaping.** Fixed for the cart, «Мои заказы» and store orders (`tests/e2e/xss.spec.ts`).
+The remaining legacy renderers (product cards and page, store showcases, lifehacks, CRM) still insert data
+into HTML without escaping. Stores edit their cards, so it must be closed before they get access: domain by
+domain, through `html`…``, with a test in `xss.spec.ts`.
 
 **Separately:** compress `public/pc-arts` (7.4 MB of PNG) and `public/icons` (2.4 MB) to WebP/AVIF at the
 right sizes; replace the 30 dead Unsplash photo links with real product photos.

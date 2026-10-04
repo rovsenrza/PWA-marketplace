@@ -62,3 +62,29 @@ export function expireOverdue(orders: StoreOrder[], now: number = Date.now()): b
   }
   return changed;
 }
+
+/**
+ * The buyer's orders: by account (email) or by phone, through the checkout or the order contact.
+ * Newest first.
+ */
+export function ordersForBuyer(
+  m: { storeOrders: StoreOrder[]; checkouts: { id: string; userId: string }[] },
+  who: { userId?: string; phone?: string },
+): StoreOrder[] {
+  const { userId, phone } = who;
+  return m.storeOrders.filter((o) => {
+    const chk = m.checkouts.find((c) => c.id === o.checkoutId);
+    const byCheckout = !!chk && ((!!userId && chk.userId === userId) || (!!phone && chk.userId === phone));
+    const byContact = !!phone && o.contact?.phone === phone;
+    return byCheckout || byContact;
+  }).sort((a, b) => b.createdAt - a.createdAt);
+}
+
+/** Orders of one store for its cabinet, newest first. */
+export const ordersForStore = (orders: StoreOrder[], storeId: string): StoreOrder[] =>
+  orders.filter((o) => o.storeId === storeId).sort((a, b) => b.createdAt - a.createdAt);
+
+/** Amount shown to the buyer: the confirmed amount, or, while nothing is confirmed, the total at checkout prices. */
+export function buyerFacingAmount(o: Pick<StoreOrder, 'lines'>): number {
+  return confirmedAmount(o) || o.lines.reduce((s, l) => s + l.quotedPrice * (l.qty || 1), 0);
+}
