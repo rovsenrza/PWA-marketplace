@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Product } from '../../src/shared/domain/types';
-import { normalizeFavorites, removeStore, toggleFavorite } from '../../src/shared/catalog/favorites';
+import { groupByStore, managerMessage, normalizeFavorites, removeStore, telegramHandle, toggleFavorite } from '../../src/shared/catalog/favorites';
 import { FavoritesStore } from '../../src/app/features/favorites/favorites-store';
 
 const db: Record<string, Product> = {
@@ -33,5 +33,27 @@ describe('FavoritesStore', () => {
     expect(s2.list()).toEqual(['a', 'b']);
     s2.list().push('x');
     expect(s2.count()).toBe(2);
+  });
+});
+
+describe('favourites: groups and the message to the manager', () => {
+  const p = (id: string, store: string, price: string, title = `Товар ${id}`): Product => ({ id, title, price, store, status: 'published' });
+  const catalog: Record<string, Product> = { a: p('a', 'S1', '1 000 ₽'), b: p('b', 'S2', '500 ₽'), c: p('c', 'S1', '250 ₽') };
+  it('groupByStore: in the order added, with the total', () => {
+    expect(groupByStore(['a', 'b', 'ghost', 'c'], (id) => catalog[id]).map((g) => [g.store, g.products.length, g.total]))
+      .toEqual([['S1', 2, 1250], ['S2', 1, 500]]);
+  });
+  it('managerMessage: plain text, with no hand-made %0A', () => {
+    const text = managerMessage('S1', [p('x', 'S1', '100 ₽', 'Плитка #3 & клей')], { name: 'Анна', phone: '+7 900' });
+    expect(text).toContain('1. Плитка #3 & клей — 100 ₽');
+    expect(text).toContain('Итого: 100 ₽');
+    expect(text).toContain('Телефон: +7 900');
+    expect(text).not.toContain('%0A');
+  });
+  it('telegramHandle', () => {
+    expect(telegramHandle('https://t.me/lubimydom')).toBe('lubimydom');
+    expect(telegramHandle('@shop')).toBe('shop');
+    expect(telegramHandle('#')).toBe('');
+    expect(telegramHandle(undefined)).toBe('');
   });
 });

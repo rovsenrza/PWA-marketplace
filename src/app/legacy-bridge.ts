@@ -12,6 +12,7 @@ import { refreshCartSurfaces, renderBuyerOrders, renderCart, renderShopOrders, u
 import { registerCartActions } from './features/cart/ui-actions';
 import { favoritesStore } from './features/favorites/favorites-store';
 import { favoritesLegacyApi } from './features/favorites/actions';
+import { registerFavoritesActions, renderFavorites, sendOrderToManager } from './features/favorites/render';
 import { ordersLegacyApi } from './features/orders/actions';
 import { buyerStore } from './features/buyer/buyer-store';
 import { buyerLegacyApi } from './features/buyer/profile';
@@ -37,6 +38,8 @@ exposeToLegacy(ordersLegacyApi);
 /* избранное: state.favorites — аксессор на FavoritesStore */
 favoritesStore.installLegacyAccessor(typeof state !== 'undefined' ? state : undefined);
 exposeToLegacy(favoritesLegacyApi);
+exposeToLegacy({ renderFavorites, sendOrderToManager });
+registerFavoritesActions();
 
 /* профиль покупателя: buyerProfile — аксессор на BuyerStore (auth.js присваивает его целиком) */
 buyerStore.installLegacyAccessor();

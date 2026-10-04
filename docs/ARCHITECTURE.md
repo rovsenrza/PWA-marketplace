@@ -83,6 +83,7 @@ repository implementation; the store and the screens stay as they are.
 |---|---|---|
 | `core/format.js`: prices, badges | `shared/format/price.ts`, `app/ui/product-badges.ts` | unit + e2e |
 | store order rules from `core/cart.js` (statuses, recalculation, SLA, total) | `shared/orders/store-order.ts` | unit (all transitions) + e2e checkout |
+| favourites screen and «Отправить менеджеру»: `core/favorites.js` (deleted) | `shared/catalog/favorites.ts` (groups, message), `app/features/favorites/render.ts` | unit + e2e (injection, Telegram link, clicks) |
 | cart, «Мои заказы» and store-order rendering: `core/cart.js` (deleted) | `app/features/cart/render.ts` through `html`…``, buttons through `data-action` (`ui-actions.ts`) | unit (`html`, order selection) + e2e (markup injection, real clicks) |
 | buyer profile `core/buyer.js` (entire file) | `app/features/buyer/` (BuyerStore + card and editor), `BuyerRepository` | unit + e2e (editor, reload, registration through auth.js) |
 | order actions `so*` from `core/cart.js`: store answers, new price, invoice, payment, cancel, return to cart | `shared/orders/store-order-actions.ts` (rules + guards), `app/features/orders/actions.ts` | unit (every transition and refusal) + e2e (full cycle) |
@@ -138,7 +139,7 @@ localStorage implementation over today's keys; screens work only through it. Pri
 **Stage 4 — backend.** A second repository implementation over HTTP (the API stack is not chosen yet);
 authentication for stores and agencies; image uploads instead of URLs; product import from 1C/Excel on the server.
 
-**Known issue — escaping.** Fixed for the cart, «Мои заказы» and store orders (`tests/e2e/xss.spec.ts`).
+**Known issue — escaping.** Fixed for the cart, «Мои заказы», store orders and favourites; `getPriceHtml` escapes the price for every caller (`tests/e2e/xss.spec.ts`).
 The remaining legacy renderers (product cards and page, store showcases, lifehacks, CRM) still insert data
 into HTML without escaping. Stores edit their cards, so it must be closed before they get access: domain by
 domain, through `html`…``, with a test in `xss.spec.ts`.

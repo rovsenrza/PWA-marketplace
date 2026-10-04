@@ -47,3 +47,39 @@ test('cart: the «+», «−» and «×» buttons (data-action) with real clicks
   await app.locator('#cart-list [data-action="cart-remove"]').first().click();
   await expect(app.locator('#cart-list .cart-empty')).toBeVisible();
 });
+
+test('favourites: a title with markup renders as text; «убрать магазин» and the product open with real clicks', async ({ app }) => {
+  await app.evaluate((evil) => {
+    const db = eval('productsDb');
+    db['prod-2'].title = evil;
+    (window as any).toggleFavorite('prod-2');
+    (window as any).toggleFavorite('prod-4');
+    (window as any).switchTab('favorites');
+  }, EVIL);
+  const list = app.locator('#favorites-list');
+  await expect(list.locator('.fav-item-title').first()).toHaveText(EVIL);
+  expect(await list.locator('img[src="x"]').count()).toBe(0);
+  await list.locator('.fav-item').first().click();
+  await expect(app.locator('#product-modal')).toBeVisible();
+  await app.evaluate(() => (window as any).closeProductModal());
+  await list.locator('[data-action="fav-unfavorite-store"]').first().click();
+  await expect(list.locator('.fav-card')).toHaveCount(1);
+  expect(await app.evaluate(() => (window as any).__pwned)).toBeUndefined();
+});
+
+test('«Отправить заказ менеджеру»: the URL is encoded whole (a title with & and # does not break the message)', async ({ app }) => {
+  await app.evaluate(() => {
+    const w = window as any;
+    w.__opened = [];
+    w.open = (u: string) => { w.__opened.push(u); return null; };
+    eval('productsDb')['prod-2'].title = 'Кровать #1 & тумба';
+    w.toggleFavorite('prod-2');
+    w.switchTab('favorites');
+  });
+  await app.locator('[data-action="fav-send-manager"]').first().click();
+  const url = await app.evaluate(() => (window as any).__opened[0] as string);
+  expect(url.startsWith('https://t.me/')).toBe(true);
+  const text = new URL(url).searchParams.get('text')!;
+  expect(text).toContain('1. Кровать #1 & тумба — 57 240 ₽');
+  expect(text).toContain('Итого: 57 240 ₽');
+});

@@ -22,3 +22,9 @@ describe('getPriceHtml', () => {
     expect(getPriceHtml({ price: '450 ₽', oldPrice: '500 ₽', badge: 'hit' })).toBe('<span class="oz-price">450 ₽</span>');
   });
 });
+
+describe('getPriceHtml escapes data', () => {
+  it('a price with markup renders as text', () => {
+    expect(getPriceHtml({ price: '<b>1</b> ₽' })).toBe('<span class="oz-price">&lt;b&gt;1&lt;/b&gt; ₽</span>');
+  });
+});
