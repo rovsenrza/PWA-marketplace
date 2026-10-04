@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 /** Tests run against the production build (vite preview) in the system Chrome. */
 export default defineConfig({
-  testDir: 'tests',
+  testDir: 'tests/e2e',
   timeout: 30_000,
   fullyParallel: true,
   reporter: [['list']],

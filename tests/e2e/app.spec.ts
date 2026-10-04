@@ -5,6 +5,14 @@ test('home: categories, recommendations, product grid', async ({ app }) => {
   expect(await app.locator('.home-cat').count()).toBeGreaterThan(3);
   expect(await app.locator('#recommendations-container .rec-card').count()).toBeGreaterThan(2);
   expect(await app.locator('#product-grid .pc-card').count()).toBeGreaterThan(4);
+  /* бейджи и цены рисуются функциями из модуля (src/app/ui/product-badges.ts) через мост */
+  await expect(app.locator('#product-grid .pc-badge span').first()).toHaveText(/ХИТ|НОВИНКА|РАСПРОДАЖА/);
+});
+
+test('favourites: prices through getPriceHtml, the store total through parsePrice', async ({ app }) => {
+  await app.evaluate(() => { (window as any).toggleFavorite('prod-2'); (window as any).toggleFavorite('prod-8'); (window as any).switchTab('favorites'); });
+  await expect(app.locator('#view-favorites .fav-item-price').first()).toContainText('₽');
+  expect(await app.locator('#view-favorites .fav-item').count()).toBe(2);
 });
 
 test('cart: add from the card, badge, swipe to delete', async ({ app }) => {

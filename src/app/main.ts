@@ -9,6 +9,8 @@ import './styles/glass.css';
 import './styles/motion.css';
 import './styles/tailwind.css';
 
+import './legacy-bridge';
+
 import { initTransitions } from './features/motion/transitions';
 import { initSwipeToDelete } from './features/swipe-to-delete';
 import { initNotificationsSheet } from './features/notifications/sheet';
