@@ -1,5 +1,5 @@
 /* Запуск ядра приложения: всё, что выполняется при загрузке, в исходном порядке —
-   состояние с вычисляемой инициализацией, обработчики событий, window.onload.
+   состояние с вычисляемой инициализацией, обработчики событий, запуск по DOMContentLoaded.
    Подключается после файлов доменов. */
 
 
@@ -21,8 +21,8 @@ document.addEventListener('app:cart-changed', function () {
     if (typeof renderPmSimilar === 'function') renderPmSimilar();
 });
 
-// Загружаем рекомендации при старте (после window.onload из core/boot.js — он назначен раньше)
-window.addEventListener('load', function () {
+// Загружаем рекомендации при старте (после запуска из core/boot.js — его слушатель зарегистрирован раньше)
+document.addEventListener('DOMContentLoaded', function () {
     renderRecommendations();
 });
 

@@ -1,11 +1,14 @@
 /* Запуск ядра приложения: всё, что выполняется при загрузке, в исходном порядке —
-   состояние с вычисляемой инициализацией, обработчики событий, window.onload.
+   состояние с вычисляемой инициализацией, обработчики событий, запуск по DOMContentLoaded.
    Подключается после файлов доменов. */
 
 /* lifehackCategories: данные в CatalogStore (src/shared/data/catalog-store.ts); здесь — аксессор на window */
 
 
-            window.onload = function() {
+/* Запуск приложения — по готовности DOM, а не по window.onload: onload ждёт ВСЕ картинки
+   (включая медленные внешние фото), и до тех пор приложение показывало стартовые данные
+   без сохранённой корзины и избранного. Модули (src/app/main.ts) к этому моменту уже выполнены. */
+document.addEventListener('DOMContentLoaded', function () {
     loadAllData();
     if (typeof loadLhEngageState === 'function') loadLhEngageState();
     if (typeof hydrateLifehacksEngage === 'function') hydrateLifehacksEngage();
@@ -26,7 +29,7 @@
     try { buildTopFilters(); } catch(e) {}
     try { renderOnboarding(); } catch(e) {}
     try { renderHomeShopPromo(); } catch(e) {}
-};
+});
 
 /* storiesData: данные в CatalogStore (src/shared/data/catalog-store.ts); здесь — аксессор на window */
 
