@@ -155,16 +155,22 @@ modules; service worker built from the real output; Playwright tests.
 Three unreachable duplicate functions removed. Tests cover every directory section, the calculators,
 the deeper screens and the in-app CRM.
 
-**Stage 2b — in progress.** Domain logic moves into modules through the bridge, one domain at a time,
-each with its tests (see the table above). Next: the product page, the store cabinet, sign-in. `core/cart.js` is now rendering only. Inline `onclick` handlers (≈550)
-become `data-action` + one delegator domain by domain; then the domain's line in `legacy-bridge.ts` goes away.
+**Stage 2b — the purchase flow is done.** Ported to modules: prices and badges, the cart and checkout,
+store orders and their actions, favourites, the buyer profile, sign-in, uploads (see the table above);
+`core/cart.js`, `favorites.js`, `buyer.js`, `auth.js`, `persistence.js` (save/load) and admin `data.js`
+are deleted. The remaining screens are the parallel track below.
 
-**Stage 3 — data layer as a repository.** A `CatalogRepository` / `OrdersRepository` interface with a
-localStorage implementation over today's keys; screens work only through it. Prices as numbers instead of
-'57 240 ₽' strings; data validation on load.
+**Stage 3 — done.** All persisted data behind repositories: the catalogue (one set of merge rules for the
+app and the admin, per-part saving), cart and orders, favourites, the profile, lifehack reactions (device
+state and community totals separately). Sign-in behind `AuthService`, files behind `MediaStore`. The app
+starts at `DOMContentLoaded`. Browser tests are hermetic (no internet).
 
-**Stage 4 — backend.** A second repository implementation over HTTP (the API stack is not chosen yet);
-authentication for stores and agencies; image uploads instead of URLs; product import from 1C/Excel on the server.
+**Stage 4 — backend: waiting for a decision.** What the server must provide, the constraints (personal data
+of Russian users must be stored in Russia), the options and the recommendation: [`BACKEND.md`](BACKEND.md).
+Each phase is a new implementation behind an interface that already exists.
+
+**In parallel, independent of the server:** porting the remaining screens from `legacy/` to modules (the product
+page, the store showcase, the directory, lifehacks, the CRM), replacing inline `onclick` with `data-action`.
 
 **Escaping — closed and guarded.** Every renderer of the buyer app escapes data: modules through
 `html`…``, legacy code through the `escHtml` / `escJsArg` globals (the latter for values inside

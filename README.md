@@ -1,7 +1,7 @@
 # Супер-Апп
 
 A regional construction and renovation marketplace: a buyer PWA (`index.html`) and an admin panel (`admin.html`).
-Product: [docs/PRODUCT.md](docs/PRODUCT.md) · design system: [docs/DESIGN.md](docs/DESIGN.md) · architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Product: [docs/PRODUCT.md](docs/PRODUCT.md) · design system: [docs/DESIGN.md](docs/DESIGN.md) · architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · backend decision: [docs/BACKEND.md](docs/BACKEND.md).
 
 ## Getting started
 
