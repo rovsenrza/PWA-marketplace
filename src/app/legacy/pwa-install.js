@@ -1,5 +1,5 @@
 /* Установка PWA.
-   Подсказка «Установить приложение» и регистрация service worker.
+   Подсказка «Установить приложение».
    Классический скрипт (не модуль): функции глобальные, их вызывают inline-обработчики разметки.
    Сборка: плагин legacy-scripts в vite.config.ts (минификация без переименования, хэш в имени). */
 
@@ -117,9 +117,7 @@ function schedulePwaInstallBanner() {
     setTimeout(maybeShowPwaInstallBanner, 2500);
 }
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(function () {});
-}
+/* service worker регистрирует src/app/features/pwa.ts (только в сборке) */
 if (document.readyState === 'complete') schedulePwaInstallBanner();
 else window.addEventListener('load', schedulePwaInstallBanner);
 window.addEventListener('pageshow', function () { setTimeout(maybeShowPwaInstallBanner, 400); });

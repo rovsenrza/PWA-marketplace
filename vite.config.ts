@@ -17,34 +17,52 @@ const pages = { index: resolve(root, 'index.html'), admin: resolve(root, 'admin.
  *    writes the result to assets/legacy/ and rewrites src in the HTML.
  * Order and placement of the tags are kept, and with them the execution semantics.
  */
-function legacyScripts(): Plugin {
+function legacyScripts(bundles: Record<string, string> = {}): Plugin {
   const TAG = /<script src="\/(src\/[^"]+\/legacy\/[^"]+\.js)"><\/script>/g;
-  const emitted = new Map<string, string>(); // src/... → assets/legacy/name-hash.js
+  /* consecutive tags of one directory from `bundles` are joined into one file */
+  const RUN = new RegExp(`(?:[ \\t]*<script src="\\/(?:${Object.keys(bundles).map((d) => d.replace(/[/.]/g, '\\$&')).join('|') || '(?!)'})[^"]+\\.js"><\\/script>\\s*)+`, 'g');
+  const emitted = new Map<string, string>(); // src/... or bundle name → assets/legacy/name-hash.js
   let config: ResolvedConfig;
+  const bundleOf = (rel: string) => Object.entries(bundles).find(([dir]) => rel.startsWith(dir))?.[1];
+  const minify = async (code: string, rel: string) => (await transformWithEsbuild(code, rel, {
+    loader: 'js', minifyWhitespace: true, minifySyntax: false, minifyIdentifiers: false,
+    charset: 'utf8', legalComments: 'none', target: 'es2020',
+  })).code;
   return {
     name: 'legacy-scripts',
     apply: 'build',
     configResolved(c) { config = c; },
     async buildStart() {
-      const srcs = new Set<string>();
+      const srcs: string[] = [];
       for (const file of Object.values(pages)) {
-        for (const m of readFileSync(file, 'utf8').matchAll(TAG)) srcs.add(m[1]);
+        for (const m of readFileSync(file, 'utf8').matchAll(TAG)) if (!srcs.includes(m[1])) srcs.push(m[1]);
       }
+      const emit = (name: string, code: string) => {
+        const hash = createHash('sha256').update(code).digest('hex').slice(0, 8);
+        const fileName = `assets/legacy/${name}-${hash}.js`;
+        this.emitFile({ type: 'asset', fileName, source: code });
+        return fileName;
+      };
+      const groups = new Map<string, string[]>();
       for (const rel of srcs) {
-        const code = readFileSync(resolve(root, rel), 'utf8');
-        const out = await transformWithEsbuild(code, rel, {
-          loader: 'js', minifyWhitespace: true, minifySyntax: false, minifyIdentifiers: false,
-          charset: 'utf8', legalComments: 'none', target: 'es2020',
-        });
-        const hash = createHash('sha256').update(out.code).digest('hex').slice(0, 8);
-        const fileName = `assets/legacy/${basename(rel, '.js')}-${hash}.js`;
-        this.emitFile({ type: 'asset', fileName, source: out.code });
-        emitted.set(rel, fileName);
+        const b = bundleOf(rel);
+        if (b) { groups.set(b, [...(groups.get(b) ?? []), rel]); continue; }
+        emitted.set(rel, emit(basename(rel, '.js'), await minify(readFileSync(resolve(root, rel), 'utf8'), rel)));
+      }
+      /* ';' between files so the end of one file can't merge with the start of the next */
+      for (const [name, rels] of groups) {
+        const code = rels.map((rel) => readFileSync(resolve(root, rel), 'utf8')).join('\n;\n');
+        emitted.set(name, emit(name, await minify(code, `${name}.js`)));
       }
     },
     transformIndexHtml: {
       order: 'pre',
       handler(html) {
+        html = html.replace(RUN, (run) => {
+          const first = /src="\/([^"]+)"/.exec(run)![1];
+          const name = bundleOf(first)!;
+          return `<script vite-ignore src="${config.base}${emitted.get(name)}"></script>\n`;
+        });
         return html.replace(TAG, (_, rel: string) => {
           const fileName = emitted.get(rel);
           if (!fileName) throw new Error(`legacy-scripts: ${rel} was not built`);
@@ -77,7 +95,7 @@ function serviceWorker(): Plugin {
 export default defineConfig({
   /* относительные пути: сборку можно положить в любую папку любого статического хостинга */
   base: './',
-  plugins: [legacyScripts(), serviceWorker()],
+  plugins: [legacyScripts({ 'src/app/legacy/core/': 'app-core' }), serviceWorker()],
   build: {
     target: 'es2020',
     outDir: 'dist',
