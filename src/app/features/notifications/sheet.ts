@@ -8,6 +8,7 @@ import { StorageKeys } from '../../../shared/storage/keys';
 import { readSet, writeSet, onExternalChange } from '../../../shared/storage/local-store';
 import { esc } from '../../../shared/ui/html';
 import { collectNotifications, relativeTime, runAction, type AppNotification } from './sources';
+import { on } from '../../../shared/events';
 
 type Detent = 'medium' | 'large';
 
@@ -201,6 +202,7 @@ export function initNotificationsSheet(phone: HTMLElement): void {
   };
 
   updateBell();
+  on('app:cart-changed', updateBell);
   onExternalChange(StorageKeys.notificationsSeen, updateBell);
   onExternalChange(StorageKeys.marketplace, updateBell);
 }

@@ -30,6 +30,8 @@ function toggleFavorite(prodId) {
     renderProductGrid();       // перекрасить сердечки
     renderFavorites();         // обновить список
     updateBuyerFavCount();     // обновить счётчик в карточке
+    /* событие для остальных доменов (src/shared/events.ts) */
+    document.dispatchEvent(new CustomEvent('app:favorites-changed', { detail: { productId: prodId } }));
 }
 
 

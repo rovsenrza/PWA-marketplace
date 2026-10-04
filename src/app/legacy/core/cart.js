@@ -147,6 +147,8 @@ function refreshCartSurfaces() {
     try { pmRefreshCart(); } catch (e) {}
     try { if (typeof renderPmRecent === 'function') renderPmRecent(); } catch (e) {}
     try { if (state.userRole === 'shop') { updateShopStats(); renderShopOrders(); } } catch (e) {}
+    /* событие для остальных доменов (src/shared/events.ts) */
+    document.dispatchEvent(new CustomEvent('app:cart-changed'));
 }
 
 

@@ -58,12 +58,24 @@ test('deeper screens: lifehack, special machinery, company, portfolio, vacancy, 
   await expect(app.locator('#subview-re-commercial')).toBeVisible();
 });
 
-test('wrappers from features/boot.js: a favourite and the cart redraw the recommendations', async ({ app }) => {
-  const id = await app.evaluate(() => document.querySelector('.rec-card .rec-fav')!.closest('.rec-card')!.getAttribute('onclick')!.match(/'([^']+)'/)![1]);
+test('events app:favorites-changed / app:cart-changed: the recommendations and the bell redraw', async ({ app }) => {
+  const id = await app.evaluate(() => document.querySelector('.rec-card')!.getAttribute('onclick')!.match(/'([^']+)'/)![1]);
   await app.evaluate(call('toggleFavorite', id));
   await expect(app.locator('.rec-card .rec-fav.on')).toHaveCount(1);
   await app.evaluate(call('addToCart', id));
   await expect(app.locator('.rec-card .rec-add.in')).toHaveCount(1);
+  await app.evaluate(call('removeFromCart', id));
+  await expect(app.locator('.rec-card .rec-add.in')).toHaveCount(0);
+  /* колокольчик: после изменения корзины есть непрочитанное */
+  await app.evaluate(() => localStorage.setItem('meb_notif_seen', '[]'));
+  await app.evaluate(call('addToCart', id));
+  await expect(app.locator('.lg-bell .lg-dot')).toBeVisible();
+  /* на странице товара сердце перекрашивается через тот же слушатель (pmRefreshFav) */
+  await app.evaluate(call('openProductModal', 'prod-7'));
+  await app.evaluate(call('toggleFavorite', 'prod-7'));
+  await expect(app.locator('#pm-fav-btn')).toHaveClass(/text-red-500/);
+  await app.evaluate(call('toggleFavorite', 'prod-7'));
+  await expect(app.locator('#pm-fav-btn')).not.toHaveClass(/text-red-500/);
 });
 
 test('in-app CRM: lists render', async ({ app }) => {
