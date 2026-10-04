@@ -43,13 +43,7 @@ let spectechDb = SEED.spectech();
 let state = { currentSlide: 1, totalSlides: 4, currentPromo: 1, totalPromos: 3, isAuthenticated: false, userRole: 'user', userEmail: '', favorites: [], cart: [], designerCategory: 'interior', currentShop: '' };
 
 
-// Карта логинов магазинов -> название в shopsProfileDb
-const shopLoginsMap = {
-    'shop': 'Любимый Дом',
-    'shop1': 'Любимый Дом',
-    'shop2': 'Кухни Дриада',
-    'shop3': 'Новоселье'
-};
+/* демо-логины магазинов — src/shared/auth/demo-auth.ts (DEMO_STORE_LOGINS) */
 
 
 const FEEDBACK_LINKS = {

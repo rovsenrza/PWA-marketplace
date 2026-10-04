@@ -93,6 +93,7 @@ a new cache name, and the old cache is deleted on activation.
 | favourites screen and «Отправить менеджеру»: `core/favorites.js` (deleted) | `shared/catalog/favorites.ts` (groups, message), `app/features/favorites/render.ts` | unit + e2e (injection, Telegram link, clicks) |
 | cart, «Мои заказы» and store-order rendering: `core/cart.js` (deleted) | `app/features/cart/render.ts` through `html`…``, buttons through `data-action` (`ui-actions.ts`) | unit (`html`, order selection) + e2e (markup injection, real clicks) |
 | catalogue data layer: `persistence.js` (`saveAllData`/`loadAllData`) and admin `data.js` (deleted) | `shared/data/catalog.ts`, `catalog-repository.ts`, `catalog-store.ts`; app `app/data/catalog.ts`, admin `admin/main.ts` | unit (merging, per-part saving, quota) + e2e (admin edit in the app, live sync) |
+| sign-in and registration `core/auth.js` (deleted), demo logins from `core/data.js` | `shared/auth/` (AuthService, Session, validation, **DemoAuthService**), `app/features/auth/auth-ui.ts` | unit (mask, rules, demo roles) + e2e (dashboards by role, sign-out, password button) |
 | buyer profile `core/buyer.js` (entire file) | `app/features/buyer/` (BuyerStore + card and editor), `BuyerRepository` | unit + e2e (editor, reload, registration through auth.js) |
 | order actions `so*` from `core/cart.js`: store answers, new price, invoice, payment, cancel, return to cart | `shared/orders/store-order-actions.ts` (rules + guards), `app/features/orders/actions.ts` | unit (every transition and refusal) + e2e (full cycle) |
 | favourites from `core/favorites.js`: state, toggle, clear, remove a store | `shared/catalog/favorites.ts`, `app/features/favorites/` (store + actions, one `commit()` for every change) | unit + e2e (reload, hearts after «очистить» and «убрать магазин») |
@@ -108,6 +109,14 @@ a new cache name, and the old cache is deleted on activation.
 - **`data-action`** (`shared/ui/actions.ts`): a button carries `data-action="name"` and `data-*`
   parameters; one delegated listener calls the registered handler. No `onclick="fn('…')"`: data
   doesn't pass through JavaScript strings in attributes.
+
+### Sign-in
+
+`AuthService` (`shared/auth/types.ts`): `signIn`, `register`, `signOut`, `current`, `onChange`; the session
+carries the role (`buyer` · `store` · `agency` · `admin`) and, for a store, `storeId`. Today the implementation
+is **`DemoAuthService`**, the prototype's behaviour **without any password checks** (see the file header).
+It can't be protected in the browser; a server implementation replaces it (that's the server decision).
+Screens see only the interface; the legacy `state.userRole` / `state.currentShop` are synced from the session.
 
 ## Rules for new code
 

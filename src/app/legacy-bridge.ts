@@ -18,6 +18,7 @@ import { registerFavoritesActions, renderFavorites, sendOrderToManager } from '.
 import { ordersLegacyApi } from './features/orders/actions';
 import { buyerStore } from './features/buyer/buyer-store';
 import { buyerLegacyApi } from './features/buyer/profile';
+import { authLegacyApi } from './features/auth/auth-ui';
 
 exposeToLegacy({ parsePrice, formatPrice, formatRub, getBadgeHtml, getPriceHtml });
 
@@ -53,3 +54,6 @@ registerFavoritesActions();
 /* профиль покупателя: buyerProfile — аксессор на BuyerStore (auth.js присваивает его целиком) */
 buyerStore.installLegacyAccessor();
 exposeToLegacy(buyerLegacyApi);
+
+/* вход и регистрация: AuthService (сейчас демо, см. src/shared/auth/demo-auth.ts) */
+exposeToLegacy(authLegacyApi);

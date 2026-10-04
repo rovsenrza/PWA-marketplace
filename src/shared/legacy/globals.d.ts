@@ -8,7 +8,7 @@ import type { CartItem, Product, Shop } from '../domain/types';
 declare global {
   /* глобальные let из legacy (общая лексическая область классических скриптов; живые привязки) */
   /** core/data.js: общее состояние покупателя (cart — аксессор на CartStore) */
-  const state: { cart?: unknown; userEmail?: string; userRole?: string; currentShop?: string; favorites?: string[]; [k: string]: unknown };
+  const state: { cart?: unknown; isAuthenticated?: boolean; userEmail?: string; userRole?: string; currentShop?: string; favorites?: string[]; [k: string]: unknown };
   /** каталог: аксессоры на CatalogStore (src/shared/data/catalog-store.ts) */
   const productsDb: Record<string, Product>;
   const shopsProfileDb: Record<string, Shop>;
@@ -30,6 +30,12 @@ declare global {
     updateShopStats?: () => void;
     currentCatalogShop?: string;
     applyShopLocalBanners?: () => void;
+    loadBuyerProfile?: () => void;
+    renderBuyerCard?: () => void;
+    renderAdminModerationList?: () => void;
+    updateModCounter?: () => void;
+    updateAdminStats?: () => void;
+    renderShopDashboard?: () => void;
     applyPromoToHome?: () => void;
     loadLhEngageState?: () => void;
     hydrateLifehacksEngage?: () => void;
