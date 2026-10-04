@@ -1,7 +1,19 @@
 # Backend decision
 
-Status: **open, waiting for a decision.** Everything that can be built without a server is done; the
-remaining work needs one.
+Status: **open.** Everything that can be built without a server is done; the remaining work needs one.
+
+## Decisions so far
+
+| Question | Answer | Date |
+|---|---|---|
+| 1C / Excel import in the first release? | **Yes**: phase 1 includes import (section 6) | 2026-10-05 |
+| Backend option (A–D) | not decided yet | |
+| Buyer sign-in | not decided yet | |
+| Hosting provider | not decided yet | |
+
+Meanwhile, the import core is built without depending on the stack: file parsing (CSV, Excel, CommerceML),
+column mapping, matching by article and barcode, the report, as pure TypeScript functions with tests
+(`shared/import`). Option A runs them on the server as they are; for B–D they are the exact specification.
 
 ## 1. Where we are
 
@@ -105,11 +117,12 @@ speed of the first release matters more than control.
 
 Each phase is a new implementation behind an existing interface; localStorage stays as the offline cache.
 
-1. **Accounts and the catalogue.** Real sign-in (`AuthService`), the catalogue read from the server, stores and
-   the admin write through the API with moderation. Seed data (`seed.js`) becomes the initial database content.
+1. **Accounts, the catalogue and import.** Real sign-in (`AuthService`), the catalogue read from the server, stores
+   and the admin write through the API with moderation; the 1C / Excel import runs on the server as a background
+   job (decided: needed in the first release). Seed data (`seed.js`) becomes the initial database content.
 2. **Orders between people.** Checkout and store orders on the server; the store cabinet sees real orders;
    MAX / Telegram notifications to managers.
-3. **Files and import.** Photo uploads to object storage; the 1C / Excel import as a background job.
+3. **Files.** Photo uploads to object storage (including the photo archives from the import).
 4. **Community and analytics.** Real «полезно» and poll totals; statistics for the admin.
 
 ## 7. Before launch (whatever the stack)
@@ -126,4 +139,4 @@ Each phase is a new implementation behind an existing interface; localStorage st
 2. Hosting: which Russian provider, and what monthly budget?
 3. Buyer sign-in: SMS code, MAX / Telegram bot, or both?
 4. Who will operate the server (updates, backups, monitoring)?
-5. Is the 1C / Excel import needed for the first release, or can stores add products by hand at first?
+5. ~~Is the 1C / Excel import needed for the first release?~~ Yes (decided).
