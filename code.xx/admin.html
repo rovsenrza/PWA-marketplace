@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Супер-Апп · Управление</title>
+    <meta name="theme-color" content="#F2F3F6">
+    <meta name="color-scheme" content="light dark">
+    <script>
+        /* Тема общая с приложением: localStorage 'ui-theme' = system | light | dark */
+        (function () {
+            var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+            function pref() { try { return localStorage.getItem('ui-theme') || 'system'; } catch (e) { return 'system'; } }
+            function apply() {
+                var p = pref(), t = p === 'light' || p === 'dark' ? p : (mq && mq.matches ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', t);
+                var m = document.querySelector('meta[name="theme-color"]');
+                if (m) m.setAttribute('content', t === 'dark' ? '#0A0F1C' : '#F2F3F6');
+            }
+            window.toggleUiTheme = function () {
+                var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                try { localStorage.setItem('ui-theme', next); } catch (e) {}
+                apply();
+            };
+            if (mq) {
+                var on = function () { if (pref() === 'system') apply(); };
+                if (mq.addEventListener) mq.addEventListener('change', on); else if (mq.addListener) mq.addListener(on);
+            }
+            window.addEventListener('storage', function (e) { if (e.key === 'ui-theme') apply(); });
+            apply();
+        })();
+    </script>
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- Набор иконок (линия 1.75) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-overview" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+    <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9l1.5-5h13L20 9"/><path d="M4 9a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0A2.7 2.7 0 0020 9"/><path d="M5 11v9h14v-9"/><path d="M10 20v-5h4v5"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5.5 3.5-5.5 3.5z"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 5h6v6H4zM14 5h6v6h-6zM4 15h6v4H4zM14 15h6v4h-6z"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 012-2h7a2 2 0 012 2v16"/><path d="M15 9h3a2 2 0 012 2v10"/><path d="M8 7h3M8 11h3M8 15h3M3 21h18"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.5v.01"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.01"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.3 7-12a7 7 0 10-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="10" r="2.5" fill="#fff"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></symbol>
+    <symbol id="i-yt" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></symbol>
+</svg>
+
+<div class="app">
+    <aside class="side" id="side">
+        <div class="side-brand">
+            <div class="wordmark"><b>С</b>упер-Апп</div>
+            <p id="side-role-label">Управление</p>
+        </div>
+        <nav class="side-nav" id="side-nav" aria-label="Разделы панели"></nav>
+        <div class="side-foot">
+            <div class="who" id="side-who"></div>
+            <a class="app-link" href="index.html" target="_blank" rel="noopener">
+                <svg class="ico ico-sm"><use href="#i-external"/></svg>Открыть приложение
+            </a>
+        </div>
+    </aside>
+    <div class="scrim" id="scrim" onclick="toggleSide(false)"></div>
+
+    <div class="main">
+        <header class="top">
+            <button class="icon-btn menu-btn" onclick="toggleSide(true)" aria-label="Меню"><svg class="ico"><use href="#i-menu"/></svg></button>
+            <div>
+                <h1 id="page-title">Обзор</h1>
+                <div class="top-sub" id="page-sub"></div>
+            </div>
+            <div class="top-right">
+                <button class="icon-btn theme-btn" onclick="toggleUiTheme()" aria-label="Сменить тему" title="Сменить тему">
+                    <svg class="ico ico-moon" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    <svg class="ico ico-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/></svg>
+                </button>
+                <div class="seg" role="tablist" aria-label="Кто работает в панели">
+                    <button id="role-admin" class="on" onclick="setRole('admin')">Администратор</button>
+                    <button id="role-store" onclick="setRole('store')">Магазин</button>
+                    <button id="role-agency" onclick="setRole('agency')">Агентство</button>
+                </div>
+            </div>
+        </header>
+        <main class="content" id="content"></main>
+    </div>
+</div>
+
+<!-- ===== Редактор товара ===== -->
+<div id="prod-modal" class="overlay hidden" onclick="if(event.target===this)closeProdEditor()">
+    <div class="drawer">
+        <div class="drawer-head">
+            <h2 id="prod-modal-title">Новый товар</h2>
+            <button class="icon-btn" onclick="closeProdEditor()" aria-label="Закрыть"><svg class="ico"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="drawer-body">
+            <input type="hidden" id="f-prod-id">
+            <div class="panel">
+                <label class="field"><span>Название</span><input id="f-prod-title" class="input" type="text" placeholder="Например, Цемент М500 (50 кг)"></label>
+                <div class="row2">
+                    <label class="field"><span>Цена</span><input id="f-prod-price" class="input" type="text" placeholder="50 000 ₽"></label>
+                    <label class="field"><span>Артикул</span><input id="f-prod-sku" class="input" type="text" placeholder="PS-CEM"></label>
+                </div>
+                <div class="row2">
+                    <label class="field"><span>Магазин</span><select id="f-prod-store" class="select"></select></label>
+                    <label class="field"><span>Категория</span><input id="f-prod-category" class="input" type="text" placeholder="стройматериалы"></label>
+                </div>
+                <label class="field"><span>Ссылка на фото</span><input id="f-prod-image" class="input" type="text" placeholder="https://…"><small>Без фото товар не попадёт в каталог.</small></label>
+                <label class="field"><span>Описание</span><textarea id="f-prod-desc" class="textarea" rows="3"></textarea></label>
+                <label class="field" style="margin-bottom:0"><span>Статус</span>
+                    <select id="f-prod-status" class="select">
+                        <option value="published">Опубликован</option>
+                        <option value="pending">На проверке</option>
+                        <option value="rejected">Отклонён</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+        <div class="drawer-foot">
+            <button class="btn btn-secondary" onclick="closeProdEditor()">Отмена</button>
+            <button class="btn btn-primary" onclick="saveProduct()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Редактор витрины магазина ===== -->
+<div id="shop-modal" class="overlay hidden" onclick="if(event.target===this)closeShopEditor()">
+    <div class="drawer wide">
+        <div class="drawer-head">
+            <h2 id="shop-modal-title">Новый магазин</h2>
+            <button class="icon-btn" onclick="closeShopEditor()" aria-label="Закрыть"><svg class="ico"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="drawer-tabs" id="shop-tabs"></div>
+        <div class="drawer-body" id="shop-body"></div>
+        <div class="drawer-foot">
+            <button class="btn btn-secondary" onclick="closeShopEditor()">Отмена</button>
+            <button class="btn btn-primary" onclick="saveShop()">Сохранить витрину</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Редактор баннера ===== -->
+<div id="banner-modal" class="overlay hidden" onclick="if(event.target===this)closeBannerEditor()">
+    <div class="drawer">
+        <div class="drawer-head">
+            <h2 id="banner-modal-title">Новый баннер</h2>
+            <button class="icon-btn" onclick="closeBannerEditor()" aria-label="Закрыть"><svg class="ico"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="drawer-body">
+            <input type="hidden" id="f-banner-id">
+            <div class="panel">
+                <label class="field"><span>Заголовок</span><input id="f-banner-title" class="input" type="text"></label>
+                <label class="field"><span>Подпись</span><input id="f-banner-subtitle" class="input" type="text"></label>
+                <label class="field" style="margin-bottom:0"><span>Картинка (ссылка)</span><input id="f-banner-image" class="input" type="text" placeholder="https://…"><small>Горизонтальное фото без надписей — название магазина приложение подпишет само.</small></label>
+            </div>
+        </div>
+        <div class="drawer-foot">
+            <button class="btn btn-secondary" onclick="closeBannerEditor()">Отмена</button>
+            <button class="btn btn-primary" onclick="saveBanner()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Редактор сторис ===== -->
+<div id="story-modal" class="overlay hidden" onclick="if(event.target===this)closeStoryEditor()">
+    <div class="drawer">
+        <div class="drawer-head">
+            <h2 id="story-modal-title">Новая сторис</h2>
+            <button class="icon-btn" onclick="closeStoryEditor()" aria-label="Закрыть"><svg class="ico"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="drawer-body">
+            <input type="hidden" id="f-story-id">
+            <div class="type-pick" id="story-type-pick">
+                <button type="button" id="st-type-shop" class="on" onclick="setStoryType('shop')"><b>Сторис магазина</b><span>Фото или видео от витрины</span></button>
+                <button type="button" id="st-type-lh" onclick="setStoryType('lifehack')"><b>Лайфхак из YouTube</b><span>Ссылка на YouTube Shorts</span></button>
+            </div>
+            <div class="panel" id="story-shop-fields">
+                <label class="field"><span>Магазин</span><select id="f-story-owner" class="select"></select></label>
+                <label class="field"><span>Название</span><input id="f-story-name" class="input" type="text" placeholder="Например, Скидки недели"></label>
+                <label class="field" style="margin-bottom:0"><span>Слайды — по одной ссылке в строке</span><textarea id="f-story-slides" class="textarea" rows="4" placeholder="https://…&#10;https://…"></textarea></label>
+            </div>
+            <div class="panel hidden" id="story-lh-fields">
+                <label class="field"><span>Ссылка на YouTube Shorts</span><input id="f-story-yt" class="input" type="text" placeholder="https://youtube.com/shorts/…" oninput="renderYtPreview()"></label>
+                <div class="row2">
+                    <label class="field"><span>Заголовок</span><input id="f-story-lh-title" class="input" type="text" placeholder="Как выровнять стену" oninput="renderYtPreview()"></label>
+                    <label class="field"><span>Автор ролика</span><input id="f-story-author" class="input" type="text" placeholder="@канал автора" oninput="renderYtPreview()"></label>
+                </div>
+                <div id="yt-preview"></div>
+            </div>
+            <div class="note"><svg class="ico"><use href="#i-clock"/></svg><div>Сторис показывается <b>24 часа</b> с момента публикации, потом исчезает. Просмотренные сторис у покупателя перестают выделяться — как в Instagram.</div></div>
+        </div>
+        <div class="drawer-foot">
+            <button class="btn btn-secondary" onclick="closeStoryEditor()">Отмена</button>
+            <button class="btn btn-primary" onclick="saveStory()">Опубликовать</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Причина отклонения ===== -->
+<div id="reject-modal" class="overlay hidden" onclick="if(event.target===this)closeOverlay('reject-modal')">
+    <div class="drawer">
+        <div class="drawer-head">
+            <h2>Почему отклоняем?</h2>
+            <button class="icon-btn" onclick="closeOverlay('reject-modal')" aria-label="Закрыть"><svg class="ico"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="drawer-body">
+            <p class="lead" style="margin-bottom:14px">Причину увидит магазин в своём кабинете и сможет исправить товар.</p>
+            <div class="reasons" id="reject-reasons"></div>
+            <label class="field" style="margin-top:14px"><span>Комментарий (необязательно)</span><textarea id="reject-comment" class="textarea" rows="2"></textarea></label>
+        </div>
+        <div class="drawer-foot">
+            <button class="btn btn-secondary" onclick="closeOverlay('reject-modal')">Отмена</button>
+            <button class="btn btn-danger" onclick="confirmReject()">Отклонить</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Универсальный редактор (разделы, недвижимость, доступы) ===== -->
+<div id="entry-modal" class="overlay hidden" onclick="if(event.target===this)closeOverlay('entry-modal')">
+    <div class="drawer">
+        <div class="drawer-head">
+            <h2 id="entry-title">Новая запись</h2>
+            <button class="icon-btn" onclick="closeOverlay('entry-modal')" aria-label="Закрыть"><svg class="ico"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="drawer-body" id="entry-body"></div>
+        <div class="drawer-foot">
+            <button class="btn btn-secondary" onclick="closeOverlay('entry-modal')">Отмена</button>
+            <button class="btn btn-primary" id="entry-save">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="data.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
