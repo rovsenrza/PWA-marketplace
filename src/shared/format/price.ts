@@ -12,7 +12,7 @@
 export function parsePrice(price: string | number | null | undefined): number {
   if (price == null || price === '') return 0;
   if (typeof price === 'number') return Number.isFinite(price) ? price : 0;
-  const s = String(price).replace(/[   ]/g, ' ');
+  const s = String(price).replace(/[\u00a0\u2009\u202f]/g, ' ');
   const m = s.match(/\d[\d ]*(?:[.,]\d+)*/);
   if (!m) return 0;
   let num = m[0].trim().replace(/ /g, '');

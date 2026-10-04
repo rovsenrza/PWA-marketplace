@@ -4,7 +4,7 @@ import { formatPrice, formatRub, parsePrice } from '../../src/shared/format/pric
 describe('parsePrice', () => {
   it('whole roubles in the usual formats', () => {
     expect(parsePrice('189 000 ₽')).toBe(189000);
-    expect(parsePrice('57 240 ₽')).toBe(57240); // неразрывный пробел
+    expect(parsePrice('57\u00a0240 ₽')).toBe(57240); // неразрывный пробел
     expect(parsePrice('6 900 000 ₽')).toBe(6900000);
     expect(parsePrice('от 450 ₽/м²')).toBe(450);
     expect(parsePrice(57240)).toBe(57240);
