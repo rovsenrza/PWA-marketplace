@@ -69,12 +69,21 @@ a new cache name, and the old cache is deleted on activation.
   instead of overwriting each other's functions. `app:cart-changed` comes from `refreshCartSurfaces`
   (every cart mutation), `app:favorites-changed` from `toggleFavorite`.
 
+### Data: one store per domain
+
+`CartStore` (`app/features/cart/cart-store.ts`) owns the cart lines and the orders and persists them through
+`CartRepository` / `MarketplaceRepository` (`shared/data/repositories.ts`, localStorage implementation over the
+old keys `meb_cart`, `meb_marketplace`). For legacy code it installs accessors: `state.cart` and the global
+`marketplace` read from and write to the same store, so there are no two copies. A backend means a new
+repository implementation; the store and the screens stay as they are.
+
 ### Already ported to modules
 
 | Was (legacy) | Now | Tests |
 |---|---|---|
 | `core/format.js`: prices, badges | `shared/format/price.ts`, `app/ui/product-badges.ts` | unit + e2e |
 | store order rules from `core/cart.js` (statuses, recalculation, SLA, total) | `shared/orders/store-order.ts` | unit (all transitions) + e2e checkout |
+| cart state and operations, checkout, cart and order storage from `core/cart.js` | `shared/orders/cart.ts`, `shared/orders/checkout.ts`, `shared/data/repositories.ts`, `app/features/cart/` (CartStore + actions) | unit (operations, checkout, store with an in-memory repository) + e2e (reload, lifehack estimate) |
 | function overwriting in `features/boot.js` | events `app:cart-changed` / `app:favorites-changed` | e2e |
 | motion, swipe to delete, notifications, tab lens, SW registration | `app/features/*` | e2e |
 
@@ -104,8 +113,7 @@ Three unreachable duplicate functions removed. Tests cover every directory secti
 the deeper screens and the in-app CRM.
 
 **Stage 2b — in progress.** Domain logic moves into modules through the bridge, one domain at a time,
-each with its tests (see the table above). Next: cart state and storage (`meb_cart`, `meb_marketplace`)
-into `shared/orders` + a repository, favorites, the product page. Inline `onclick` handlers (≈550)
+each with its tests (see the table above). Next: favorites, the product page, the store-side order actions (`so*`). Inline `onclick` handlers (≈550)
 become `data-action` + one delegator domain by domain; then the domain's line in `legacy-bridge.ts` goes away.
 
 **Stage 3 — data layer as a repository.** A `CatalogRepository` / `OrdersRepository` interface with a
@@ -114,6 +122,11 @@ localStorage implementation over today's keys; screens work only through it. Pri
 
 **Stage 4 — backend.** A second repository implementation over HTTP (the API stack is not chosen yet);
 authentication for stores and agencies; image uploads instead of URLs; product import from 1C/Excel on the server.
+
+**Known issue — escaping.** Legacy renderers insert product, store and lifehack data into HTML without
+escaping (`'<p>' + p.title + '</p>'`). Today the data comes from the seed and from the admin, but stores can
+edit their cards, so this is an XSS risk. Fix it per domain as it moves to modules: rendering goes only through
+`shared/ui/html.ts` (`esc`), with a test that an injection is printed as text. Do it before stores are given access.
 
 **Separately:** compress `public/pc-arts` (7.4 MB of PNG) and `public/icons` (2.4 MB) to WebP/AVIF at the
 right sizes; replace the 30 dead Unsplash photo links with real product photos.

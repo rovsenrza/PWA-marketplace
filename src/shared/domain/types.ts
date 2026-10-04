@@ -53,14 +53,31 @@ export interface PromoSlide {
   image: string;
 }
 
+/** A cart line: a snapshot of the product at the time it was added (price, title, photo). */
 export interface CartItem {
   productId: string;
   storeId: string;
   qty: number;
-  priceSnapshot?: number;
-  titleSnapshot?: string;
+  priceSnapshot: number;
+  titleSnapshot: string;
   image?: string;
   variant?: string;
+}
+
+export interface BuyerContact {
+  name: string;
+  phone: string;
+  telegram?: string;
+  max?: string;
+  comment?: string;
+}
+
+export interface Checkout {
+  id: string;
+  userId: string;
+  contact: BuyerContact;
+  createdAt: number;
+  status: 'submitted';
 }
 
 export type StoreOrderStatus =
@@ -74,6 +91,7 @@ export type OrderLineStatus = 'pending' | 'confirmed' | 'unavailable' | 'price_c
 export interface OrderLine {
   productId: string;
   title?: string;
+  image?: string;
   qty: number;
   /** the price at checkout */
   quotedPrice: number;
@@ -91,10 +109,11 @@ export interface StoreOrder {
   createdAt: number;
   updatedAt?: number;
   slaDeadline?: number;
+  contact?: BuyerContact;
 }
 
 export interface Marketplace {
-  checkouts: Array<{ id: string; userId?: string; createdAt: number; status: string }>;
+  checkouts: Checkout[];
   storeOrders: StoreOrder[];
   invoices: unknown[];
   payments: unknown[];

@@ -5,89 +5,8 @@
 
 
         // ========== МАРКЕТПЛЕЙС: Cart → Checkout → StoreOrder → Invoice → Payment ==========
-let marketplace = { checkouts: [], storeOrders: [], invoices: [], payments: [] };
-
-
-
-
-
-function cartUid(prefix) {
-    return prefix + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
-}
-
-
-function getCartItems() {
-    if (!Array.isArray(state.cart)) return [];
-    return state.cart.filter(i => i && i.productId);
-}
-
-
-function cartHasProduct(prodId) {
-    if (!prodId || !Array.isArray(state.cart)) return false;
-    return getCartItems().some(i => i.productId === prodId);
-}
-
-
-function cartQtyTotal() {
-    return getCartItems().reduce((s, i) => s + (i.qty || 1), 0);
-}
-
-
-function loadCart() {
-    try {
-        const saved = localStorage.getItem('meb_cart');
-        const parsed = saved ? JSON.parse(saved) : [];
-        if (!Array.isArray(parsed)) { state.cart = []; }
-        else if (parsed.length && typeof parsed[0] === 'string') {
-            state.cart = parsed.filter(Boolean).map(id => {
-                const p = productsDb[id];
-                if (!p) return null;
-                return { productId: p.id, storeId: p.store, qty: 1, priceSnapshot: parsePrice(p.price), titleSnapshot: p.title, image: p.image };
-            }).filter(Boolean);
-        } else {
-            state.cart = parsed.filter(i => i && i.productId);
-        }
-    } catch (e) { state.cart = []; }
-    updateCartBadge();
-}
-
-
-function saveCart() {
-    try { localStorage.setItem('meb_cart', JSON.stringify(getCartItems())); } catch (e) {}
-}
-
-
-function loadMarketplace() {
-    try {
-        const raw = localStorage.getItem('meb_marketplace');
-        if (raw) {
-            const d = JSON.parse(raw);
-            marketplace = {
-                checkouts: Array.isArray(d.checkouts) ? d.checkouts : [],
-                storeOrders: Array.isArray(d.storeOrders) ? d.storeOrders : [],
-                invoices: Array.isArray(d.invoices) ? d.invoices : [],
-                payments: Array.isArray(d.payments) ? d.payments : []
-            };
-        }
-    } catch (e) {}
-}
-
-
-function saveMarketplace() {
-    try { localStorage.setItem('meb_marketplace', JSON.stringify(marketplace)); } catch (e) {}
-}
-
-
-
-
-/* правила статусов заказов — src/shared/orders/store-order.ts (soExpireOverdue, soRecalc, …) */
-function expireExpiredStoreOrders() {
-    if (soExpireOverdue(marketplace.storeOrders || [])) saveMarketplace();
-}
-
-
-
-
+/* состояние корзины и заказов (marketplace, state.cart) и операции над ними —
+   src/app/features/cart (CartStore, actions); здесь остались отрисовка и действия магазина по заказам */
 
 
 function refreshCartSurfaces() {
@@ -116,47 +35,6 @@ function updateCartBadge() {
     const count = cartQtyTotal();
     if (count > 0) { badge.innerText = count; badge.classList.remove('hidden'); }
     else badge.classList.add('hidden');
-}
-
-
-function clearCart() {
-    state.cart = [];
-    saveCart();
-    refreshCartSurfaces();
-    showSmsToast('Корзина очищена');
-}
-
-
-function addToCart(prodId, qty) {
-    if (!prodId) return;
-    const p = productsDb[prodId];
-    if (!p) return showSmsToast('Товар не найден');
-    if (!Array.isArray(state.cart) || (state.cart.length && typeof state.cart[0] === 'string')) loadCart();
-    const addQty = Math.max(1, parseInt(qty, 10) || 1);
-    const items = getCartItems();
-    const existing = items.find(i => i.productId === prodId);
-    if (existing) existing.qty = (existing.qty || 1) + addQty;
-    else items.push({ productId: p.id, storeId: p.store, qty: addQty, priceSnapshot: parsePrice(p.price), titleSnapshot: p.title, image: p.image, variant: (window.currentProductId === prodId && window.pmSelectedColor && window.pmSelectedColor.label) ? window.pmSelectedColor.label : '' });
-    state.cart = items;
-    saveCart();
-    refreshCartSurfaces();
-    showSmsToast(existing ? 'Количество увеличено' : 'Добавлено в корзину');
-}
-
-
-function setCartQty(prodId, qty) {
-    const n = Math.max(0, parseInt(qty, 10) || 0);
-    state.cart = getCartItems().map(i => i.productId === prodId ? { ...i, qty: n } : i).filter(i => i.qty > 0);
-    saveCart();
-    refreshCartSurfaces();
-}
-
-
-function removeFromCart(prodId) {
-    state.cart = getCartItems().filter(i => i.productId !== prodId);
-    saveCart();
-    refreshCartSurfaces();
-    showSmsToast('Удалено из корзины');
 }
 
 
@@ -213,58 +91,6 @@ function renderCart() {
     html += '<p class="cart-total">Итого: ' + formatRub(grand) + '</p>';
     container.innerHTML = html;
     renderBuyerOrders();
-}
-
-
-function submitCheckout() {
-    const items = getCartItems();
-    if (!items.length) return showSmsToast('Корзина пуста');
-    const name = (document.getElementById('chk-name') || {}).value || '';
-    const phone = (document.getElementById('chk-phone') || {}).value || '';
-    if (!name.trim() || !phone.trim()) return showSmsToast('Укажите имя и телефон');
-    const contact = {
-        name: name.trim(),
-        phone: phone.trim(),
-        telegram: ((document.getElementById('chk-telegram') || {}).value || '').trim(),
-        max: ((document.getElementById('chk-max') || {}).value || '').trim(),
-        comment: ((document.getElementById('chk-comment') || {}).value || '').trim()
-    };
-    const checkout = { id: cartUid('chk-'), userId: state.userEmail || phone, contact, createdAt: Date.now(), status: 'submitted' };
-    /* гость: запоминаем имя и телефон на этом устройстве, иначе «Мои заказы» его заказ не находят
-       (renderBuyerOrders сверяет с buyerProfile.phone) */
-    if (!buyerProfile.phone || !buyerProfile.name) {
-        if (!buyerProfile.phone) buyerProfile.phone = contact.phone;
-        if (!buyerProfile.name) buyerProfile.name = contact.name;
-        try { localStorage.setItem('meb_buyer', JSON.stringify(buyerProfile)); } catch (e) {}
-    }
-    marketplace.checkouts.push(checkout);
-    const byStore = {};
-    items.forEach(i => { (byStore[i.storeId] = byStore[i.storeId] || []).push(i); });
-    Object.keys(byStore).forEach(storeId => {
-        marketplace.storeOrders.push({
-            id: cartUid('so-'),
-            checkoutId: checkout.id,
-            storeId,
-            status: 'pending_review',
-            slaDeadline: Date.now() + STORE_ORDER_SLA_MS,
-            createdAt: Date.now(),
-            contact,
-            lines: byStore[storeId].map(i => ({
-                productId: i.productId,
-                title: i.titleSnapshot,
-                image: i.image,
-                qty: i.qty || 1,
-                quotedPrice: i.priceSnapshot,
-                proposedPrice: null,
-                lineStatus: 'pending'
-            }))
-        });
-    });
-    state.cart = [];
-    saveCart();
-    saveMarketplace();
-    refreshCartSurfaces();
-    showSmsToast('Создано заказов: ' + Object.keys(byStore).length + ' (по магазинам)');
 }
 
 

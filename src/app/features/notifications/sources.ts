@@ -6,6 +6,7 @@
 import { StorageKeys } from '../../../shared/storage/keys';
 import { readSet } from '../../../shared/storage/local-store';
 import { statusLabel } from '../../../shared/orders/store-order';
+import { cartStore } from '../cart/cart-store';
 
 export type NotificationAction =
   | { type: 'tab'; tab: 'cart' }
@@ -28,7 +29,7 @@ export function plural(n: number, one: string, few: string, many: string): strin
 }
 
 function fromOrders(): AppNotification[] {
-  const orders = (typeof marketplace !== 'undefined' && marketplace?.storeOrders) || [];
+  const orders = cartStore.marketplace.storeOrders;
   return orders
     .slice()
     .sort((a, b) => b.createdAt - a.createdAt)
@@ -44,7 +45,7 @@ function fromOrders(): AppNotification[] {
 }
 
 function fromCart(): AppNotification[] {
-  const items = window.getCartItems?.() ?? [];
+  const items = cartStore.list();
   if (!items.length) return [];
   const stores = new Set(items.map((i) => i.storeId)).size;
   return [{

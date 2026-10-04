@@ -33,3 +33,24 @@ test('checkout as a guest: an order per store, visible in «Мои заказы�
   expect(after.find((o) => o.id === list[1].id)!.status).toBe('expired');
   await expect(app.locator('#buyer-orders-list')).toContainText('Магазин не ответил');
 });
+
+test('cart: survives a reload (repository → localStorage), quantity and remove', async ({ app }) => {
+  await app.evaluate(() => { const w = window as any; w.addToCart('prod-2'); w.addToCart('prod-2'); w.addToCart('prod-4', 3); });
+  await expect(app.locator('#cart-badge')).toHaveText('5');
+  await app.reload();
+  await app.waitForFunction(() => typeof (window as any).switchTab === 'function');
+  await expect(app.locator('#cart-badge')).toHaveText('5');
+  await app.evaluate(() => { const w = window as any; w.setCartQty('prod-4', 1); w.removeFromCart('prod-2'); });
+  await expect(app.locator('#cart-badge')).toHaveText('1');
+  /* legacy reads state.cart: it is an accessor onto the same store */
+  expect(await app.evaluate(() => eval('state').cart.map((i: any) => i.productId))).toEqual(['prod-4']);
+});
+
+test('lifehack: «Собрать в корзину» (legacy writes state.cart) lands in the shared store', async ({ app }) => {
+  const id = await app.evaluate(() => (eval('lifehacksDb') as any[]).find((x) => x.estimate?.lines?.length)?.id);
+  expect(id, 'a lifehack with an estimate').toBeTruthy();
+  await app.evaluate((x) => (window as any).addLifehackEstimateToCart(x), id);
+  const n = await app.evaluate(() => (window as any).getCartItems().length);
+  expect(n).toBeGreaterThan(0);
+  await expect(app.locator('#cart-badge')).toBeVisible();
+});
