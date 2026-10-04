@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Product, Shop } from '../../src/shared/domain/types';
-import { mergeCatalog, mergeDirectory, mergeLifehacks, mergeProducts, mergeShops, toStored, type CatalogState } from '../../src/shared/data/catalog';
+import { mergeCatalog, mergeDirectory, mergeLifehacks, mergeProducts, mergeShops, stripEmbeddedMedia, type CatalogState } from '../../src/shared/data/catalog';
 import { CATALOG_KEYS, createLocalCatalogRepository } from '../../src/shared/data/catalog-repository';
 import { CatalogStore } from '../../src/shared/data/catalog-store';
 
@@ -33,12 +33,12 @@ describe('mergeShops / toStored', () => {
   it('per field: the seed fills fields the stored record lacks', () => {
     expect(mergeShops(seed().shops, { S: { name: 'S', status: 'published', description: 'новое' } }).S).toMatchObject({ banner: 'b.jpg', description: 'новое' });
   });
-  it('data: images are not put into storage', () => {
-    const st = seed();
-    st.shops.S = { ...st.shops.S, banner: 'data:image/png;base64,AAA', gallery: ['data:x', 'ok.jpg'] };
-    expect(toStored('shops', st)).toMatchObject({ S: { banner: '', gallery: ['ok.jpg'] } });
-    expect(st.shops.S.banner).toBe('data:image/png;base64,AAA'); // в памяти остаётся
+  it('stripEmbeddedMedia: data: URLs leave, ordinary links stay', () => {
+    const shop = { name: 'S', banner: 'data:image/jpeg;base64,AAA', logo: 'logo.png', gallery: ['data:x', 'ok.jpg'], nested: { cover: 'data:y' } };
+    expect(stripEmbeddedMedia(shop)).toEqual({ name: 'S', banner: '', logo: 'logo.png', gallery: ['ok.jpg'], nested: { cover: '' } });
+    expect(shop.banner.startsWith('data:')).toBe(true); // исходник не тронут
   });
+
 });
 
 describe('directory and lifehacks', () => {
@@ -88,7 +88,7 @@ describe('the localStorage repository', () => {
   it('an overflow on one part does not cancel the others (before, saving stopped at the first error)', () => {
     const storage = memoryStorage(CATALOG_KEYS.shops);
     const r = createLocalCatalogRepository(storage).save(seed());
-    expect(r).toEqual({ failed: ['shops'], quotaExceeded: true });
+    expect(r).toEqual({ failed: ['shops'], degraded: [], quotaExceeded: true });
     for (const k of [CATALOG_KEYS.stories, CATALOG_KEYS.vacancies, CATALOG_KEYS.lifehacks]) expect(storage.dump[k]).toBeTruthy();
     expect(storage.dump.meb_updated).toBeTruthy();
   });
@@ -98,6 +98,23 @@ describe('the localStorage repository', () => {
     expect(Object.keys(storage.dump).sort()).toEqual(['meb_products', 'meb_promo', 'meb_updated']);
     storage.dump.meb_stories = '{broken';
     expect(createLocalCatalogRepository(storage).load()).not.toHaveProperty('stories');
+  });
+});
+
+describe('saving with embedded photos', () => {
+  it('photos are saved with the data when they fit (before, store banners were always stripped)', () => {
+    const storage = memoryStorage();
+    const st = seed(); st.shops.S = { ...st.shops.S, banner: 'data:image/jpeg;base64,QUJD' };
+    expect(createLocalCatalogRepository(storage).save(st, ['shops'])).toEqual({ failed: [], degraded: [], quotaExceeded: false });
+    expect(JSON.parse(storage.dump.meb_shops).S.banner).toBe('data:image/jpeg;base64,QUJD');
+  });
+  it('they did not fit: the part is saved without photos (the edits are not lost)', () => {
+    const storage = memoryStorage();
+    const set = storage.setItem;
+    storage.setItem = (k, v) => { if (v.includes('data:')) { const e = new Error('quota'); e.name = 'QuotaExceededError'; throw e; } set(k, v); };
+    const st = seed(); st.shops.S = { ...st.shops.S, banner: 'data:image/jpeg;base64,QUJD', description: 'новое описание' };
+    expect(createLocalCatalogRepository(storage).save(st, ['shops'])).toEqual({ failed: [], degraded: ['shops'], quotaExceeded: true });
+    expect(JSON.parse(storage.dump.meb_shops).S).toMatchObject({ banner: '', description: 'новое описание' });
   });
 });
 

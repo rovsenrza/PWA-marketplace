@@ -7,8 +7,10 @@ import type { CatalogPart, CatalogState, StoredCatalog } from './catalog';
 import { CATALOG_PARTS, toStored } from './catalog';
 
 export interface SaveResult {
-  /** parts that didn't fit (quota) or failed to save for another reason */
+  /** parts that didn't save even without embedded files */
   failed: CatalogPart[];
+  /** parts saved without embedded photos (they didn't fit; they'll be gone after a reload) */
+  degraded: CatalogPart[];
   quotaExceeded: boolean;
 }
 
@@ -52,18 +54,22 @@ export function createLocalCatalogRepository(storage: Storage | undefined = glob
     },
     save(state, parts = CATALOG_PARTS) {
       const failed: CatalogPart[] = [];
+      const degraded: CatalogPart[] = [];
       let quotaExceeded = false;
-      /* каждая часть — отдельно: переполнение на одной не отменяет остальные (раньше отменяло) */
+      const write = (part: CatalogPart, strip: boolean) => storage?.setItem(CATALOG_KEYS[part], JSON.stringify(toStored(part, state, strip)));
+      /* каждая часть — отдельно: переполнение на одной не отменяет остальные (раньше отменяло);
+         не влезло с фото — сохраняем без встроенных фото, чтобы не потерять сами правки */
       for (const part of parts) {
         try {
-          storage?.setItem(CATALOG_KEYS[part], JSON.stringify(toStored(part, state)));
+          write(part, false);
         } catch (e) {
-          failed.push(part);
-          if (isQuota(e)) quotaExceeded = true;
+          if (!isQuota(e)) { failed.push(part); continue; }
+          quotaExceeded = true;
+          try { write(part, true); degraded.push(part); } catch { failed.push(part); }
         }
       }
       try { storage?.setItem(StorageKeys.updatedAt, String(Date.now())); } catch { /* метка не критична */ }
-      return { failed, quotaExceeded };
+      return { failed, degraded, quotaExceeded };
     },
     onExternalChange(cb) {
       const h = (e: StorageEvent) => { if (e.key === StorageKeys.updatedAt) cb(); };

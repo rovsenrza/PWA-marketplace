@@ -104,20 +104,25 @@ export function mergeCatalog(seed: CatalogState, stored: StoredCatalog): Catalog
   };
 }
 
-/**
- * What goes into storage. Images uploaded as data: URLs are not kept in store records:
- * the browser's 5 MB is not enough for photos (they live until reload; a server will keep them).
- */
-export function toStored(part: CatalogPart, state: CatalogState): unknown {
-  if (part === 'shops') {
-    const out: Record<string, Shop> = {};
-    for (const [name, shop] of Object.entries(state.shops)) {
-      const s = { ...shop };
-      if (typeof s.banner === 'string' && s.banner.startsWith('data:')) s.banner = '';
-      if (Array.isArray(s.gallery)) s.gallery = (s.gallery as unknown[]).filter((x) => typeof x !== 'string' || !x.startsWith('data:'));
-      out[name] = s;
-    }
-    return out;
+/** Removes embedded files (data: URLs) from a value: for a retry save when the quota ran out. */
+export function stripEmbeddedMedia<T>(value: T): T {
+  if (typeof value === 'string') return (value.startsWith('data:') ? '' : value) as T;
+  if (Array.isArray(value)) {
+    return value.filter((x) => !(typeof x === 'string' && x.startsWith('data:'))).map((x) => stripEmbeddedMedia(x)) as T;
   }
-  return state[part];
+  if (value && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value)) out[k] = stripEmbeddedMedia(v);
+    return out as T;
+  }
+  return value;
+}
+
+/**
+ * What goes into storage. Embedded photos are saved together with the data (they're compressed by
+ * MediaStore). If the part doesn't fit, the repository repeats the save without them (stripMedia).
+ */
+export function toStored(part: CatalogPart, state: CatalogState, stripMedia = false): unknown {
+  const value = state[part];
+  return stripMedia ? stripEmbeddedMedia(value) : value;
 }

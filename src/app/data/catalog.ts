@@ -18,9 +18,10 @@ export function loadAllData(): void {
 
 export function saveAllData(): void {
   const r = catalog.save();
-  if (r.quotaExceeded) {
-    window.showSmsToast?.('Не хватило места в браузере: часть данных не сохранилась. Уменьшите фото или видео.');
-  } else if (r.failed.length) {
+  if (r.failed.length) {
+    window.showSmsToast?.('Не хватило места в браузере: часть изменений не сохранилась');
     console.warn('Не сохранено:', r.failed.join(', '));
+  } else if (r.degraded.length) {
+    window.showSmsToast?.('Изменения сохранены, но загруженные фото не поместились в память браузера и пропадут после перезагрузки');
   }
 }

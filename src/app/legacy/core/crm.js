@@ -245,22 +245,15 @@ function setStoryShop(name) {
 
 
 // === ЗАГРУЗКА ФАЙЛОВ С УСТРОЙСТВА ===
+/* загрузка: MediaStore (сжатие на устройстве; с сервером — объектное хранилище), src/app/features/media.ts */
 function handleStoryFilesUpload(event) {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-            // Сохраняем файл как data:URL (base64-строка)
-            storyEditorSlides.push(ev.target.result);
-            renderStoryEditorPreviews();
-        };
-        reader.readAsDataURL(file);
-    }
-    // Очищаем input, чтобы можно было выбрать те же файлы снова
-    event.target.value = '';
+    const files = Array.prototype.slice.call(event.target.files || []);
+    event.target.value = ''; // сброс, чтобы можно было выбрать те же файлы снова (список уже скопирован)
+    files.reduce(function (chain, file) {
+        return chain.then(function () {
+            return mediaUpload(file, 'story-slide').then(function (r) { if (r.ok) { storyEditorSlides.push(r.url); renderStoryEditorPreviews(); } });
+        });
+    }, Promise.resolve());
 }
 
 
@@ -460,30 +453,28 @@ function renderCrmShopList() {
 
 
         // === ЗАГРУЗКА БАННЕРА МАГАЗИНА С УСТРОЙСТВА ===
+/* загрузка: MediaStore (сжатие на устройстве; с сервером — объектное хранилище), src/app/features/media.ts */
 function handleShopBannerUpload(event) {
-    const file = event.target.files[0];
+    const file = event.target.files && event.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function (ev) {
-        // Записываем картинку (base64) в скрытое поле
-        document.getElementById('shop-editor-banner').value = ev.target.result;
-        // Показываем превью
-        document.getElementById('shop-editor-preview').src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
+    mediaUpload(file, 'shop-banner').then(function (r) {
+        if (!r.ok) return;
+        document.getElementById('shop-editor-banner').value = r.url;
+        document.getElementById('shop-editor-preview').src = r.url;
+    });
 }
 
 
 // === ЗАГРУЗКА ЛОГОТИПА МАГАЗИНА С УСТРОЙСТВА ===
+/* загрузка: MediaStore (сжатие на устройстве; с сервером — объектное хранилище), src/app/features/media.ts */
 function handleShopLogoUpload(event) {
-    const file = event.target.files[0];
+    const file = event.target.files && event.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function (ev) {
-        document.getElementById('shop-editor-logo').value = ev.target.result;
-        document.getElementById('shop-editor-logo-preview').src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
+    mediaUpload(file, 'shop-logo').then(function (r) {
+        if (!r.ok) return;
+        document.getElementById('shop-editor-logo').value = r.url;
+        document.getElementById('shop-editor-logo-preview').src = r.url;
+    });
 }
 
 
@@ -492,20 +483,15 @@ let shopEditorGallery = [];
 
 
 // === ЗАГРУЗКА НЕСКОЛЬКИХ ФОТО/ВИДЕО ГАЛЕРЕИ С УСТРОЙСТВА ===
+/* загрузка: MediaStore (сжатие на устройстве; с сервером — объектное хранилище), src/app/features/media.ts */
 function handleShopGalleryUpload(event) {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-            shopEditorGallery.push(ev.target.result); // сохраняем как base64
-            renderShopGalleryPreviews();
-        };
-        reader.readAsDataURL(file);
-    }
-    event.target.value = ''; // очищаем, чтобы можно было выбрать те же файлы снова
+    const files = Array.prototype.slice.call(event.target.files || []);
+    event.target.value = ''; // сброс, чтобы можно было выбрать те же файлы снова (список уже скопирован)
+    files.reduce(function (chain, file) {
+        return chain.then(function () {
+            return mediaUpload(file, 'shop-gallery').then(function (r) { if (r.ok) { shopEditorGallery.push(r.url); renderShopGalleryPreviews(); } });
+        });
+    }, Promise.resolve());
 }
 
 
@@ -541,26 +527,17 @@ let shopEditorAbout = [];
 
 
 // === ЗАГРУЗКА ФОТО "О КОМПАНИИ" (до 3 шт) ===
+/* загрузка: MediaStore (сжатие на устройстве; с сервером — объектное хранилище), src/app/features/media.ts */
 function handleShopAboutUpload(event) {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    for (let i = 0; i < files.length; i++) {
-        if (shopEditorAbout.length >= 3) {
-            alert('Можно загрузить максимум 3 фото к описанию.');
-            break;
-        }
-        const file = files[i];
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-            if (shopEditorAbout.length < 3) {
-                shopEditorAbout.push(ev.target.result);
-                renderShopAboutPreviews();
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-    event.target.value = ''; // сброс, чтобы можно было выбрать те же файлы снова
+    const files = Array.prototype.slice.call(event.target.files || []);
+    event.target.value = ''; // сброс, чтобы можно было выбрать те же файлы снова (список уже скопирован)
+    let warned = false; // предупреждение о лимите — один раз на выбор файлов
+    files.reduce(function (chain, file) {
+        return chain.then(function () {
+            if (shopEditorAbout.length >= 3) { if (!warned) { warned = true; alert('Можно загрузить максимум 3 фото к описанию.'); } return; }
+            return mediaUpload(file, 'shop-about').then(function (r) { if (r.ok) { if (shopEditorAbout.length < 3) { shopEditorAbout.push(r.url); renderShopAboutPreviews(); } } });
+        });
+    }, Promise.resolve());
 }
 
 

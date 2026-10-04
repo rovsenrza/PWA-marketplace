@@ -937,28 +937,26 @@ function removeLifehackGalleryImg(i) {
     renderLhEditorGallery();
 }
 
+/* загрузка: MediaStore (сжатие на устройстве; с сервером — объектное хранилище), src/app/features/media.ts */
 function handleLifehackCoverUpload(event) {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function (ev) {
-        document.getElementById('lh-editor-image').value = ev.target.result;
-        document.getElementById('lh-editor-preview').src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
+    mediaUpload(file, 'lifehack-cover').then(function (r) {
+        if (!r.ok) return;
+        document.getElementById('lh-editor-image').value = r.url;
+        document.getElementById('lh-editor-preview').src = r.url;
+    });
 }
 
+/* загрузка: MediaStore (сжатие на устройстве; с сервером — объектное хранилище), src/app/features/media.ts */
 function handleLifehackGalleryUpload(event) {
-    const files = event.target.files;
-    if (!files) return;
-    Array.prototype.forEach.call(files, function (file) {
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-            lifehackEditorGallery.push(ev.target.result);
-            renderLhEditorGallery();
-        };
-        reader.readAsDataURL(file);
-    });
+    const files = Array.prototype.slice.call(event.target.files || []);
+    event.target.value = ''; // сброс, чтобы можно было выбрать те же файлы снова (список уже скопирован)
+    files.reduce(function (chain, file) {
+        return chain.then(function () {
+            return mediaUpload(file, 'lifehack-gallery').then(function (r) { if (r.ok) { lifehackEditorGallery.push(r.url); renderLhEditorGallery(); } });
+        });
+    }, Promise.resolve());
 }
 
 function addLifehackCategoryFromAdmin() {

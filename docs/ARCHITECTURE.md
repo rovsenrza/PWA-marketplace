@@ -93,6 +93,7 @@ a new cache name, and the old cache is deleted on activation.
 | favourites screen and «Отправить менеджеру»: `core/favorites.js` (deleted) | `shared/catalog/favorites.ts` (groups, message), `app/features/favorites/render.ts` | unit + e2e (injection, Telegram link, clicks) |
 | cart, «Мои заказы» and store-order rendering: `core/cart.js` (deleted) | `app/features/cart/render.ts` through `html`…``, buttons through `data-action` (`ui-actions.ts`) | unit (`html`, order selection) + e2e (markup injection, real clicks) |
 | catalogue data layer: `persistence.js` (`saveAllData`/`loadAllData`) and admin `data.js` (deleted) | `shared/data/catalog.ts`, `catalog-repository.ts`, `catalog-store.ts`; app `app/data/catalog.ts`, admin `admin/main.ts` | unit (merging, per-part saving, quota) + e2e (admin edit in the app, live sync) |
+| uploads in the in-app CRM and the lifehack editor (7 `FileReader` handlers) | `shared/media/` (MediaStore, compression), `app/features/media.ts`; retry saving without photos in `catalog-repository.ts` | unit (sizes, embedded-file removal, saving without photos) + e2e (4000×3000 photo → 1600 px, after reload; video refusal) |
 | sign-in and registration `core/auth.js` (deleted), demo logins from `core/data.js` | `shared/auth/` (AuthService, Session, validation, **DemoAuthService**), `app/features/auth/auth-ui.ts` | unit (mask, rules, demo roles) + e2e (dashboards by role, sign-out, password button) |
 | buyer profile `core/buyer.js` (entire file) | `app/features/buyer/` (BuyerStore + card and editor), `BuyerRepository` | unit + e2e (editor, reload, registration through auth.js) |
 | order actions `so*` from `core/cart.js`: store answers, new price, invoice, payment, cancel, return to cart | `shared/orders/store-order-actions.ts` (rules + guards), `app/features/orders/actions.ts` | unit (every transition and refusal) + e2e (full cycle) |
@@ -117,6 +118,14 @@ carries the role (`buyer` · `store` · `agency` · `admin`) and, for a store, `
 is **`DemoAuthService`**, the prototype's behaviour **without any password checks** (see the file header).
 It can't be protected in the browser; a server implementation replaces it (that's the server decision).
 Screens see only the interface; the legacy `state.userRole` / `state.currentShop` are synced from the session.
+
+### Files (photos and video)
+
+`MediaStore.upload(file, purpose)` (`shared/media/types.ts`): editors know only it. Without a server it's
+`LocalMediaStore`: photos are compressed on the device (to 512–1920 px depending on purpose, JPEG/WebP),
+the result is embedded in the data as a data: URL; videos only up to 2.5 MB. If a part with photos doesn't fit
+the browser's storage, the repository saves it without the embedded photos (the edits are kept, the user is
+warned). With a server, an implementation that puts the file in object storage and returns a URL.
 
 ## Rules for new code
 

@@ -19,6 +19,7 @@ import { ordersLegacyApi } from './features/orders/actions';
 import { buyerStore } from './features/buyer/buyer-store';
 import { buyerLegacyApi } from './features/buyer/profile';
 import { authLegacyApi } from './features/auth/auth-ui';
+import { mediaUpload } from './features/media';
 
 exposeToLegacy({ parsePrice, formatPrice, formatRub, getBadgeHtml, getPriceHtml });
 
@@ -57,3 +58,6 @@ exposeToLegacy(buyerLegacyApi);
 
 /* вход и регистрация: AuthService (сейчас демо, см. src/shared/auth/demo-auth.ts) */
 exposeToLegacy(authLegacyApi);
+
+/* загрузка фото и видео из редакторов: MediaStore */
+exposeToLegacy({ mediaUpload });

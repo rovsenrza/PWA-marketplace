@@ -17,10 +17,12 @@ function applyShopLocalBanners() {
         ['Новоселье', 'novoselie'],
         ['ЛеГо', 'lego']
     ];
+    /* фирменный баннер и его оформление — если у магазина пусто или стоит фирменный же;
+       свой баннер, загруженный в редакторе, больше не затирается */
     bind.forEach(([name, key]) => {
         const shop = shopsProfileDb[name];
         const src = SHOP_B[key];
-        if (!shop || !src) return;
+        if (!shop || !src || (shop.banner && shop.banner !== src)) return;
         shop.banner = src;
         if (key === 'stroylandiya') shop.bannerFit = 'contain';
         if (Array.isArray(shop.gallery) && shop.gallery.length) shop.gallery[0] = src;

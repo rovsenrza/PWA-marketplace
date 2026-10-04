@@ -19,7 +19,8 @@ exposeToLegacy({
   DB_save: () => {
     const r = catalog.save(ADMIN_PARTS);
     const toast = window.toast as ((m: string) => void) | undefined;
-    if (r.quotaExceeded) toast?.('Не хватило места в браузере: часть данных не сохранилась');
+    if (r.failed.length) toast?.('Не хватило места в браузере: часть изменений не сохранилась');
+    else if (r.degraded.length) toast?.('Сохранено без встроенных фото: они не поместились в память браузера');
   },
 });
 
