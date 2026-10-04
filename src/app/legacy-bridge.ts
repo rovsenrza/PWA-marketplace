@@ -8,6 +8,8 @@ import { STORE_ORDER_SLA_MS, confirmedAmount, expireOverdue, recalcStatus, statu
 import { getBadgeHtml, getPriceHtml } from './ui/product-badges';
 import { cartStore } from './features/cart/cart-store';
 import { cartLegacyApi } from './features/cart/actions';
+import { favoritesStore } from './features/favorites/favorites-store';
+import { favoritesLegacyApi } from './features/favorites/actions';
 
 exposeToLegacy({ parsePrice, formatPrice, formatRub, getBadgeHtml, getPriceHtml });
 
@@ -23,3 +25,7 @@ exposeToLegacy({ STORE_ORDER_SLA_MS });
 /* корзина и заказы: одно хранилище, state.cart и marketplace — аксессоры на него */
 cartStore.installLegacyAccessors(typeof state !== 'undefined' ? state : undefined);
 exposeToLegacy(cartLegacyApi);
+
+/* избранное: state.favorites — аксессор на FavoritesStore */
+favoritesStore.installLegacyAccessor(typeof state !== 'undefined' ? state : undefined);
+exposeToLegacy(favoritesLegacyApi);

@@ -1,5 +1,5 @@
 /* Избранное.
-   Сердечки, группы по магазинам, отправка менеджеру.
+   Отрисовка: группы по магазинам, отправка менеджеру. Состояние и операции — src/app/features/favorites.
    Классический скрипт: функции глобальные (их вызывает разметка). Только объявления —
    код, который выполняется при загрузке, живёт в boot.js и идёт последним. */
 
@@ -15,47 +15,12 @@ function toggleFavGroup(id) {
 
 
 
-// Добавить/убрать товар из избранного
-function toggleFavorite(prodId) {
-    if (!state.favorites) state.favorites = [];
-    const idx = state.favorites.indexOf(prodId);
-    if (idx === -1) {
-        state.favorites.push(prodId);
-        showSmsToast("Добавлено в избранное ");
-    } else {
-        state.favorites.splice(idx, 1);
-        showSmsToast("Удалено из избранного");
-    }
-    saveFavorites();
-    renderProductGrid();       // перекрасить сердечки
-    renderFavorites();         // обновить список
-    updateBuyerFavCount();     // обновить счётчик в карточке
-    /* событие для остальных доменов (src/shared/events.ts) */
-    document.dispatchEvent(new CustomEvent('app:favorites-changed', { detail: { productId: prodId } }));
-}
 
 
-function saveFavorites() {
-    try { localStorage.setItem('meb_favorites', JSON.stringify(state.favorites)); } catch (e) {}
-}
 
 
-function loadFavorites() {
-    try {
-        const saved = localStorage.getItem('meb_favorites');
-        if (saved) state.favorites = JSON.parse(saved);
-    } catch (e) { state.favorites = []; }
-}
 
 
-function clearAllFavorites() {
-    state.favorites = [];
-    saveFavorites();
-    renderProductGrid();
-    renderFavorites();
-    updateBuyerFavCount();
-    showSmsToast("Избранное очищено ");
-}
 
 
 // Рендер избранного с группировкой по магазинам
@@ -148,17 +113,6 @@ function renderFavorites() {
 }
 
 
-function unfavoriteStore(store) {
-    if (!state.favorites) return;
-    state.favorites = state.favorites.filter(function (id) {
-        const p = productsDb[id];
-        return p && p.store !== store;
-    });
-    saveFavorites();
-    renderProductGrid();
-    renderFavorites();
-    updateBuyerFavCount();
-}
 
 
 // Отправить заказ менеджеру магазина в Telegram

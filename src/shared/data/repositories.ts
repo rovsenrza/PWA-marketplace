@@ -18,6 +18,11 @@ export interface MarketplaceRepository {
   save(m: Marketplace): void;
 }
 
+export interface FavoritesRepository {
+  loadRaw(): unknown;
+  save(ids: string[]): void;
+}
+
 export const emptyMarketplace = (): Marketplace => ({ checkouts: [], storeOrders: [], invoices: [], payments: [] });
 
 /** Fills in missing collections: older saves may not have some of them. */
@@ -35,4 +40,9 @@ export const localCartRepository: CartRepository = {
 export const localMarketplaceRepository: MarketplaceRepository = {
   load: () => normalizeMarketplace(readJSON<unknown>(StorageKeys.marketplace, null)),
   save: (m) => writeJSON(StorageKeys.marketplace, m),
+};
+
+export const localFavoritesRepository: FavoritesRepository = {
+  loadRaw: () => readJSON<unknown>(StorageKeys.favorites, []),
+  save: (ids) => writeJSON(StorageKeys.favorites, ids),
 };

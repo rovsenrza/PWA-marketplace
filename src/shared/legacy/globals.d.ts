@@ -22,6 +22,9 @@ declare global {
     showSmsToast?: (msg: string) => void;
     refreshCartSurfaces?: () => void;
     updateCartBadge?: () => void;
+    renderProductGrid?: () => void;
+    renderFavorites?: () => void;
+    updateBuyerFavCount?: () => void;
     currentProductId?: string | null;
     pmSelectedColor?: { label?: string } | null;
     getCartItems?: () => CartItem[];

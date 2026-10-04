@@ -10,7 +10,7 @@ npm install
 npm run dev        # http://localhost:5173 (app), /admin.html (admin panel)
 npm run build      # typecheck + production build into dist/
 npm run preview    # serve dist/ at http://localhost:4173
-npm test           # Playwright against the build (system Chrome)
+npm test           # typecheck + unit (Vitest) + fresh build + browser tests (Playwright, system Chrome)
 ```
 
 Requires Node 20+. The build output (`dist/`) is fully static with relative paths, so it can go into any folder on any static host (Apache, nginx, S3, Netlify, GitHub Pages).

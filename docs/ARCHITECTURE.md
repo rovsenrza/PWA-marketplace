@@ -83,6 +83,7 @@ repository implementation; the store and the screens stay as they are.
 |---|---|---|
 | `core/format.js`: prices, badges | `shared/format/price.ts`, `app/ui/product-badges.ts` | unit + e2e |
 | store order rules from `core/cart.js` (statuses, recalculation, SLA, total) | `shared/orders/store-order.ts` | unit (all transitions) + e2e checkout |
+| favourites from `core/favorites.js`: state, toggle, clear, remove a store | `shared/catalog/favorites.ts`, `app/features/favorites/` (store + actions, one `commit()` for every change) | unit + e2e (reload, hearts after «очистить» and «убрать магазин») |
 | cart state and operations, checkout, cart and order storage from `core/cart.js` | `shared/orders/cart.ts`, `shared/orders/checkout.ts`, `shared/data/repositories.ts`, `app/features/cart/` (CartStore + actions) | unit (operations, checkout, store with an in-memory repository) + e2e (reload, lifehack estimate) |
 | function overwriting in `features/boot.js` | events `app:cart-changed` / `app:favorites-changed` | e2e |
 | motion, swipe to delete, notifications, tab lens, SW registration | `app/features/*` | e2e |
@@ -113,7 +114,7 @@ Three unreachable duplicate functions removed. Tests cover every directory secti
 the deeper screens and the in-app CRM.
 
 **Stage 2b — in progress.** Domain logic moves into modules through the bridge, one domain at a time,
-each with its tests (see the table above). Next: favorites, the product page, the store-side order actions (`so*`). Inline `onclick` handlers (≈550)
+each with its tests (see the table above). Next: the product page, the store-side order actions (`so*`), the buyer profile. Inline `onclick` handlers (≈550)
 become `data-action` + one delegator domain by domain; then the domain's line in `legacy-bridge.ts` goes away.
 
 **Stage 3 — data layer as a repository.** A `CatalogRepository` / `OrdersRepository` interface with a
