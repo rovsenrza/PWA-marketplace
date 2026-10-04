@@ -4,6 +4,7 @@
  */
 import { exposeToLegacy } from '../shared/legacy/expose';
 import { catalog, loadAllData, saveAllData } from './data/catalog';
+import { installEngagementAccessors, loadLhEngageState, persistLhEngage } from './data/engagement';
 import { esc, escJsArg } from '../shared/ui/html';
 import { parsePrice, formatPrice, formatRub } from '../shared/format/price';
 import { STORE_ORDER_SLA_MS, confirmedAmount, expireOverdue, recalcStatus, statusLabel } from '../shared/orders/store-order';
@@ -26,6 +27,10 @@ exposeToLegacy({ parsePrice, formatPrice, formatRub, getBadgeHtml, getPriceHtml 
 /* каталог: productsDb, storiesData, … — аксессоры на CatalogStore; сохранение и загрузка — через репозиторий */
 catalog.installLegacyAccessors();
 exposeToLegacy({ loadAllData, saveAllData });
+
+/* реакции на лайфхаки: состояние устройства + итоги сообщества (без сервера — демо) */
+installEngagementAccessors();
+exposeToLegacy({ loadLhEngageState, persistLhEngage });
 
 /* экранирование для legacy-рендеров: данные в HTML и в JS-строке внутри onclick */
 exposeToLegacy({ escHtml: esc, escJsArg });

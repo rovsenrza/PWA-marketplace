@@ -20,15 +20,15 @@ let lifehackActiveCat = 'all';
 
 let lifehackActiveFormat = 'all';
 
-let lhCheckState = {};
+/* lhCheckState: src/app/data/engagement.ts (EngagementStore), здесь — аксессор на window */
 
-let lhPollVotes = {};
+/* lhPollVotes: src/app/data/engagement.ts (EngagementStore), здесь — аксессор на window */
 
-let lhPollCounts = {};
+/* lhPollCounts: src/app/data/engagement.ts (EngagementStore), здесь — аксессор на window */
 
-let lhUsefulMine = {};
+/* lhUsefulMine: src/app/data/engagement.ts (EngagementStore), здесь — аксессор на window */
 
-let lhUsefulCounts = {};
+/* lhUsefulCounts: src/app/data/engagement.ts (EngagementStore), здесь — аксессор на window */
 
 let lhBaOn = false;
 
@@ -155,30 +155,12 @@ const LH_FACTS = [
     { k: '8–12%', v: 'на подрез', id: 'lh-9' }
 ];
 
-const LH_USEFUL_SEED = { 'lh-1': 86, 'lh-2': 41, 'lh-3': 54, 'lh-4': 73, 'lh-5': 112, 'lh-6': 38, 'lh-7': 91, 'lh-8': 124, 'lh-9': 67 };
+/* LH_USEFUL_SEED → SEED.demoCommunity() (демо-цифры) */
 
 
-function persistLhEngage() {
-    try { localStorage.setItem('meb_lh_checks', JSON.stringify(lhCheckState)); } catch (e) {}
-    try { localStorage.setItem('meb_lh_poll_votes', JSON.stringify(lhPollVotes)); } catch (e) {}
-    try { localStorage.setItem('meb_lh_poll_counts', JSON.stringify(lhPollCounts)); } catch (e) {}
-    try { localStorage.setItem('meb_lh_useful_mine', JSON.stringify(lhUsefulMine)); } catch (e) {}
-    try { localStorage.setItem('meb_lh_useful_counts', JSON.stringify(lhUsefulCounts)); } catch (e) {}
-}
+/* persistLhEngage: src/app/data/engagement.ts */
 
-function loadLhEngageState() {
-    try { lhCheckState = JSON.parse(localStorage.getItem('meb_lh_checks') || '{}') || {}; } catch (e) { lhCheckState = {}; }
-    try { lhPollVotes = JSON.parse(localStorage.getItem('meb_lh_poll_votes') || '{}') || {}; } catch (e) { lhPollVotes = {}; }
-    try { lhPollCounts = JSON.parse(localStorage.getItem('meb_lh_poll_counts') || '{}') || {}; } catch (e) { lhPollCounts = {}; }
-    try { lhUsefulMine = JSON.parse(localStorage.getItem('meb_lh_useful_mine') || '{}') || {}; } catch (e) { lhUsefulMine = {}; }
-    try {
-        const saved = JSON.parse(localStorage.getItem('meb_lh_useful_counts') || 'null');
-        lhUsefulCounts = saved && typeof saved === 'object' ? saved : Object.assign({}, LH_USEFUL_SEED);
-    } catch (e) { lhUsefulCounts = Object.assign({}, LH_USEFUL_SEED); }
-    Object.keys(LH_USEFUL_SEED).forEach(function (id) {
-        if (lhUsefulCounts[id] == null) lhUsefulCounts[id] = LH_USEFUL_SEED[id];
-    });
-}
+/* loadLhEngageState: src/app/data/engagement.ts */
 
 function hydrateLifehacksEngage() {
     if (!Array.isArray(lifehacksDb)) lifehacksDb = [];
@@ -194,7 +176,6 @@ function hydrateLifehacksEngage() {
             else if (Array.isArray(item[k]) && item[k].length === 0 && extra[k]) item[k] = extra[k];
         });
     });
-    if (!lhPollCounts['primer-gkl']) lhPollCounts['primer-gkl'] = { yes: 41, no: 12, idk: 8 };
 }
 
 

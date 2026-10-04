@@ -391,6 +391,9 @@ var SEED = (function () {
     { title: 'Стильные гостиные', desc: 'Мягкая мебель и декор для уютной атмосферы в вашем доме.', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600', badge: 'НОВИНКА', badgeColor: 'bg-violet-600' },
     { title: 'Ванная мечты', desc: 'Сантехника и плитка от проверенных производителей.', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600', badge: 'ХИТ', badgeColor: 'bg-pink-600' }
 ];
+    /* ⚠ ДЕМО-цифры сообщества («полезно», голоса в опросах) — заполнители прототипа, а не реальные данные.
+       Не показывать в продакшене: с сервером их заменят настоящие итоги (docs/BACKEND.md, перед запуском). */
+    var demoCommunity = { useful: { 'lh-1': 86, 'lh-2': 41, 'lh-3': 54, 'lh-4': 73, 'lh-5': 112, 'lh-6': 38, 'lh-7': 91, 'lh-8': 124, 'lh-9': 67 }, polls: { 'primer-gkl': { yes: 41, no: 12, idk: 8 } } };
     function copy(v) { return JSON.parse(JSON.stringify(v)); }
     return {
         shopBanners: shopBanners,
@@ -404,6 +407,7 @@ var SEED = (function () {
         lifehackCategories: function () { return copy(lifehackCategories); },
         lifehacks: function () { return copy(lifehacks); },
         onboarding: function () { return copy(onboarding); },
+        demoCommunity: function () { return copy(demoCommunity); },
         stories: stories
     };
 })();
