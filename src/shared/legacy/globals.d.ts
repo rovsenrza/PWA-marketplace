@@ -15,7 +15,6 @@ declare global {
     switchTab?: (tab: 'catalog' | 'directory' | 'cart' | 'favorites' | 'profile') => void;
     openStory?: (id: string) => void;
     getCartItems?: () => CartItem[];
-    soStatusLabel?: (status: string) => string;
     /* функции модулей, которые зовёт разметка (onclick) и legacy */
     openNotifications?: () => void;
     closeNotifications?: () => void;

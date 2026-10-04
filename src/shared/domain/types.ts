@@ -65,13 +65,29 @@ export interface CartItem {
 
 export type StoreOrderStatus =
   | 'pending_review' | 'awaiting_buyer' | 'partial' | 'confirmed'
-  | 'expired' | 'rejected' | 'cancelled' | string;
+  | 'rejected' | 'expired' | 'cancelled'
+  | 'invoiced' | 'awaiting_payment' | 'paid';
+
+/** An order line, as the store sees it: confirmed, unavailable, or a different price offered. */
+export type OrderLineStatus = 'pending' | 'confirmed' | 'unavailable' | 'price_changed' | 'removed';
+
+export interface OrderLine {
+  productId: string;
+  title?: string;
+  qty: number;
+  /** the price at checkout */
+  quotedPrice: number;
+  /** the price the store offered instead (status price_changed) */
+  proposedPrice: number | null;
+  lineStatus: OrderLineStatus;
+}
 
 export interface StoreOrder {
   id: string;
   checkoutId: string;
   storeId: string;
   status: StoreOrderStatus;
+  lines: OrderLine[];
   createdAt: number;
   updatedAt?: number;
   slaDeadline?: number;

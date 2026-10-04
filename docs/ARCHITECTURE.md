@@ -59,6 +59,25 @@ found no class from the old runtime missing from the build.
 cache-first, pages network-first with an offline fallback, the rest stale-while-revalidate. A new deploy means
 a new cache name, and the old cache is deleted on activation.
 
+### Bridges between modules and legacy code
+
+- **`exposeToLegacy`** (`src/shared/legacy/expose.ts`, list in `src/app/legacy-bridge.ts`): a module
+  publishes functions and constants that the markup and the remaining classic scripts call by name.
+  Condition: nobody calls them while the page is parsing (modules run later, but before
+  `DOMContentLoaded` and `window.onload`). Collisions produce a console warning.
+- **Events** (`src/shared/events.ts`): domains notify each other with `app:*` CustomEvents on `document`
+  instead of overwriting each other's functions. `app:cart-changed` comes from `refreshCartSurfaces`
+  (every cart mutation), `app:favorites-changed` from `toggleFavorite`.
+
+### Already ported to modules
+
+| Was (legacy) | Now | Tests |
+|---|---|---|
+| `core/format.js`: prices, badges | `shared/format/price.ts`, `app/ui/product-badges.ts` | unit + e2e |
+| store order rules from `core/cart.js` (statuses, recalculation, SLA, total) | `shared/orders/store-order.ts` | unit (all transitions) + e2e checkout |
+| function overwriting in `features/boot.js` | events `app:cart-changed` / `app:favorites-changed` | e2e |
+| motion, swipe to delete, notifications, tab lens, SW registration | `app/features/*` | e2e |
+
 ## Rules for new code
 
 1. New features are written in **TypeScript** in `src/app/features/<feature>/`, with an `initX()` called from `main.ts`.
@@ -69,7 +88,9 @@ a new cache name, and the old cache is deleted on activation.
 4. Storage only through `StorageKeys` + `local-store.ts`. Entity types only from `shared/domain/types.ts`.
 5. Colours only through tokens (`--mk-*` in the app, plain names in `admin.css`). Never a raw colour that
    could appear in both themes.
-6. A bug fix or feature comes with a test in `tests/` when it can be checked in the browser.
+6. Business rules are pure functions in `src/shared/<domain>/` with unit tests (`tests/unit`, Vitest);
+   screen behaviour is covered by browser tests (`tests/e2e`, Playwright). `npm test` runs both.
+7. Domains don't overwrite each other's functions: notify through `src/shared/events.ts`.
 
 ## Roadmap
 
@@ -82,9 +103,10 @@ modules; service worker built from the real output; Playwright tests.
 Three unreachable duplicate functions removed. Tests cover every directory section, the calculators,
 the deeper screens and the in-app CRM.
 
-**Stage 2b — handlers and modules.** Inline `onclick` handlers become `data-action` attributes and one event
-delegator; then the domain files one by one become TypeScript modules in `src/app/features/<domain>/`, and
-their functions stop being global. One domain per PR, each with its tests.
+**Stage 2b — in progress.** Domain logic moves into modules through the bridge, one domain at a time,
+each with its tests (see the table above). Next: cart state and storage (`meb_cart`, `meb_marketplace`)
+into `shared/orders` + a repository, favorites, the product page. Inline `onclick` handlers (≈550)
+become `data-action` + one delegator domain by domain; then the domain's line in `legacy-bridge.ts` goes away.
 
 **Stage 3 — data layer as a repository.** A `CatalogRepository` / `OrdersRepository` interface with a
 localStorage implementation over today's keys; screens work only through it. Prices as numbers instead of

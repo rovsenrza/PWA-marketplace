@@ -14,3 +14,8 @@ export function parsePrice(price: string | number | null | undefined): number {
 export function formatPrice(value: number | string): string {
   return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ₽`;
 }
+
+/** A sum in roubles: rounds to whole roubles; 'abc', NaN, null → '0 ₽'. */
+export function formatRub(value: unknown): string {
+  return formatPrice(Math.round(Number(value) || 0));
+}

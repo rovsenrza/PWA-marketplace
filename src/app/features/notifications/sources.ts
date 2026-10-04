@@ -5,6 +5,7 @@
  */
 import { StorageKeys } from '../../../shared/storage/keys';
 import { readSet } from '../../../shared/storage/local-store';
+import { statusLabel } from '../../../shared/orders/store-order';
 
 export type NotificationAction =
   | { type: 'tab'; tab: 'cart' }
@@ -35,7 +36,7 @@ function fromOrders(): AppNotification[] {
     .map((o) => ({
       id: `ord-${o.id}-${o.status}`,
       kind: 'order' as const,
-      title: `${o.storeId}: ${window.soStatusLabel ? window.soStatusLabel(o.status) : o.status}`,
+      title: `${o.storeId}: ${statusLabel(o.status)}`,
       text: 'Заказ из корзины',
       at: o.updatedAt ?? o.createdAt,
       action: { type: 'tab', tab: 'cart' } as const,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPrice, parsePrice } from '../../src/shared/format/price';
+import { formatPrice, formatRub, parsePrice } from '../../src/shared/format/price';
 
 describe('parsePrice', () => {
   it('extracts the number from the display string', () => {
@@ -20,5 +20,13 @@ describe('formatPrice', () => {
   });
   it('is the inverse of parsePrice for whole roubles', () => {
     for (const n of [0, 7, 999, 1000, 57240, 215000]) expect(parsePrice(formatPrice(n))).toBe(n);
+  });
+});
+
+describe('formatRub', () => {
+  it('rounds and tolerates bad input', () => {
+    expect(formatRub(57240.6)).toBe('57 241 ₽');
+    expect(formatRub('abc')).toBe('0 ₽');
+    expect(formatRub(null)).toBe('0 ₽');
   });
 });

@@ -7,13 +7,8 @@
         // ========== МАРКЕТПЛЕЙС: Cart → Checkout → StoreOrder → Invoice → Payment ==========
 let marketplace = { checkouts: [], storeOrders: [], invoices: [], payments: [] };
 
-const STORE_ORDER_SLA_MS = 2 * 60 * 60 * 1000;
 
 
-function formatRub(n) {
-    const v = Math.round(Number(n) || 0);
-    return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
-}
 
 
 function cartUid(prefix) {
@@ -83,53 +78,16 @@ function saveMarketplace() {
 }
 
 
-function soStatusLabel(st) {
-    const map = {
-        pending_review: 'Ждёт магазин',
-        awaiting_buyer: 'Ждёт ваше согласие по цене',
-        partial: 'Частично подтверждён',
-        confirmed: 'Подтверждён, можно выставить счёт',
-        rejected: 'Отклонён',
-        expired: 'Магазин не ответил',
-        cancelled: 'Отменён',
-        invoiced: 'Счёт выставлен',
-        awaiting_payment: 'Ожидает оплату',
-        paid: 'Оплачен'
-    };
-    return map[st] || st;
-}
 
 
+/* правила статусов заказов — src/shared/orders/store-order.ts (soExpireOverdue, soRecalc, …) */
 function expireExpiredStoreOrders() {
-    const now = Date.now();
-    let changed = false;
-    (marketplace.storeOrders || []).forEach(o => {
-        if (o.status === 'pending_review' && o.slaDeadline && now > o.slaDeadline) {
-            o.status = 'expired';
-            changed = true;
-        }
-    });
-    if (changed) saveMarketplace();
+    if (soExpireOverdue(marketplace.storeOrders || [])) saveMarketplace();
 }
 
 
-function soRecalc(order) {
-    const lines = order.lines || [];
-    const active = lines.filter(l => l.lineStatus !== 'removed' && l.lineStatus !== 'unavailable');
-    if (order.status === 'cancelled' || order.status === 'expired' || order.status === 'paid' || order.status === 'invoiced' || order.status === 'awaiting_payment') return;
-    if (lines.every(l => l.lineStatus === 'unavailable' || l.lineStatus === 'removed')) { order.status = 'rejected'; return; }
-    if (lines.some(l => l.lineStatus === 'price_changed')) { order.status = 'awaiting_buyer'; return; }
-    if (lines.some(l => l.lineStatus === 'pending')) { order.status = 'pending_review'; return; }
-    const conf = lines.filter(l => l.lineStatus === 'confirmed');
-    const unav = lines.filter(l => l.lineStatus === 'unavailable');
-    if (conf.length && unav.length) order.status = 'partial';
-    else if (conf.length) order.status = 'confirmed';
-}
 
 
-function soConfirmedAmount(order) {
-    return (order.lines || []).filter(l => l.lineStatus === 'confirmed').reduce((s, l) => s + (l.proposedPrice || l.quotedPrice) * (l.qty || 1), 0);
-}
 
 
 function refreshCartSurfaces() {
@@ -272,6 +230,13 @@ function submitCheckout() {
         comment: ((document.getElementById('chk-comment') || {}).value || '').trim()
     };
     const checkout = { id: cartUid('chk-'), userId: state.userEmail || phone, contact, createdAt: Date.now(), status: 'submitted' };
+    /* гость: запоминаем имя и телефон на этом устройстве, иначе «Мои заказы» его заказ не находят
+       (renderBuyerOrders сверяет с buyerProfile.phone) */
+    if (!buyerProfile.phone || !buyerProfile.name) {
+        if (!buyerProfile.phone) buyerProfile.phone = contact.phone;
+        if (!buyerProfile.name) buyerProfile.name = contact.name;
+        try { localStorage.setItem('meb_buyer', JSON.stringify(buyerProfile)); } catch (e) {}
+    }
     marketplace.checkouts.push(checkout);
     const byStore = {};
     items.forEach(i => { (byStore[i.storeId] = byStore[i.storeId] || []).push(i); });
