@@ -571,8 +571,9 @@ html[data-theme="dark"] #phone-container[data-ui] .shadow-sm,
 html[data-theme="dark"] #phone-container[data-ui] .shadow-md,
 html[data-theme="dark"] #phone-container[data-ui] .shadow-lg,
 html[data-theme="dark"] #phone-container[data-ui] .shadow-xl { box-shadow: var(--mk-shadow) !important; }
-/* картинки-логотипы на белом в тёмной теме — оставляем светлую подложку */
-html[data-theme="dark"] #phone-container[data-ui] img.object-contain { background-color: #fff; }
+/* картинки-логотипы на белом в тёмной теме — оставляем светлую подложку
+   (кроме фото сторис и лайтбокса: их поля — чёрные в обеих темах, иначе вокруг фото светлые полосы) */
+html[data-theme="dark"] #phone-container[data-ui] img.object-contain:not(#sv-image):not(#lightbox-image) { background-color: #fff; }
 
 html[data-theme="dark"] #phone-container[data-ui] > header#app-header,
 html[data-theme="dark"] #phone-container[data-ui] #main-scroll-container.bg-white { background-color: var(--mk-page) !important; }

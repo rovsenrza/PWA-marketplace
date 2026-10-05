@@ -201,7 +201,8 @@
     .lh-react.on { background: var(--mk-brand, #1e6091); color: #fff; }
     @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .animate-scaleUp { animation: scaleUp 0.2s ease-out forwards; }
-            .story-bar-fill { width: 0%; height: 100%; background: var(--mk-card, #fff); border-radius: 9999px; transition: none; }
+            /* полоска лежит на фото: белая в обеих темах (цвет карточки в тёмной теме — почти не виден) */
+            .story-bar-fill { width: 0%; height: 100%; background: #fff; border-radius: 9999px; transition: none; }
     .story-bar-fill.filling { transition: width linear; }
 
     #phone-container { isolation: isolate; transform: translateZ(0); }

@@ -62,3 +62,18 @@ test('navigation: deeper and back, product page, close leaves no exit copies', a
   await app.evaluate(() => (window as any).closeProductModal());
   await expect.poll(() => app.locator('[data-lg-ghost]').count()).toBe(0);
 });
+
+test('stories in the dark theme: black margins around the photo and a white progress bar (they turned light / navy)', async ({ app }) => {
+  await app.evaluate(() => {
+    (window as any).setUiTheme('dark');
+    const s = eval('storiesData').filter((x: any) => x.status === 'published' || !x.status)[0];
+    (window as any).openStory(s.id);
+  });
+  await app.waitForTimeout(300);
+  const css = await app.evaluate(() => ({
+    image: getComputedStyle(document.getElementById('sv-image')!).backgroundColor,
+    bar: getComputedStyle(document.querySelector('#sv-progress .story-bar-fill')!).backgroundColor,
+  }));
+  expect(css).toEqual({ image: 'rgb(0, 0, 0)', bar: 'rgb(255, 255, 255)' });
+  await app.evaluate(() => { (window as any).closeStory(); (window as any).setUiTheme('system'); });
+});
