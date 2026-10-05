@@ -109,11 +109,13 @@ function renderHomeCategories() {
 
 function openCategoryProducts(catId, catTitle) {
     closeRecModal();
-    // Скрываем все остальные экраны
+    // Скрываем все остальные экраны, включая подэкраны каталога и справочника:
+    // со страницы товара (чип категории) сюда приходят из «Каталога товаров», и он оставался видимым
     ['catalog','directory','cart','favorites','profile'].forEach(t => {
         const v = document.getElementById('view-' + t);
         if (v) v.classList.add('hidden');
     });
+    document.querySelectorAll('[id^="subview-"]').forEach(el => el.classList.add('hidden'));
     
     // Показываем экран выбранной категории
     const view = document.getElementById('view-category-products');

@@ -84,3 +84,10 @@ test('in-app CRM: lists render', async ({ app }) => {
     await app.evaluate(`typeof window[${JSON.stringify(fn)}] === 'function' && window[${JSON.stringify(fn)}]()`);
   }
 });
+
+test('product page → its category: only the category screen is shown (the catalogue list used to stay above it)', async ({ app }) => {
+  await app.evaluate(() => { const w = window as any; w.openProductCatalogFromHome(); w.openProductModal('prod-2'); w.pmOpenCategory(); });
+  const shown = await app.evaluate(() => [...document.querySelectorAll('#main-scroll-container > [id]')]
+    .filter((e) => !e.classList.contains('hidden') && (e as HTMLElement).offsetHeight > 0).map((e) => e.id));
+  expect(shown).toEqual(['view-category-products']);
+});
