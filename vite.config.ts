@@ -73,16 +73,35 @@ function legacyScripts(bundles: Record<string, string> = {}): Plugin {
   };
 }
 
-/** Service worker: fills the src/sw/sw.js template with the build id and the list of hashed files. */
+/**
+ * Service worker: fills the src/sw/sw.js template with the build id and the list of files to precache.
+ * Precached is only what the buyer app (index.html) loads, with its static imports: the admin panel
+ * and the lazy parts (Excel, zip, XML readers) are cached on first use, a buyer never downloads them.
+ */
 function serviceWorker(): Plugin {
   return {
     name: 'service-worker',
     apply: 'build',
     enforce: 'post',
     generateBundle(_, bundle) {
-      const files = Object.keys(bundle).filter((f) => /\.(js|css)$/.test(f) && !f.endsWith('.map'));
+      const page = bundle['index.html'];
+      if (!page || page.type !== 'asset') return this.error('service-worker: index.html is not in the bundle');
+      const shell = new Set<string>();
+      const visit = (name: string) => {
+        if (shell.has(name)) return;
+        shell.add(name);
+        const item = bundle[name];
+        if (item?.type === 'chunk') {
+          item.imports.forEach(visit);
+          item.viteMetadata?.importedCss.forEach((css) => shell.add(css));
+        }
+      };
+      for (const m of String(page.source).matchAll(/(?:src|href)="(?:\.\/)?(assets\/[^"]+\.(?:js|css))"/g)) visit(m[1]);
+      const files = [...shell].sort();
       const precache = ['./', './index.html', './manifest.json', './icons/icon-192.png', ...files.map((f) => `./${f}`)];
-      const buildId = createHash('sha256').update(files.sort().join('|')).digest('hex').slice(0, 10);
+      /* id from every file of the build: a change in the panel also gets a fresh cache */
+      const all = Object.keys(bundle).filter((f) => /\.(js|css)$/.test(f) && !f.endsWith('.map'));
+      const buildId = createHash('sha256').update(all.sort().join('|')).digest('hex').slice(0, 10);
       const source = readFileSync(resolve(root, 'src/sw/sw.js'), 'utf8')
         .replaceAll('__BUILD_ID__', buildId)
         .replaceAll('__PRECACHE__', JSON.stringify(precache, null, 2));

@@ -57,9 +57,13 @@ found no class from the old runtime missing from the build.
 
 ### PWA
 
-`src/sw/sw.js` is a template. The build fills in the build id and the list of hashed files: `assets/*` are
-cache-first, pages network-first with an offline fallback, the rest stale-while-revalidate. A new deploy means
-a new cache name, and the old cache is deleted on activation.
+`src/sw/sw.js` is a template. The build fills in the build id and the files to precache: only what
+`index.html` loads, with its static imports. The admin panel and the lazy parts (Excel, zip, XML readers)
+are cached on first use, so a buyer never downloads them. `assets/*` are cache-first, pages network-first
+with an offline fallback, the rest stale-while-revalidate. Lookups ignore `Vary`: hosts send `Vary: Origin`,
+and Chrome adds `Origin` to module scripts and crossorigin styles, so without that the app didn't open
+offline (`tests/e2e/pwa.spec.ts` checks it). A new deploy means a new cache name, and the old cache is
+deleted on activation.
 
 ### Bridges between modules and legacy code
 
