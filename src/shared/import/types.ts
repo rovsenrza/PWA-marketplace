@@ -39,7 +39,10 @@ export interface ProductDraft {
   barcode?: string;
   weight?: string;
   desc?: string;
+  /** a link to a photo (http/https) */
   image?: string;
+  /** the photo's file name or path from the file (CommerceML «Картинка»): matched with the uploaded photos */
+  photoRef?: string;
   brand?: string;
 }
 

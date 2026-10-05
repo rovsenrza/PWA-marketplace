@@ -14,10 +14,18 @@ export interface SaveResult {
   quotaExceeded: boolean;
 }
 
+export interface SaveOptions {
+  /**
+   * All or nothing: a part that doesn't fit is not saved without its photos, it stays as it was in storage.
+   * For the import: a half-saved catalogue (products without their photos) is worse than a clear refusal.
+   */
+  strict?: boolean;
+}
+
 export interface CatalogRepository {
   load(): StoredCatalog;
   /** Saves the listed parts (all by default) independently of each other. */
-  save(state: CatalogState, parts?: CatalogPart[]): SaveResult;
+  save(state: CatalogState, parts?: CatalogPart[], opts?: SaveOptions): SaveResult;
   /** Another tab (the admin or the app) saved the catalogue. */
   onExternalChange(cb: () => void): () => void;
 }
@@ -52,7 +60,7 @@ export function createLocalCatalogRepository(storage: Storage | undefined = glob
       }
       return out;
     },
-    save(state, parts = CATALOG_PARTS) {
+    save(state, parts = CATALOG_PARTS, opts = {}) {
       const failed: CatalogPart[] = [];
       const degraded: CatalogPart[] = [];
       let quotaExceeded = false;
@@ -65,6 +73,7 @@ export function createLocalCatalogRepository(storage: Storage | undefined = glob
         } catch (e) {
           if (!isQuota(e)) { failed.push(part); continue; }
           quotaExceeded = true;
+          if (opts.strict) { failed.push(part); continue; }
           try { write(part, true); degraded.push(part); } catch { failed.push(part); }
         }
       }

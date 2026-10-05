@@ -37,3 +37,26 @@ export function onExternalChange(key: StorageKey, cb: () => void): () => void {
   window.addEventListener('storage', handler);
   return () => window.removeEventListener('storage', handler);
 }
+
+/**
+ * Browsers keep about 5 MB per site in localStorage (Chrome counts 5 M characters; Safari and Firefox
+ * are close). A conservative figure: the real limit is checked by the save itself.
+ */
+export const STORAGE_CAPACITY_CHARS = 5_000_000;
+
+/** Characters in use (keys and values), for the estimate of how much more fits. */
+export function storageUsage(storage: Storage | undefined = globalThis.localStorage): number {
+  let total = 0;
+  try {
+    for (let i = 0; i < (storage?.length ?? 0); i++) {
+      const key = storage!.key(i) ?? '';
+      total += key.length + (storage!.getItem(key)?.length ?? 0);
+    }
+  } catch { /* хранилище недоступно */ }
+  return total;
+}
+
+/** Length of a stored value in characters (0 when there's none). */
+export function storedLength(key: StorageKey, storage: Storage | undefined = globalThis.localStorage): number {
+  try { return storage?.getItem(key)?.length ?? 0; } catch { return 0; }
+}

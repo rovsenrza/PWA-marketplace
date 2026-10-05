@@ -3,6 +3,7 @@ import type { Product, Shop } from '../../src/shared/domain/types';
 import { mergeCatalog, mergeDirectory, mergeLifehacks, mergeProducts, mergeShops, stripEmbeddedMedia, type CatalogState } from '../../src/shared/data/catalog';
 import { CATALOG_KEYS, createLocalCatalogRepository } from '../../src/shared/data/catalog-repository';
 import { CatalogStore } from '../../src/shared/data/catalog-store';
+import { memoryStorage } from './support/memory-storage';
 
 const P = (id: string, extra: Partial<Product> = {}): Product => ({ id, title: `T${id}`, price: '1 ₽', store: 'S', status: 'published', ...extra });
 const seed = (): CatalogState => ({
@@ -67,23 +68,6 @@ describe('mergeCatalog: lists', () => {
   });
 });
 
-/* fake Storage: the quota overflows on one key */
-function memoryStorage(failKey?: string): Storage & { dump: Record<string, string> } {
-  const dump: Record<string, string> = {};
-  return {
-    dump,
-    get length() { return Object.keys(dump).length; },
-    clear: () => { for (const k of Object.keys(dump)) delete dump[k]; },
-    key: (i) => Object.keys(dump)[i] ?? null,
-    getItem: (k) => (k in dump ? dump[k] : null),
-    removeItem: (k) => { delete dump[k]; },
-    setItem: (k, v) => {
-      if (k === failKey) { const e = new Error('quota'); e.name = 'QuotaExceededError'; throw e; }
-      dump[k] = String(v);
-    },
-  } as Storage & { dump: Record<string, string> };
-}
-
 describe('the localStorage repository', () => {
   it('an overflow on one part does not cancel the others (before, saving stopped at the first error)', () => {
     const storage = memoryStorage(CATALOG_KEYS.shops);
@@ -115,6 +99,35 @@ describe('saving with embedded photos', () => {
     const st = seed(); st.shops.S = { ...st.shops.S, banner: 'data:image/jpeg;base64,QUJD', description: 'новое описание' };
     expect(createLocalCatalogRepository(storage).save(st, ['shops'])).toEqual({ failed: [], degraded: ['shops'], quotaExceeded: true });
     expect(JSON.parse(storage.dump.meb_shops).S).toMatchObject({ banner: '', description: 'новое описание' });
+  });
+});
+
+describe('saving the import: all or nothing', () => {
+  const quotaOnPhotos = (storage: ReturnType<typeof memoryStorage>) => {
+    const set = storage.setItem;
+    storage.setItem = (k, v) => { if (v.includes('data:')) { const e = new Error('quota'); e.name = 'QuotaExceededError'; throw e; } set(k, v); };
+  };
+  it('strict: a part that does not fit is not saved without its photos; the stored value stays', () => {
+    const storage = memoryStorage();
+    const repo = createLocalCatalogRepository(storage);
+    repo.save(seed(), ['products']);
+    const before = storage.dump.meb_products;
+    quotaOnPhotos(storage);
+    const st = seed(); st.products.n = P('n', { image: 'data:image/jpeg;base64,QUJD' });
+    expect(repo.save(st, ['products'], { strict: true })).toEqual({ failed: ['products'], degraded: [], quotaExceeded: true });
+    expect(storage.dump.meb_products).toBe(before);
+  });
+  it('not strict: a published product that loses its only photo goes to drafts (no empty cards for buyers)', () => {
+    const storage = memoryStorage();
+    quotaOnPhotos(storage);
+    const st = seed();
+    st.products.n = P('n', { image: 'data:image/jpeg;base64,QUJD' });
+    st.products.u = P('u', { image: 'https://cdn/u.jpg', images: ['data:image/jpeg;base64,QUJD'] });
+    expect(createLocalCatalogRepository(storage).save(st, ['products']).degraded).toEqual(['products']);
+    const saved = JSON.parse(storage.dump.meb_products);
+    expect(saved.n).toMatchObject({ image: '', status: 'draft' });
+    expect(saved.u).toMatchObject({ image: 'https://cdn/u.jpg', images: [], status: 'published' });
+    expect(st.products.n.status).toBe('published'); // в памяти — как было
   });
 });
 

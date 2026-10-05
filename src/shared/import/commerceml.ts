@@ -1,7 +1,8 @@
 /**
  * CommerceML 2: 1C's standard format for «exchange with a website». import.xml holds the products and groups,
- * offers.xml the prices and stock. Either is enough (import.xml without prices gives products without prices,
- * which show up as errors in the report). The result is the same table as from Excel.
+ * offers.xml the prices and stock (since 2.08 they may come as separate prices.xml and rests.xml).
+ * Either is enough (import.xml without prices gives products without prices, which show up as errors
+ * in the report). The result is the same table as from Excel.
  */
 import { XMLParser } from 'fast-xml-parser';
 import type { ImportTable } from './types';
@@ -26,7 +27,30 @@ function collectGroups(groups: unknown, out: Map<string, string>): void {
   }
 }
 
-export function readCommerceML(importXml: string | null, offersXml: string | null): ImportTable {
+/** Price type: the retail one if the package names it, otherwise the first. */
+function retailPriceType(pack: Node | undefined): string {
+  const types = arr((pack?.['ТипыЦен'] as Node | undefined)?.['ТипЦены'] as Node | Node[] | undefined);
+  const retail = types.find((t) => /розн/i.test(text(t['Наименование']))) ?? types[0];
+  return retail ? text(retail['Ид']) : '';
+}
+
+/** Stock: «Количество» of the offer, or the sum over «Остатки» (2.08: by warehouse). */
+function stockOf(o: Node): string {
+  const own = text(o['Количество']);
+  if (own) return own;
+  let total = 0;
+  let found = false;
+  for (const r of arr((o['Остатки'] as Node | undefined)?.['Остаток'] as Node | Node[] | undefined)) {
+    const places = r['Склад'] ? arr(r['Склад'] as Node | Node[]) : [r];
+    for (const w of places) {
+      const q = Number(text(w['Количество']).replace(',', '.'));
+      if (Number.isFinite(q) && text(w['Количество'])) { total += q; found = true; }
+    }
+  }
+  return found ? String(total) : '';
+}
+
+export function readCommerceML(importXml: string | null, offersXml: string | string[] | null): ImportTable {
   const groups = new Map<string, string>();
   const items = new Map<string, string[]>(); // Ид товара → строка таблицы
   const order: string[] = [];
@@ -44,19 +68,26 @@ export function readCommerceML(importXml: string | null, offersXml: string | nul
       order.push(id);
     }
   }
-  if (offersXml) {
-    const doc = parser.parse(offersXml)['КоммерческаяИнформация'] as Node;
+  for (const xml of arr(offersXml ?? undefined)) {
+    const doc = parser.parse(xml)['КоммерческаяИнформация'] as Node;
     const pack = doc?.['ПакетПредложений'] as Node | undefined;
+    const priceType = retailPriceType(pack);
     for (const o of arr((pack?.['Предложения'] as Node | undefined)?.['Предложение'] as Node | Node[] | undefined)) {
       /* Ид предложения — «ИдТовара#ИдХарактеристики» или просто ИдТовара */
       const id = text(o['Ид']).split('#')[0];
-      const price = text(arr(((o['Цены'] as Node | undefined)?.['Цена']) as Node | Node[] | undefined)[0]?.['ЦенаЗаЕдиницу']);
-      const stock = text(o['Количество']);
+      const prices = arr(((o['Цены'] as Node | undefined)?.['Цена']) as Node | Node[] | undefined);
+      const priceNode = prices.find((c) => priceType && text(c['ИдТипаЦены']) === priceType) ?? prices[0];
+      const price = text(priceNode?.['ЦенаЗаЕдиницу']);
+      const stock = stockOf(o);
       let row = items.get(id);
       if (!row) {
-        row = [text(o['Артикул']), text(o['Наименование']), '', '', '', '', text(o['ШтрихКод']), '', ''];
+        row = ['', '', '', '', '', '', '', '', ''];
         items.set(id, row); order.push(id);
       }
+      /* без import.xml название и артикул — из предложения (в prices.xml и rests.xml их может не быть) */
+      row[0] ||= text(o['Артикул']);
+      row[1] ||= text(o['Наименование']);
+      row[6] ||= text(o['ШтрихКод']);
       if (price) row[2] = price;
       if (stock) row[3] = stock;
     }

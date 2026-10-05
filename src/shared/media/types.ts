@@ -4,7 +4,9 @@
  */
 export type MediaPurpose =
   | 'shop-banner' | 'shop-logo' | 'shop-gallery' | 'shop-about'
-  | 'story-slide' | 'lifehack-cover' | 'lifehack-gallery';
+  | 'story-slide' | 'lifehack-cover' | 'lifehack-gallery'
+  /** photos of imported products: many at once, so smaller */
+  | 'product-photo';
 
 export type MediaError = 'too_large' | 'unsupported' | 'failed';
 export type MediaResult = { ok: true; url: string; bytes: number } | { ok: false; error: MediaError };
@@ -16,13 +18,13 @@ export interface MediaStore {
 /** Longest side, in pixels, after compression: enough for the screen, without excess weight. */
 export const MAX_SIDE: Record<MediaPurpose, number> = {
   'shop-banner': 1600, 'shop-gallery': 1600, 'shop-about': 1200, 'shop-logo': 512,
-  'story-slide': 1920, 'lifehack-cover': 1600, 'lifehack-gallery': 1600,
+  'story-slide': 1920, 'lifehack-cover': 1600, 'lifehack-gallery': 1600, 'product-photo': 800,
 };
 
 /** Size budget after compression: the browser holds ~5 MB for everything, so each photo has a limit. */
 export const MAX_BYTES: Record<MediaPurpose, number> = {
   'shop-banner': 350 * 1024, 'shop-gallery': 300 * 1024, 'shop-about': 250 * 1024, 'shop-logo': 120 * 1024,
-  'story-slide': 400 * 1024, 'lifehack-cover': 350 * 1024, 'lifehack-gallery': 300 * 1024,
+  'story-slide': 400 * 1024, 'lifehack-cover': 350 * 1024, 'lifehack-gallery': 300 * 1024, 'product-photo': 50 * 1024,
 };
 
 /**

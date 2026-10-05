@@ -5,7 +5,7 @@
  */
 import type { CatalogPart, CatalogState } from './catalog';
 import { mergeCatalog } from './catalog';
-import { createLocalCatalogRepository, type CatalogRepository, type SaveResult } from './catalog-repository';
+import { createLocalCatalogRepository, type CatalogRepository, type SaveOptions, type SaveResult } from './catalog-repository';
 
 /** Legacy global name → path in the state. */
 export const LEGACY_GLOBALS = {
@@ -36,7 +36,7 @@ export class CatalogStore {
   /** The seed plus what's stored (the merge rules are in catalog.ts). */
   load(): void { this.state = mergeCatalog(this.seed(), this.repo.load()); }
 
-  save(parts?: CatalogPart[]): SaveResult { return this.repo.save(this.state, parts); }
+  save(parts?: CatalogPart[], opts?: SaveOptions): SaveResult { return this.repo.save(this.state, parts, opts); }
 
   onExternalChange(cb: () => void): () => void { return this.repo.onExternalChange(cb); }
 

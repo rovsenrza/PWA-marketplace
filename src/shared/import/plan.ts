@@ -2,6 +2,7 @@
 import type { Product } from '../domain/types';
 import { formatPrice, parsePrice } from '../format/price';
 import type { ImportField, ImportTable, ProductDraft, RowIssue } from './types';
+import { isPhotoUrl, type PhotoTarget } from './photos';
 
 const clean = (v: string | undefined) => (v ?? '').replace(/\s+/g, ' ').trim();
 const skuKey = (sku: string) => sku.trim().toLowerCase();
@@ -33,10 +34,13 @@ export function toDrafts(table: ImportTable, mapping: ImportField[]): { drafts: 
     if (oldPrice && oldPrice > price) d.oldPrice = oldPrice;
     const stock = at(r, 'stock');
     if (stock) d.stock = Math.max(0, Math.floor(parsePrice(stock)));
-    for (const f of ['unit', 'category', 'barcode', 'weight', 'desc', 'image', 'brand'] as const) {
+    for (const f of ['unit', 'category', 'barcode', 'weight', 'desc', 'brand'] as const) {
       const v = at(r, f);
       if (v) d[f] = v;
     }
+    /* ссылка — это фото; имя файла или путь (CommerceML: «import_files/…») — фото из архива, его ещё загрузят */
+    const image = at(r, 'image');
+    if (image) { if (isPhotoUrl(image)) d.image = image; else d.photoRef = image; }
     drafts.push(d);
   });
   return { drafts, issues };
@@ -85,6 +89,22 @@ export function planImport(drafts: ProductDraft[], products: Record<string, Prod
   return plan;
 }
 
+/**
+ * Products of this import that will have no photo: new ones without a link and without a confirmed twin
+ * with a photo, and the store's existing products without one. Photos are matched against these.
+ */
+export function photoTargets(plan: ImportPlan, products: Record<string, Product>, reuse: Set<number> = new Set()): PhotoTarget[] {
+  const twinOf = new Map(plan.similar.map((s) => [s.draft.row, s.productId]));
+  const out: PhotoTarget[] = [];
+  const add = (d: ProductDraft) => out.push(d.photoRef ? { sku: d.sku, photoRef: d.photoRef } : { sku: d.sku });
+  for (const d of plan.create) {
+    const twin = reuse.has(d.row) ? products[twinOf.get(d.row) ?? ''] : undefined;
+    if (!d.image && !twin?.image) add(d);
+  }
+  for (const u of [...plan.update, ...plan.unchanged]) if (!products[u.productId]?.image) add(u.draft);
+  return out;
+}
+
 /** A stable id: the same article of the same store always gets the same id (a re-import doesn't duplicate). */
 export function importedProductId(store: string, sku: string): string {
   let h = 2166136261;
@@ -95,8 +115,8 @@ export function importedProductId(store: string, sku: string): string {
 export interface ApplyOptions {
   /** which «similar» matches were confirmed (by row): their photo and description go to the new product */
   reuse?: Set<number>;
-  /** photos by article (already uploaded through MediaStore) */
-  photos?: Map<string, string>;
+  /** photos by article in lower case, the main one first (already uploaded through MediaStore) */
+  photos?: Map<string, string[]>;
   now?: number;
 }
 
@@ -106,17 +126,36 @@ export interface ApplyResult {
   updated: number;
   /** new products without a photo: saved as drafts, invisible to buyers */
   withoutPhoto: number;
+  /** visible to buyers after the import: new ones with a photo and drafts of earlier imports that got one */
+  published: number;
+  /** existing products of the store that got photos */
+  photosAttached: number;
 }
 
 /** The catalogue after import (a new object; the original is not changed). */
 export function applyImport(plan: ImportPlan, products: Record<string, Product>, opts: ApplyOptions = {}): ApplyResult {
   const out: Record<string, Product> = { ...products };
   const now = opts.now ?? Date.now();
+  const photosOf = (sku: string) => opts.photos?.get(skuKey(sku)) ?? [];
   let withoutPhoto = 0;
-  for (const u of plan.update) {
-    const p = { ...out[u.productId] };
+  let published = 0;
+  let photosAttached = 0;
+  const existing: PlannedUpdate[] = [...plan.update, ...plan.unchanged];
+  for (const u of existing) {
+    const before = out[u.productId];
+    if (!before) continue; // товар удалили в другой вкладке, пока шёл импорт
+    const photos = before.image ? [] : photosOf(u.draft.sku);
+    if (!u.price && !u.stock && !photos.length) continue;
+    const p = { ...before };
     if (u.price) p.price = u.price[1];
     if (u.stock) p.stock = u.stock[1];
+    /* фото к товару без фото; черновик прошлой загрузки («Нет фото») теперь виден покупателям */
+    if (photos.length) {
+      p.image = photos[0];
+      if (photos.length > 1) p.images = [...photos];
+      photosAttached++;
+      if (p.status === 'draft' && p.importedAt) { p.status = 'published'; published++; }
+    }
     p.importedAt = now;
     out[u.productId] = p;
   }
@@ -124,7 +163,8 @@ export function applyImport(plan: ImportPlan, products: Record<string, Product>,
   for (const d of plan.create) {
     const id = importedProductId(plan.store, d.sku);
     const twin = opts.reuse?.has(d.row) ? out[similarByRow.get(d.row)?.productId ?? ''] : undefined;
-    const image = opts.photos?.get(skuKey(d.sku)) || d.image || (twin?.image as string | undefined) || '';
+    const photos = photosOf(d.sku);
+    const image = photos[0] || d.image || (twin?.image as string | undefined) || '';
     const p: Product = {
       id, sku: d.sku, title: d.title, price: formatPrice(d.price), store: plan.store,
       category: (d.category ?? '').toLowerCase(), image,
@@ -136,15 +176,10 @@ export function applyImport(plan: ImportPlan, products: Record<string, Product>,
     for (const f of ['unit', 'barcode', 'weight', 'brand'] as const) if (d[f]) p[f] = d[f];
     const desc = d.desc || (twin?.description as string | undefined);
     if (desc) p.description = desc;
-    if (twin && Array.isArray(twin.images) && !opts.photos?.get(skuKey(d.sku))) p.images = [...(twin.images as string[])];
-    if (!image) withoutPhoto++;
+    if (photos.length > 1) p.images = [...photos];
+    else if (!photos.length && twin && Array.isArray(twin.images)) p.images = [...(twin.images as string[])];
+    if (image) published++; else withoutPhoto++;
     out[id] = p;
   }
-  return { products: out, created: plan.create.length, updated: plan.update.length, withoutPhoto };
-}
-
-/** Photo file name → article: 'PS-0412.jpg', 'ps-0412_2.png' → 'ps-0412'. */
-export function skuFromPhotoName(fileName: string): string {
-  const base = fileName.split(/[\\/]/).pop() ?? '';
-  return skuKey(base.replace(/\.[a-z0-9]+$/i, '').replace(/[_ ](\d{1,2})$/, ''));
+  return { products: out, created: plan.create.length, updated: plan.update.length, withoutPhoto, published, photosAttached };
 }

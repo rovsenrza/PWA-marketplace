@@ -121,8 +121,17 @@ export function stripEmbeddedMedia<T>(value: T): T {
 /**
  * What goes into storage. Embedded photos are saved together with the data (they're compressed by
  * MediaStore). If the part doesn't fit, the repository repeats the save without them (stripMedia).
+ * A published product that loses its only photo that way goes back to drafts: buyers never see
+ * an empty card (the rule «no photo, not in the catalogue»).
  */
 export function toStored(part: CatalogPart, state: CatalogState, stripMedia = false): unknown {
   const value = state[part];
-  return stripMedia ? stripEmbeddedMedia(value) : value;
+  if (!stripMedia) return value;
+  const stripped = stripEmbeddedMedia(value);
+  if (part === 'products') {
+    for (const [id, p] of Object.entries(stripped as Record<string, Product>)) {
+      if (!p.image && state.products[id]?.image && p.status === 'published') p.status = 'draft';
+    }
+  }
+  return stripped;
 }

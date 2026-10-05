@@ -11,6 +11,9 @@ export const StorageKeys = {
   stories: 'meb_stories',
   promo: 'meb_promo',
   updatedAt: 'meb_updated',
+  /* панель: импорт каталога */
+  importMappings: 'meb_import_mappings',
+  importHistory: 'meb_imports',
   /* покупатель */
   buyer: 'meb_buyer',
   cart: 'meb_cart',
