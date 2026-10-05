@@ -1,8 +1,9 @@
 // ==========================================================
 //  Супер-Апп · Управление
 //  Роли: администратор, магазин, агентство недвижимости.
-//  Товары, витрины, сторис и баннеры сохраняются в общую базу (data.js).
-//  Импорт, разделы, недвижимость и доступы — демо-данные в памяти:
+//  Товары, витрины, сторис и баннеры сохраняются в общий каталог (CatalogStore, src/admin/main.ts);
+//  импорт из 1С / Excel — модуль src/admin/features/import.
+//  Общие карточки, фильтры, разделы, недвижимость и доступы — демо-данные в памяти:
 //  серверной части пока нет.
 // ==========================================================
 
@@ -33,10 +34,6 @@ function onDataUpdated() { renderAll(); }
 const CATEGORIES = ['стройматериалы', 'отделка', 'мебель', 'кухня', 'спальня', 'гостиная', 'сантехника', 'инструменты', 'освещение'];
 
 const demo = {
-    imports: [
-        { file: 'Выгрузка_1С_Кухни_Дриада.xlsx', store: 'Кухни Дриада', date: '28 сентября', rows: 214, published: 198, nophoto: 16 },
-        { file: 'Остатки_Любимый_Дом.csv', store: 'Любимый Дом', date: '21 сентября', rows: 1032, published: 960, nophoto: 72 }
-    ],
     shared: [
         { name: 'Смесь Ceresit CM 11, 25 кг', img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=200', stores: 6, from: '520 ₽', to: '610 ₽' },
         { name: 'Цемент М500, 50 кг', img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=200', stores: 4, from: '450 ₽', to: '520 ₽' },
@@ -155,14 +152,8 @@ const ui = {
     myStore: '',
     myAgency: 'Дом Хиллс',
     batch: [],
-    imp: null,
     rejectTarget: null
 };
-
-function resetImport() {
-    ui.imp = { step: 1, store: 'Постройка', file: '', rows: 1248, photos: '', decisions: {} };
-}
-resetImport();
 
 // ---------- Навигация ----------
 const NAV = {
@@ -297,7 +288,10 @@ PAGES.overview = function () {
     if (c.stories) rows.push(['moderation', 'wait', 'play', `${c.stories} ${plural(c.stories, 'сторис ждёт', 'сторис ждут', 'сторис ждут')} проверки`, 'Предложены магазинами', "ui.modType='stories'"]);
     if (c.re) rows.push(['moderation', 'wait', 'building', `${c.re} ${plural(c.re, 'объект', 'объекта', 'объектов')} недвижимости на проверке`, 'От менеджеров агентств', "ui.modType='re'"]);
     if (nophoto) rows.push(['products', 'bad', 'camera', `${nophoto} ${plural(nophoto, 'товар', 'товара', 'товаров')} без фото`, 'Не показываются покупателям, пока нет фото', "ui.prodStatus='nophoto'"]);
-    rows.push(['import', 'info', 'upload', '473 товара «Постройки» ждут фото после импорта', 'Демо: загрузите архив фото по артикулам', '']);
+    /* товары, загруженные импортом без фото: по магазинам */
+    const waiting = {};
+    prods.forEach(p => { if (p.importedAt && !p.image) waiting[p.store] = (waiting[p.store] || 0) + 1; });
+    Object.keys(waiting).forEach(store => rows.push(['import', 'bad', 'camera', `${waiting[store]} ${plural(waiting[store], 'товар', 'товара', 'товаров')} «${esc(store)}» ${waiting[store] === 1 ? 'ждёт' : 'ждут'} фото после импорта`, 'Загрузите выгрузку ещё раз вместе с архивом фото: цены не задвоятся', `startImport(${arg(store)})`]));
     expiring.forEach(s => rows.push(['stories', 'info', 'clock', `Сторис «${esc(s.name)}» исчезнет через ${Math.max(1, Math.round((DAY - (now - s.createdAt)) / 3600000))} ч`, 'Можно опубликовать новую', '']));
     if (weakShops.length === 1) rows.push(['shops', 'info', 'store', `Витрина «${esc(weakShops[0].name)}» заполнена на ${shopCompleteness(weakShops[0])}%`, 'Добавьте фасады, менеджеров и режим работы', '']);
     else if (weakShops.length) rows.push(['shops', 'info', 'store', `${weakShops.length} ${plural(weakShops.length, 'витрина заполнена', 'витрины заполнены', 'витрин заполнены')} не до конца`, 'Не хватает фасадов, менеджеров или режима работы', '']);
@@ -449,16 +443,7 @@ PAGES.products = function () {
         nophoto: all.filter(p => !p.image).length,
         rejected: all.filter(p => p.status === 'rejected').length
     };
-    const s = ui.prodSearch.toLowerCase();
-    const list = all.filter(p => {
-        if (s && !((p.title || '') + ' ' + (p.sku || '')).toLowerCase().includes(s)) return false;
-        if (ui.prodStore && p.store !== ui.prodStore) return false;
-        if (ui.prodStatus === 'published') return p.status === 'published' && p.image;
-        if (ui.prodStatus === 'pending') return p.status === 'pending';
-        if (ui.prodStatus === 'nophoto') return !p.image;
-        if (ui.prodStatus === 'rejected') return p.status === 'rejected';
-        return true;
-    });
+    const list = filteredProducts();
     const chips = [['all', 'Все'], ['published', 'Опубликованы'], ['pending', 'На проверке'], ['nophoto', 'Без фото'], ['rejected', 'Отклонены']];
     return `
         <div class="toolbar">
@@ -476,10 +461,15 @@ PAGES.products = function () {
         </div></div>
         <div class="list" id="prod-list">${productRows(list)}</div>`;
 };
+// после импорта товаров могут быть тысячи: список показывает первые, остальные — через поиск и фильтры
+const PRODUCT_ROWS_LIMIT = 300;
 function productRows(list) {
     if (!list.length) return '<div class="empty"><b>Товаров не найдено</b>Измените поиск или фильтр</div>';
+    const more = list.length > PRODUCT_ROWS_LIMIT
+        ? `<div class="empty" style="padding:18px">Показаны ${PRODUCT_ROWS_LIMIT} из ${fmt(list.length)}: найдите товар по названию или артикулу, выберите магазин или статус</div>`
+        : '';
     return `<div class="lrow head cols-products"><div>Товар</div><div>Магазин</div><div>Цена</div><div>Статус</div><div></div></div>` +
-        list.map(p => `
+        list.slice(0, PRODUCT_ROWS_LIMIT).map(p => `
         <div class="lrow cols-products">
             <div class="cell-main">${thumb(p.image)}<div style="min-width:0"><b>${esc(p.title || 'Без названия')}</b><span>${p.sku ? 'Арт. ' + esc(p.sku) + ' · ' : ''}${esc(p.category || 'без категории')}</span></div></div>
             <div class="hide-m">${esc(p.store || '—')}</div>
@@ -489,13 +479,24 @@ function productRows(list) {
                 <button class="icon-btn" onclick="openProdEditor(${arg(p.id)})" aria-label="Изменить">${ico('edit')}</button>
                 <button class="icon-btn danger" onclick="deleteProduct(${arg(p.id)})" aria-label="Удалить">${ico('trash')}</button>
             </div>
-        </div>`).join('');
+        </div>`).join('') + more;
+}
+// поиск, магазин и статус — одни и те же для страницы и для перерисовки списка при вводе
+function filteredProducts() {
+    const s = ui.prodSearch.toLowerCase();
+    return Object.values(productsDb).filter(p => {
+        if (s && !((p.title || '') + ' ' + (p.sku || '')).toLowerCase().includes(s)) return false;
+        if (ui.prodStore && p.store !== ui.prodStore) return false;
+        if (ui.prodStatus === 'published') return p.status === 'published' && p.image;
+        if (ui.prodStatus === 'pending') return p.status === 'pending';
+        if (ui.prodStatus === 'nophoto') return !p.image;
+        if (ui.prodStatus === 'rejected') return p.status === 'rejected';
+        return true;
+    });
 }
 function renderProductsList() {
     // перерисовываем только список, чтобы поле поиска не теряло фокус
-    const s = ui.prodSearch.toLowerCase();
-    const list = Object.values(productsDb).filter(p => (!s || ((p.title || '') + ' ' + (p.sku || '')).toLowerCase().includes(s)) && (!ui.prodStore || p.store === ui.prodStore));
-    $('prod-list').innerHTML = productRows(list);
+    $('prod-list').innerHTML = productRows(filteredProducts());
 }
 function renderProducts() { if (ui.page === 'products') renderAll(); }
 
@@ -543,149 +544,15 @@ function saveProduct() {
 }
 
 // ---------- Импорт из 1С / Excel ----------
-const IMP_COLS = [
-    ['Артикул', 'PS-0412', 'sku'], ['Наименование', 'Смесь Ceresit CM 11, 25 кг', 'title'], ['Цена розн.', '545,00', 'price'],
-    ['Остаток', '38', 'stock'], ['Ед. изм.', 'мешок', 'unit'], ['Группа', 'Сухие смеси', 'category'],
-    ['Штрихкод', '4607077160126', 'barcode'], ['Вес, кг', '25', 'weight'], ['Комментарий', '—', 'skip']
-];
-const IMP_FIELDS = [['skip', 'Не загружать'], ['sku', 'Артикул'], ['title', 'Название'], ['price', 'Цена'], ['stock', 'Наличие (остаток)'], ['unit', 'Единица измерения'], ['category', 'Категория'], ['barcode', 'Штрихкод'], ['weight', 'Характеристика: вес'], ['desc', 'Описание']];
-const IMP_MATCHES = [
-    ['Смесь Ceresit CM11 25кг', 'PS-0412', 'Смесь Ceresit CM 11, 25 кг', 'Общая карточка · 6 магазинов', 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=200'],
-    ['Саморез д/дер. 3.5х35 (1000)', 'PS-1120', 'Саморез по дереву 3,5×35, 1000 шт', 'Общая карточка · 9 магазинов', 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=200'],
-    ['Грунт глуб.прон. 10л', 'PS-0877', 'Грунтовка глубокого проникновения, 10 л', 'Общая карточка · 5 магазинов', 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=200']
-];
-PAGES.import = function () {
-    const st = ui.imp.step;
-    const names = ['Файл', 'Колонки', 'Совпадения', 'Фото', 'Запуск'];
-    const steps = names.map((n, i) => `<button class="step${i + 1 === st ? ' on' : i + 1 < st ? ' done' : ''}" onclick="${i + 1 < st ? `ui.imp.step=${i + 1};renderAll()` : ''}"><i>${i + 1 < st ? ico('check', 'ico-sm') : i + 1}</i>${n}</button>`).join('');
-    return `<div class="steps">${steps}</div>${IMPORT_STEPS[st]()}`;
-};
-const IMPORT_STEPS = {
-    1() {
-        const hist = demo.imports.map(h => `
-            <div class="lrow cols-imports">
-                <div class="cell-main"><div class="thumb thumb-empty">${ico('file')}</div><div style="min-width:0"><b>${esc(h.file)}</b><span>${esc(h.store)} · ${esc(h.date)}</span></div></div>
-                <div class="num hide-m">${fmt(h.rows)} строк</div>
-                <div class="num hide-m">${fmt(h.published)} в каталоге</div>
-                <div>${h.nophoto ? `<span class="badge b-bad">${fmt(h.nophoto)} без фото</span>` : '<span class="badge b-ok">Готово</span>'}</div>
-            </div>`).join('');
-        return `
-        <div class="card card-pad" style="margin-bottom:16px">
-            <div class="row2" style="align-items:end">
-                <label class="field"><span>Для какого магазина загружаем</span>
-                    <select class="select" onchange="ui.imp.store=this.value">${Object.keys(shopsProfileDb).map(n => `<option${ui.imp.store === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select></label>
-                <div class="field"><span class="demo-tag">${ico('info', 'ico-sm')}Демонстрация: файл не уходит на сервер</span></div>
-            </div>
-            ${ui.imp.file
-                ? `<div class="file-pill">${ico('file')}<div style="flex:1"><b>${esc(ui.imp.file)}</b><span>${fmt(ui.imp.rows)} строк · ${IMP_COLS.length} колонок</span></div><button class="btn btn-ghost" onclick="ui.imp.file='';renderAll()">Заменить</button></div>`
-                : `<label class="drop" id="drop">${ico('upload')}<b>Перетащите файл или нажмите, чтобы выбрать</b><span>Выгрузка из 1С, Excel (.xlsx, .xls) или .csv — до 10 000 товаров</span>
-                    <input type="file" accept=".xlsx,.xls,.csv" hidden onchange="pickImportFile(this)"></label>`}
-            <div class="note" style="margin-top:14px">${ico('info')}<div>Как выгрузить из 1С: <b>Номенклатура → Ещё → Вывести список → Сохранить как Excel</b>. Нужны хотя бы артикул, название и цена. Фото и описания можно добавить на следующих шагах.</div></div>
-            <div class="wizard-foot"><span class="sp"></span><button class="btn btn-primary btn-lg" ${ui.imp.file ? '' : 'disabled style="opacity:.45;cursor:not-allowed"'} onclick="ui.imp.step=2;renderAll()">Дальше: колонки ${ico('arrow')}</button></div>
-        </div>
-        <div class="list"><div class="card-head"><h3>Прошлые загрузки</h3></div>${hist}</div>`;
-    },
-    2() {
-        const rows = IMP_COLS.map(([col, sample, def], i) => `
-            <div class="map-row">
-                <div class="map-src"><b>${esc(col)}</b><span>например: ${esc(sample)}</span></div>
-                <div class="arrow">${ico('arrow')}</div>
-                <select class="select" onchange="IMP_COLS[${i}][2]=this.value">${IMP_FIELDS.map(([v, l]) => `<option value="${v}"${v === def ? ' selected' : ''}>${l}</option>`).join('')}</select>
-                <div>${def === 'skip' ? '<span class="badge b-off">Пропустим</span>' : '<span class="badge b-info">Распознано</span>'}</div>
-            </div>`).join('');
-        return `
-        <p class="lead">Мы прочитали файл <b>${esc(ui.imp.file)}</b>. Проверьте, какая колонка что означает — система запомнит это для «${esc(ui.imp.store)}», и в следующий раз загрузка пройдёт в один клик.</p>
-        <div class="list">
-            <div class="map-row head"><div>Колонка в файле</div><div></div><div>Поле в приложении</div><div></div></div>
-            ${rows}
-        </div>
-        <div class="wizard-foot"><button class="btn btn-secondary" onclick="ui.imp.step=1;renderAll()">Назад</button><span class="sp"></span><button class="btn btn-primary btn-lg" onclick="ui.imp.step=3;renderAll()">Дальше: совпадения ${ico('arrow')}</button></div>`;
-    },
-    3() {
-        const d = ui.imp.decisions;
-        const rows = IMP_MATCHES.map(([from, sku, to, sub, img], i) => `
-            <div class="match-row">
-                <div class="from"><b>${esc(from)}</b><span>в файле · арт. ${esc(sku)}</span></div>
-                <div class="to">${thumb(img)}<div><b>${esc(to)}</b><span>${esc(sub)}</span></div></div>
-                <div class="match-actions">
-                    ${d[i] === 'yes' ? '<span class="badge b-info">Привязан</span>' : d[i] === 'no' ? '<span class="badge b-off">Новый товар</span>' : `
-                    <button class="btn btn-sm btn-secondary" onclick="ui.imp.decisions[${i}]='no';renderAll()">Это другой</button>
-                    <button class="btn btn-sm btn-primary" onclick="ui.imp.decisions[${i}]='yes';renderAll()">Это он</button>`}
-                </div>
-            </div>`).join('');
-        return `
-        <div class="sumrows">
-            <div><b>412</b><span>совпали с общими карточками — фото и описание подставятся сами</span></div>
-            <div><b>791</b><span>новых товаров — нужны фото этого магазина</span><button class="btn btn-ghost btn-sm" onclick="ui.imp.step=4;renderAll()">К фото</button></div>
-            <div><b>45</b><span>похожи на общие карточки — подтвердите ниже</span></div>
-        </div>
-        <div class="list">
-            <div class="card-head"><h3>Подтвердите похожие</h3><span class="sp"></span><button class="btn btn-ghost" onclick="IMP_MATCHES.forEach((_,i)=>ui.imp.decisions[i]='yes');renderAll()">Принять все</button></div>
-            ${rows}
-            <div class="empty" style="padding:18px">Показаны 3 из 45 — остальные можно проверить позже в разделе «Общие карточки»</div>
-        </div>
-        <div class="wizard-foot"><button class="btn btn-secondary" onclick="ui.imp.step=2;renderAll()">Назад</button><span class="sp"></span><button class="btn btn-primary btn-lg" onclick="ui.imp.step=4;renderAll()">Дальше: фото ${ico('arrow')}</button></div>`;
-    },
-    4() {
-        const has = !!ui.imp.photos;
-        const withPhoto = has ? 412 + 318 : 412;
-        const total = 1248;
-        return `
-        <p class="lead">У новых товаров нет фото. Загрузите архив, где каждое фото названо артикулом — например <b>PS-0412.jpg</b>. Система разложит их по товарам сама.</p>
-        <div class="card card-pad" style="margin-bottom:16px">
-            ${has
-                ? `<div class="file-pill">${ico('image')}<div style="flex:1"><b>${esc(ui.imp.photos)}</b><span>318 фото привязаны по артикулам</span></div><button class="btn btn-ghost" onclick="ui.imp.photos='';renderAll()">Заменить</button></div>`
-                : `<label class="drop">${ico('image')}<b>Архив с фото (.zip) или папка</b><span>Имя файла = артикул товара · JPG или PNG</span><input type="file" accept=".zip,image/*" multiple hidden onchange="pickPhotoArchive(this)"></label>`}
-            <div style="margin-top:16px">
-                <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:8px"><span>Товаров с фото</span><b class="num">${fmt(withPhoto)} из ${fmt(total)}</b></div>
-                <div class="bar"><i style="width:${Math.round(withPhoto / total * 100)}%"></i></div>
-            </div>
-        </div>
-        <div class="note warn">${ico('alert')}<div><b>${fmt(total - withPhoto)} товаров останутся без фото.</b> Они сохранятся со статусом «Нет фото» и не появятся у покупателей, пока магазин не добавит фото — так в каталоге не будет пустых карточек.</div></div>
-        <div class="wizard-foot"><button class="btn btn-secondary" onclick="ui.imp.step=3;renderAll()">Назад</button><span class="sp"></span><button class="btn btn-primary btn-lg" onclick="ui.imp.step=5;renderAll()">Дальше ${ico('arrow')}</button></div>`;
-    },
-    5() {
-        const withPhoto = ui.imp.photos ? 730 : 412;
-        return `
-        <div class="sumrows">
-            <div><b>${fmt(withPhoto)}</b><span>появятся в каталоге сразу</span></div>
-            <div><b>${fmt(1248 - withPhoto)}</b><span>сохранятся без фото — не видны покупателям</span>${ui.imp.photos ? '' : '<button class="btn btn-ghost btn-sm" onclick="ui.imp.step=4;renderAll()">Добавить фото</button>'}</div>
-            <div><b>0</b><span>обновят цену и остаток — это первая загрузка</span></div>
-        </div>
-        <div class="card card-pad">
-            <div class="file-pill">${ico('file')}<div style="flex:1"><b>${esc(ui.imp.file)}</b><span>Магазин «${esc(ui.imp.store)}» · фильтры подставятся из категорий</span></div></div>
-            <div class="note" style="margin-top:14px">${ico('info')}<div>При следующей выгрузке система узнает товары по артикулу и обновит только цену и наличие — без дублей.</div></div>
-            <div class="wizard-foot"><button class="btn btn-secondary" onclick="ui.imp.step=4;renderAll()">Назад</button><span class="sp"></span><button class="btn btn-primary btn-lg" onclick="runImport()">Запустить импорт</button></div>
-        </div>`;
-    }
-};
-function pickImportFile(input) {
-    const f = input.files && input.files[0];
-    ui.imp.file = f ? f.name : 'Выгрузка_1С_' + ui.imp.store.replace(/\s+/g, '_') + '.xlsx';
-    renderAll();
+// Мастер — модуль src/admin/features/import: чтение файла, колонки, совпадения, фото, запуск.
+PAGES.import = function () { return renderImportPage(); };
+
+/* товары магазина в разделе «Товары» (из итогов импорта) */
+function showStoreProducts(store, status) {
+    ui.prodStore = store;
+    ui.prodStatus = status || 'all';
+    go('products');
 }
-function pickPhotoArchive(input) {
-    const f = input.files && input.files[0];
-    ui.imp.photos = f ? f.name : 'Фото_' + ui.imp.store.replace(/\s+/g, '_') + '.zip';
-    renderAll();
-}
-function runImport() {
-    const withPhoto = ui.imp.photos ? 730 : 412;
-    demo.imports.unshift({ file: ui.imp.file, store: ui.imp.store, date: 'сегодня', rows: 1248, published: withPhoto, nophoto: 1248 - withPhoto });
-    resetImport();
-    renderAll();
-    toast('Импорт запущен — товары появятся в каталоге через пару минут');
-}
-// перетаскивание файла на зону загрузки
-document.addEventListener('dragover', e => { const d = e.target.closest && e.target.closest('.drop'); if (d) { e.preventDefault(); d.classList.add('over'); } });
-document.addEventListener('dragleave', e => { const d = e.target.closest && e.target.closest('.drop'); if (d) d.classList.remove('over'); });
-document.addEventListener('drop', e => {
-    const d = e.target.closest && e.target.closest('.drop'); if (!d) return;
-    e.preventDefault();
-    const f = e.dataTransfer.files[0];
-    if (ui.imp.step === 4) ui.imp.photos = f ? f.name : 'Фото.zip'; else ui.imp.file = f ? f.name : 'Выгрузка.xlsx';
-    renderAll();
-});
 
 // ---------- Общие карточки ----------
 PAGES.shared = function () {

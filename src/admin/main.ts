@@ -7,6 +7,9 @@ import './styles/admin.css';
 import { CatalogStore, seedFromLegacy } from '../shared/data/catalog-store';
 import type { CatalogPart } from '../shared/data/catalog';
 import { exposeToLegacy } from '../shared/legacy/expose';
+import { createLocalImportRepository } from '../shared/import/repository';
+import { LocalMediaStore } from '../shared/media/local-media-store';
+import { initImport, renderImportPage, startImport } from './features/import/wizard';
 
 const ADMIN_PARTS: CatalogPart[] = ['products', 'shops', 'stories', 'promo'];
 const catalog = new CatalogStore(seedFromLegacy);
@@ -22,7 +25,11 @@ exposeToLegacy({
     if (r.failed.length) toast?.('Не хватило места в браузере: часть изменений не сохранилась');
     else if (r.degraded.length) toast?.('Сохранено без встроенных фото: они не поместились в память браузера');
   },
+  /* импорт из 1С / Excel: страница PAGES.import в admin.js рисуется модулем */
+  renderImportPage,
+  startImport,
 });
+initImport({ catalog, media: new LocalMediaStore(), repo: createLocalImportRepository() });
 
 /* the app or another admin tab saved the catalogue → reload and redraw */
 catalog.onExternalChange(() => {

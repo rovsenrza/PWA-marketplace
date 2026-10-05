@@ -11,9 +11,15 @@ Status: **open.** Everything that can be built without a server is done; the rem
 | Buyer sign-in | not decided yet | |
 | Hosting provider | not decided yet | |
 
-Meanwhile, the import core is built without depending on the stack: file parsing (CSV, Excel, CommerceML),
-column mapping, matching by article and barcode, the report, as pure TypeScript functions with tests
-(`shared/import`). Option A runs them on the server as they are; for B–D they are the exact specification.
+Meanwhile, the import is built without depending on the stack: file parsing (CSV, Excel, CommerceML, a zipped
+export), column mapping, matching by article and barcode, photos, the report, as pure TypeScript functions with
+tests (`shared/import`). The admin's import screen now runs them in the browser on real files. Option A runs the
+same code on the server as it is; for B–D it is the exact specification.
+
+What the browser can and can't hold (measured): 10,000 products **without photos** fit (about 3.7 of the ~5 million
+characters a browser keeps per site) and every step takes under a second. **Photos are the limit**: they are
+compressed to 800 px and ≤ 50 KB, and only a few dozen fit. The import is saved all or nothing: if it doesn't fit,
+nothing changes and the admin is told why.
 
 ## 1. Where we are
 
@@ -28,6 +34,7 @@ implementations of these interfaces; screens and business rules stay as they are
 | `AuthService` (`shared/auth/types.ts`) | **`DemoAuthService`: no password checks** | real accounts and sessions, roles buyer · store · agency · admin |
 | `MediaStore` (`shared/media/types.ts`) | compression on the device, data: URL inside the data | upload to object storage, returns a URL |
 | `EngagementRepository` (`shared/data/engagement.ts`) | device state + **demo** community totals | real totals: «полезно», poll votes |
+| `ImportRepository` (`shared/import/repository.ts`) | column mapping per store and file layout, import history | stored per store on the server; the history shows who imported what |
 
 The business rules are pure TypeScript functions with tests (`shared/orders/*`, `shared/catalog/*`,
 `shared/data/catalog.ts`). A TypeScript backend can import them as they are, so the browser and the server
@@ -44,8 +51,11 @@ apply the same rules (locked orders, SLA, one order per store, merging).
   clearing the browser loses everything. The 5 MB browser storage is the ceiling for all photos.
 - **Community totals are invented.** «Это сработало» and poll results show placeholder numbers from the
   prototype plus this browser's own clicks.
-- **The admin's mock-ups are disconnected.** 1C/Excel import, shared cards across stores, the filter builder,
-  agencies and their listings are demo screens (`demo` in `admin.js`): an agency's listing never reaches buyers.
+- **The admin's mock-ups are disconnected.** Shared cards across stores, the filter builder, agencies and their
+  listings are demo screens (`demo` in `admin.js`): an agency's listing never reaches buyers. (The 1C/Excel import
+  is real now, within the browser's limits above.)
+- **Imports stay in one browser, with few photos.** An imported catalogue lives where it was imported; large photo
+  archives need object storage.
 - **Managers aren't notified.** A store learns about an order only by opening the cabinet; there are no MAX or
   Telegram notifications.
 
@@ -61,7 +71,7 @@ per store (bulk import), thousands of buyers. No payments in the app (no card da
 | Orders | checkout → an order per store; the state machine from `shared/orders` (confirm, unavailable, new price, accept, invoice, payment, cancel, SLA expiry); the store sees its orders, the buyer theirs |
 | Notifications | to the store manager (MAX and Telegram bots) on a new order or an SLA approaching; to the buyer on a new price or confirmation |
 | Files | upload of photos and short videos to object storage (S3-compatible), resizing on the server, CDN links |
-| Import | 1C / Excel / CSV files with 1,000–10,000 rows: a background job, matching by article, a report «published / no photo / errors» (the admin's import screen already shows this report) |
+| Import | 1C / Excel / CSV / CommerceML files with 1,000–10,000 rows and photo archives: a background job running `shared/import` (the admin's wizard already does the whole flow in the browser), photos to object storage, the same report «published / no photo / errors» |
 | Community | «полезно» and poll votes: one vote per account, totals on the server |
 | Admin | the existing `admin.html` stays the interface; behind it, the same API with the admin role |
 

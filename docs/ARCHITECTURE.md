@@ -13,14 +13,16 @@ without rewriting screens. We get there in stages; **every screen works at every
 
 ```
 ┌───────────────────────── pages: index.html / admin.html (markup, inline onclick) ─────────────────────────┐
-│ src/app/features/*.ts          new code: TypeScript modules, typed                                      │
-│ src/app/legacy/*.js            prototype code: classic scripts, global functions                       │
-├──────────────────────────────── bridge: src/shared/legacy/globals.d.ts ────────────────────────────────┤
-│ src/shared/domain              entity types (Product, Shop, Story, CartItem, StoreOrder…)               │
-│ src/shared/storage             storage key registry + safe access                                      │
-│ src/shared/legacy/seed.js      one set of starting data for app and admin                              │
-│ src/shared/legacy/data.js      admin data layer (load/save, cross-tab sync)                            │
-└──────────────────────────────────────────── localStorage (→ API later) ───────────────────────────────┘
+│ src/app/features/*.ts          new code: TypeScript modules, typed                                        │
+│ src/admin/features/*.ts        admin modules (the import wizard)                                          │
+│ src/app/legacy/*.js            prototype code: classic scripts, global functions                          │
+├──────────────────────────────── bridge: src/shared/legacy/globals.d.ts ───────────────────────────────────┤
+│ src/shared/domain              entity types (Product, Shop, Story, CartItem, StoreOrder…)                 │
+│ src/shared/data, orders, …     stores, repositories, business rules (pure functions + tests)              │
+│ src/shared/import              1C / Excel / CommerceML import: read, map, plan, photos                    │
+│ src/shared/storage             storage key registry + safe access                                         │
+│ src/shared/legacy/seed.js      one set of starting data for app and admin                                 │
+└──────────────────────────────────────────── localStorage (→ API later) ───────────────────────────────────┘
 ```
 
 ### Load order (it matters)
@@ -49,7 +51,7 @@ found no class from the old runtime missing from the build.
 ### Data
 
 - `seed.js` is the only source of starting data. `SEED.products()` and friends return a fresh copy each time.
-- The app overlays localStorage on the seed (`loadAllData` in `app-core.js`); the admin works through `data.js`.
+- The app and the admin overlay localStorage on the seed through the same `CatalogStore` (below).
 - Every storage key is listed in `src/shared/storage/keys.ts`. New code reads and writes only through
   `local-store.ts`: it doesn't crash in private mode and can subscribe to changes from other tabs.
 
@@ -80,6 +82,16 @@ a new cache name, and the old cache is deleted on activation.
   content for a server.
 - **Cart and orders** (`CartStore`), **favourites** (`FavoritesStore`), **profile** (`BuyerStore`):
   the same pattern, each with its own repository.
+- **Import** (`shared/import/`, pure TypeScript with tests): files → table (CSV in UTF-8 or Windows-1251,
+  Excel through SheetJS, CommerceML from 1C, a zipped export) → column mapping → drafts with errors →
+  a plan against the catalogue (by article within the store: only price and stock change; barcode twins in
+  other stores) → photos matched by article or by the path from the file → the catalogue after the import.
+  `ImportRepository` remembers the mapping per store and file layout and keeps the history
+  (`meb_import_mappings`, `meb_imports`). The admin's wizard is `admin/features/import/`.
+- **All or nothing:** `CatalogStore.save(parts, { strict: true })` never falls back to saving without photos:
+  if the import doesn't fit the browser's storage, the stored catalogue stays as it was and the admin is told
+  why. The ordinary save still falls back, and a published product that loses its only photo that way goes
+  to drafts, so buyers never see an empty card.
 - **Legacy access:** the old globals (`productsDb`, `storiesData`, `state.cart`, `buyerProfile`, …) are
   accessors onto the stores. Catalogue ones return the live object (legacy mutates it in place); none of them
   is declared with `let` in legacy any more.
@@ -101,6 +113,7 @@ a new cache name, and the old cache is deleted on activation.
 | cart state and operations, checkout, cart and order storage from `core/cart.js` | `shared/orders/cart.ts`, `shared/orders/checkout.ts`, `shared/data/repositories.ts`, `app/features/cart/` (CartStore + actions) | unit (operations, checkout, store with an in-memory repository) + e2e (reload, lifehack estimate) |
 | function overwriting in `features/boot.js` | events `app:cart-changed` / `app:favorites-changed` | e2e |
 | motion, swipe to delete, notifications, tab lens, SW registration | `app/features/*` | e2e |
+| admin import mock-up (`IMP_*`, `IMPORT_STEPS`, invented numbers and history) | `shared/import/` (reading, mapping, plan, photos, zip, memory), `admin/features/import/` (wizard), strict save in `catalog-repository.ts` | unit (1C CSV, Excel, CommerceML 2.05/2.08, zip with CP866 names, plan, photos, memory, strict save) + e2e (1C file → run, re-import, refusal when it doesn't fit, CommerceML zip with photos, injection) |
 
 ### Rendering and buttons
 
@@ -129,7 +142,8 @@ warned). With a server, an implementation that puts the file in object storage a
 
 ## Rules for new code
 
-1. New features are written in **TypeScript** in `src/app/features/<feature>/`, with an `initX()` called from `main.ts`.
+1. New features are written in **TypeScript** in `src/app/features/<feature>/` (the admin's in
+   `src/admin/features/<feature>/`), with an `initX()` called from that page's `main.ts`.
 2. A legacy dependency is first declared in `src/shared/legacy/globals.d.ts`, so the list of what is left
    to port stays visible.
 3. If the markup needs a function from a module, it goes on `window` explicitly in the module (as with
@@ -164,6 +178,13 @@ are deleted. The remaining screens are the parallel track below.
 app and the admin, per-part saving), cart and orders, favourites, the profile, lifehack reactions (device
 state and community totals separately). Sign-in behind `AuthService`, files behind `MediaStore`. The app
 starts at `DOMContentLoaded`. Browser tests are hermetic (no internet).
+
+**Import from 1C / Excel — done for the browser (decided: in the first release).** The admin reads a real
+file, maps columns (remembered per store), shows the report (updates, new products, barcode twins, rows with
+errors and why), attaches photos and applies the import to the catalogue. Measured: 10,000 products without
+photos take about 3.7 of the browser's ~5 million characters and every step takes under a second; photos are
+the limit (compressed to 800 px and ≤ 50 KB, a few dozen fit). The server runs the same `shared/import`
+as a background job and stores photos in object storage.
 
 **Stage 4 — backend: waiting for a decision.** What the server must provide, the constraints (personal data
 of Russian users must be stored in Russia), the options and the recommendation: [`BACKEND.md`](BACKEND.md).

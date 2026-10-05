@@ -46,12 +46,19 @@ declare global {
     currentProductId?: string | null;
     pmSelectedColor?: { label?: string } | null;
     getCartItems?: () => CartItem[];
+    /* панель управления (src/admin/legacy/admin.js), вызываемые из модулей панели */
+    renderAll?: () => void;
+    toast?: (msg: string) => void;
+    thumb?: (src: string, round?: boolean) => string;
+    showStoreProducts?: (store: string, status?: string) => void;
     /* функции модулей, которые зовёт разметка (onclick) и legacy */
     openNotifications?: () => void;
     closeNotifications?: () => void;
     dismissNotification?: (id: string) => void;
     setUiTheme?: (pref: 'system' | 'light' | 'dark') => void;
     toggleUiTheme?: () => void;
+    renderImportPage?: () => string;
+    startImport?: (store: string) => void;
     [legacyFn: string]: unknown;
   }
 }
