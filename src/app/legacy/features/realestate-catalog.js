@@ -124,7 +124,7 @@ function applyReFilters() {
 
         // Цена до...
         if (maxPrice !== null) {
-            const pPrice = parseInt((p.price || '0').replace(/\D/g, ''));
+            const pPrice = commParsePrice(p);
             if (pPrice > maxPrice) return false;
         }
 
@@ -222,7 +222,7 @@ function commTypeLabel(t) {
 }
 
 function commParsePrice(p) {
-    return parseInt(String((p && p.price) || '0').replace(/\D/g, ''), 10) || 0;
+    return parsePrice(p && p.price);
 }
 
 function commFmtNum(n) {

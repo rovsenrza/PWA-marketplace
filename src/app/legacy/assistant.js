@@ -36,8 +36,9 @@
             .replace(/х/g, 'x');
     }
 
+    /* общий разбор цены (src/shared/format/price.ts): «1 299,90 ₽» — это 1299,9, а не 129 990 */
     function parsePrice(raw) {
-        return parseInt(String(raw || '').replace(/\D/g, ''), 10) || 0;
+        return window.parsePrice(raw);
     }
 
     function parseQuery(text) {

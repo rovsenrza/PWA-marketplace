@@ -34,7 +34,7 @@
         }
 
         if (minPrice !== null || maxPrice !== null) {
-            const numPrice = parseInt((prod.price || '').replace(/\D/g, '')) || 0;
+            const numPrice = parsePrice(prod.price); // общий разбор цены: копейки — не лишние разряды
             if (minPrice !== null && numPrice < minPrice) continue;
             if (maxPrice !== null && numPrice > maxPrice) continue;
         }

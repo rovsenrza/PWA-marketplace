@@ -91,3 +91,13 @@ test('price with kopecks: the cart counts it correctly (before, «1 299,90 ₽»
   await expect(app.locator('#cart-list .cart-total')).toHaveText('Итого: 2 599,80 ₽');
   await expect(app.locator('#cart-list .cart-card-price').first()).toHaveText('1 299,90 ₽');
 });
+
+test('catalogue price filter: kopecks are not extra digits («1 299,90 ₽» is within 1000–2000)', async ({ app }) => {
+  await app.evaluate(() => {
+    eval('productsDb').kop = { id: 'kop', title: 'Саморез с копейками', price: '1 299,90 ₽', store: 'Постройка', status: 'published', image: '', category: 'инструменты' };
+    (document.getElementById('filter-price-min') as HTMLInputElement).value = '1000';
+    (document.getElementById('filter-price-max') as HTMLInputElement).value = '2000';
+    (window as any).renderProductGrid();
+  });
+  await expect(app.locator('#product-grid')).toContainText('Саморез с копейками');
+});
