@@ -64,6 +64,10 @@ export function finishLogin(): void {
   if (role) role.innerText = ROLE_TITLE[String(state.userRole)] ?? 'Покупатель';
 
   const isBuyer = state.userRole === 'user';
+  /* у покупателя буква — из имени (renderBuyerCard); у магазина и администратора своя,
+     иначе оставалась буква прошлого покупателя на этом устройстве */
+  const avatar = $('user-avatar-letter');
+  if (avatar && !isBuyer) avatar.innerText = (String(state.currentShop || state.userEmail || 'П')[0] ?? 'П').toUpperCase();
   $('buyer-card')?.classList.toggle('hidden', !isBuyer);
   const w = window;
   if (isBuyer) { w.loadBuyerProfile?.(); w.renderBuyerCard?.(); }

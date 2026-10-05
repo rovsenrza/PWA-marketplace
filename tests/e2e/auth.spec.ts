@@ -38,3 +38,14 @@ test('«Показать / Скрыть»: the label matches the state (it used 
   await expect(app.locator('#login-password')).toHaveAttribute('type', 'password');
   await expect(btn).toHaveText('Показать');
 });
+
+test('avatar letter: a store signing in after a buyer gets its own letter, not the buyer\'s', async ({ app }) => {
+  await signIn(app, '+7 (900) 123-45-67', 'secret12');
+  await app.evaluate(() => { (window as any).openBuyerEditor(); });
+  await app.fill('#buyer-edit-name', 'Анна Смирнова');
+  await app.evaluate(() => (window as any).saveBuyerCard());
+  await expect(app.locator('#user-avatar-letter')).toHaveText('А');
+  await app.evaluate(() => (window as any).logout());
+  await signIn(app, 'shop', 'x');
+  await expect(app.locator('#user-avatar-letter')).toHaveText('Л'); // «Любимый Дом»
+});
