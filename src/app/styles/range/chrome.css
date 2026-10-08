@@ -1,0 +1,34 @@
+/* Chrome: the white top row with the wordmark, the framed search with its black key, the solid tab bar.
+   Some selectors carry an extra id or class to outweigh the glass.css / market.css rule they replace. */
+#phone-container[data-ui] #app-header { background: var(--r-paper) !important; border-bottom: 0 !important; box-shadow: none !important; padding-bottom: 10px !important; }
+#phone-container[data-ui] .lg-brand { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+#phone-container[data-ui] .lg-wordmark { display: inline-flex; align-items: stretch; font-family: var(--r-font-x) !important; font-weight: 900; font-size: 30px; line-height: 1; letter-spacing: 0; text-transform: uppercase; color: var(--r-ink); }
+#phone-container[data-ui] .lg-wordmark b { margin-left: 4px; padding: 3px 12px 0 7px; background: var(--r-orange); color: var(--r-on-orange) !important; font-weight: 900 !important; clip-path: polygon(0 0, calc(100% - var(--r-chamfer)) 0, 100% var(--r-chamfer), 100% 100%, 0 100%); }
+#phone-container[data-ui] .lg-tagline { margin-top: 0; font-size: 12px; font-weight: 500; color: var(--r-ink-3); }
+#phone-container[data-ui] #app-header .lg--circle { width: 44px !important; height: 44px !important; display: grid; place-items: center; color: var(--r-ink); background: transparent !important; border-radius: 0 !important; box-shadow: none !important; }
+#phone-container[data-ui] #app-header .lg--circle svg { width: 24px; height: 24px; }
+#phone-container[data-ui] #app-header .lg--circle:active { background: var(--r-well) !important; }
+#phone-container[data-ui] #app-header .lg-dot { position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 0 !important; background: var(--r-orange) !important; box-shadow: 0 0 0 2px var(--r-paper) !important; }
+
+#phone-container[data-ui] .lg-search { height: auto; padding: 0; gap: 0 !important; }
+#phone-container[data-ui] .lg-search:focus-within { box-shadow: none !important; }
+#phone-container[data-ui] .lg-search #search-input { height: 48px; padding-left: 44px !important; background: var(--r-paper) !important; border: 2px solid var(--r-ink) !important; border-right: 0 !important; border-radius: 0 !important; font-size: 16px !important; color: var(--r-ink) !important; box-shadow: none !important; text-overflow: ellipsis; }
+#phone-container[data-ui] #search-input::placeholder { color: var(--r-ink-3) !important; }
+#phone-container[data-ui] .lg-search #search-input:focus { outline: none !important; border-color: var(--r-orange) !important; box-shadow: none !important; }
+#phone-container[data-ui] #view-catalog .lg-search .absolute { color: var(--r-ink) !important; }
+#phone-container[data-ui] #view-catalog .lg-search button.lg-search-filter { width: 48px !important; height: 48px !important; background: var(--r-ink) !important; color: var(--r-paper) !important; border-radius: 0 !important; box-shadow: none !important; }
+#phone-container[data-ui] #view-catalog .lg-search button.lg-search-filter svg { color: var(--r-paper) !important; }
+
+#phone-container[data-ui] #app-tabbar { left: 0 !important; right: 0 !important; bottom: 0 !important; height: calc(60px + env(safe-area-inset-bottom)) !important; padding: 0 0 env(safe-area-inset-bottom) !important; margin: 0 !important; border-radius: 0 !important; background: var(--r-paper) !important; border-top: var(--r-band) solid var(--r-ink) !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+#phone-container[data-ui] #app-tabbar::before { content: none !important; }
+#phone-container[data-ui] #app-tabbar > button { border-radius: 0; color: var(--r-ink-3) !important; }
+#phone-container[data-ui] #app-tabbar > button.text-blue-600 { color: var(--r-ink) !important; }
+#phone-container[data-ui] #app-tabbar > button > span:not(#cart-badge) { font-size: 11px !important; font-weight: 600 !important; }
+#phone-container[data-ui] #app-tabbar > button > svg { width: 24px; height: 24px; }
+#phone-container[data-ui] #app-tabbar > button > svg path { stroke-width: 1.75; }
+#phone-container[data-ui] #app-tabbar .tab-lens { position: absolute; top: calc(-1 * var(--r-band) - 1px); left: 0; height: 5px; background: transparent !important; box-shadow: none !important; border: 0 !important; border-radius: 0 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; animation: none !important; transition: translate .38s var(--r-ease), width .38s var(--r-ease) !important; }
+#phone-container[data-ui] #app-tabbar .tab-lens::after { content: ''; position: absolute; inset: 0 24%; background: var(--r-orange); }
+@media (prefers-reduced-motion: reduce) {
+  #phone-container[data-ui] #app-tabbar .tab-lens { transition: none !important; }
+}
+#phone-container[data-ui] #cart-badge { border-radius: 0 !important; background: var(--r-orange) !important; color: var(--r-on-orange) !important; font-family: var(--r-font-x) !important; font-size: 12px !important; font-weight: 900 !important; min-width: 18px !important; height: 18px !important; }

@@ -1,13 +1,15 @@
 /**
  * Buyer app entry point (ES module, runs after the legacy classic scripts).
  * Styles are connected in cascade order. Order matters, as in the prototype:
- * the prototype layers, then Tailwind (it used to run in the browser and inject its CSS last).
+ * the prototype layers, then Tailwind (it used to run in the browser and inject its CSS last),
+ * then «Линейка», the redesign layer that restyles everything above it.
  */
 import './styles/base.css';
 import './styles/market.css';
 import './styles/glass.css';
 import './styles/motion.css';
 import './styles/tailwind.css';
+import './styles/range/index.css';
 
 import './legacy-bridge';
 

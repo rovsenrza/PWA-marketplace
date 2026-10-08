@@ -1,0 +1,80 @@
+/* Global transforms: one type family, square corners, rules instead of soft shadows, themed browser surfaces. */
+#phone-container[data-ui] { font-family: var(--r-font) !important; }
+/* descendants inherit the family instead of restating it, so a primitive set in Extra Condensed carries the face
+   into its own <b>, <i> and <span> (restated on *, the family would reset them to Sofia Sans) */
+#phone-container[data-ui] * { font-family: inherit !important; }
+#phone-container[data-ui] :is(.r-x, .r-x *) { font-family: var(--r-font-x) !important; }
+#phone-container[data-ui] .r-caps { text-transform: uppercase; }
+#phone-container[data-ui] .r-num { font-variant-numeric: tabular-nums lining-nums; }
+
+#phone-container[data-ui] :is(.rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl,
+  [class*="rounded-["], [class*="rounded-t-"], [class*="rounded-b-"], [class*="rounded-l-"], [class*="rounded-r-"],
+  [class*="rounded-tl-"], [class*="rounded-tr-"], [class*="rounded-bl-"], [class*="rounded-br-"]) { border-radius: 0 !important; }
+#phone-container[data-ui] :is(.shadow-sm, .shadow, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl) { box-shadow: 0 0 0 1px var(--r-rule) !important; }
+
+/* the second selector outweighs glass.css's dark-theme selection colour */
+#phone-container[data-ui] ::selection,
+html[data-theme] #phone-container[data-ui] ::selection { background: var(--r-orange); color: var(--r-on-orange); }
+#phone-container[data-ui] :focus-visible { outline: 2px solid var(--r-orange) !important; outline-offset: 2px !important; }
+/* the old focus rule rounded every focused element (8px); focus keeps the square */
+#phone-container[data-ui] :where(:focus-visible:not(.rounded-full)) { border-radius: 0; }
+#phone-container[data-ui] * { scrollbar-width: thin; scrollbar-color: var(--r-n4) transparent; }
+/* rails that hide their scrollbar keep it hidden (a non-auto scrollbar-width switches off ::-webkit-scrollbar) */
+#phone-container[data-ui] :is(.no-scrollbar, .ls-film) { scrollbar-width: none; }
+#phone-container[data-ui] a { text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+/* inputs: the old blue focus halo becomes the orange frame (same selectors as market.css, so this one wins) */
+#phone-container[data-ui] input:not([type="checkbox"]):not([type="radio"]):focus,
+#phone-container[data-ui] select:focus,
+#phone-container[data-ui] textarea:focus { border-color: var(--r-orange) !important; box-shadow: none !important; }
+#phone-container[data-ui] #catalog-search-input:focus { box-shadow: none !important; }
+
+/* the Liquid Glass layer is retired: controls are solid */
+#phone-container[data-ui] .lg { background: transparent !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: none !important; border-radius: 0 !important; }
+#phone-container[data-ui] .lg::before { content: none !important; }
+#phone-container[data-ui] .home-aurora { display: none !important; }
+#phone-container[data-ui] * { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+/* glass.css still paints a few controls off .lg (photo keys, back keys, sheets, the product bar) with these:
+   solid paper and a hairline rule, in both themes (the second selector matches glass.css's dark block) */
+#phone-container[data-ui],
+html[data-theme] #phone-container[data-ui] {
+  --glass-tint: var(--r-paper);
+  --glass-tint-strong: var(--r-paper);
+  --glass-tint-refract: var(--r-paper);
+  --glass-rim: transparent;
+  --glass-rim-low: transparent;
+  --glass-edge: var(--r-rule);
+  --glass-sheen: transparent;
+  --glass-sheen-low: transparent;
+  --glass-shadow: 0 0 transparent;
+  --glass-lens: transparent;
+  --lg-rims: 0 0 0 1px var(--r-rule);
+  --lg-rims-sm: 0 0 0 1px var(--r-rule);
+}
+
+/* legacy primary fills become the orange next action; legacy brand text becomes orange text */
+#phone-container[data-ui] :is(.bg-\[\#1e6091\], .bg-\[\#1c3a34\], .bg-blue-600, .bg-blue-500, .bg-brand, .bg-\[\#1a5fb4\], .bg-\[\#2563eb\]) { background: var(--r-orange) !important; color: var(--r-on-orange) !important; }
+#phone-container[data-ui] :is(.bg-\[\#1e6091\], .bg-\[\#1c3a34\], .bg-blue-600, .bg-blue-500, .bg-brand, .bg-\[\#1a5fb4\], .bg-\[\#2563eb\]) :is(.text-white, svg) { color: var(--r-on-orange) !important; }
+#phone-container[data-ui] :is(.hover\:bg-\[\#1a5fb4\], .hover\:bg-\[\#18527a\], .hover\:bg-blue-700):hover { background-color: var(--r-orange-press) !important; }
+#phone-container[data-ui] .sort-btn.bg-\[\#1e6091\] { color: var(--r-on-orange) !important; }
+#phone-container[data-ui] :is(.text-\[\#1e6091\], .text-blue-600, .text-blue-500, .text-blue-700, .text-brand, .text-\[\#1c3a34\], .text-\[\#2563eb\]) { color: var(--r-orange-text) !important; }
+
+/* Rules nobody has restyled yet fill with --mk-brand (now ink) under a hard white label. The ink turns light in the
+   dark theme, so the label follows the ink's own paper, and the brand-tinted glow under those keys goes.
+   Each selector repeats the legacy one: the restyle of that screen overrides it. */
+#phone-container[data-ui] .home-cat.on .home-cat-ico { color: var(--mk-on-brand); box-shadow: none; }
+#phone-container[data-ui] .rec-add { color: var(--mk-on-brand); box-shadow: none; }
+#phone-container[data-ui] .pc-cart { color: var(--mk-on-brand) !important; }
+#phone-container[data-ui] .pc-cart:not(.in) { box-shadow: none !important; }
+#phone-container[data-ui] .pm-sheet-pill.on,
+#phone-container[data-ui] .comm-chip.on,
+#phone-container[data-ui] #portfolio-modal .co-room.on { color: var(--mk-on-brand) !important; box-shadow: none !important; }
+#phone-container[data-ui] .bg-\[\#2AABEE\] { color: var(--mk-on-brand) !important; }
+#view-cart .cart-cta,
+#view-favorites .fav-send { color: var(--mk-on-brand); }
+.as-msg-user,
+.lg-sheet-btn--done { color: var(--mk-on-brand); }
+/* ink panels and backdrops with white copy (calculator totals, the shop desk, company covers, the machinery sheet)
+   stay dark in the dark theme */
+html[data-theme="dark"] #phone-container[data-ui] .from-\[\#1e6091\] { --tw-gradient-from: var(--r-n2) !important; --tw-gradient-to: var(--r-n2) !important; --tw-gradient-stops: var(--r-n2), var(--r-n2) !important; }
+html[data-theme="dark"] #phone-container[data-ui] :is(.bg-\[\#16324a\], .bg-\[\#0f1c28\]) { background-color: var(--r-n2) !important; }
