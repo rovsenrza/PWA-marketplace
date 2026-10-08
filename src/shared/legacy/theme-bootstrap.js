@@ -13,7 +13,7 @@
         root.setAttribute('data-theme', t);
         root.setAttribute('data-theme-pref', pref);
         var m = document.querySelector('meta[name="theme-color"]');
-        if (m) m.setAttribute('content', t === 'dark' ? '#0A0F1C' : '#F3F5FA');
+        if (m) m.setAttribute('content', t === 'dark' ? '#121211' : '#FFFFFF');
         document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
             b.classList.toggle('on', b.getAttribute('data-theme-opt') === pref);
             b.setAttribute('aria-pressed', b.getAttribute('data-theme-opt') === pref ? 'true' : 'false');
@@ -33,9 +33,4 @@
     window.addEventListener('storage', function (e) { if (e.key === 'ui-theme') apply(); });
     document.addEventListener('DOMContentLoaded', apply);
     apply();
-    // преломление через SVG-фильтр в backdrop-filter умеет только Chromium; Safari/Firefox — обычное размытие
-    try {
-        var brands = (navigator.userAgentData && navigator.userAgentData.brands) || [];
-        if (brands.some(function (b) { return /Chromium/.test(b.brand); })) document.documentElement.classList.add('lg-refract');
-    } catch (e) {}
 })();

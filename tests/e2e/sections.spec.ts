@@ -59,13 +59,13 @@ test('deeper screens: lifehack, special machinery, company, portfolio, vacancy, 
 });
 
 test('events app:favorites-changed / app:cart-changed: the recommendations and the bell redraw', async ({ app }) => {
-  const id = await app.evaluate(() => document.querySelector('.rec-card')!.getAttribute('onclick')!.match(/'([^']+)'/)![1]);
+  const id = await app.evaluate(() => document.querySelector<HTMLElement>('#recommendations-container .r-cell')!.dataset.product!);
   await app.evaluate(call('toggleFavorite', id));
-  await expect(app.locator('.rec-card .rec-fav.on')).toHaveCount(1);
+  await expect(app.locator('#recommendations-container .r-cell__fav[aria-pressed="true"]')).toHaveCount(1);
   await app.evaluate(call('addToCart', id));
-  await expect(app.locator('.rec-card .rec-add.in')).toHaveCount(1);
+  await expect(app.locator('#recommendations-container .r-cell__cart.is-on')).toHaveCount(1);
   await app.evaluate(call('removeFromCart', id));
-  await expect(app.locator('.rec-card .rec-add.in')).toHaveCount(0);
+  await expect(app.locator('#recommendations-container .r-cell__cart.is-on')).toHaveCount(0);
   /* колокольчик: после изменения корзины есть непрочитанное */
   await app.evaluate(() => localStorage.setItem('meb_notif_seen', '[]'));
   await app.evaluate(call('addToCart', id));

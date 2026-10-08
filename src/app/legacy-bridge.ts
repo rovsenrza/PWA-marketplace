@@ -1,3 +1,4 @@
+import './features/onboarding/consent';
 /**
  * What modules publish for legacy code. The list shrinks as domains are ported;
  * once it's empty, the bridge is no longer needed.
@@ -21,6 +22,9 @@ import { buyerStore } from './features/buyer/buyer-store';
 import { buyerLegacyApi } from './features/buyer/profile';
 import { authLegacyApi } from './features/auth/auth-ui';
 import { mediaUpload } from './features/media';
+import { initProductCells, productCell } from './ui/product-cell';
+import { storeTheme } from './features/storefront/store-theme';
+import { buildFacets, applyFilters, sortProducts, onInk } from '../shared/storefront';
 
 exposeToLegacy({ parsePrice, formatPrice, formatRub, getBadgeHtml, getPriceHtml });
 
@@ -66,3 +70,9 @@ exposeToLegacy(authLegacyApi);
 
 /* загрузка фото и видео из редакторов: MediaStore */
 exposeToLegacy({ mediaUpload });
+
+/* одна ячейка товара для всех сеток и лент, со «спинкой» магазина: legacy зовёт productCellHtml(prod, variant, note);
+   кнопки ячейки — data-action (cell-cart, cell-fav, open-store; название — open-product модуля избранного) */
+exposeToLegacy({ productCellHtml: productCell });
+exposeToLegacy({ storeTheme, buildFacets, applyFilters, sortProducts, onInk });
+initProductCells();

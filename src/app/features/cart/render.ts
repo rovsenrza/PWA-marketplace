@@ -7,12 +7,19 @@ import type { OrderLine, StoreOrder } from '../../../shared/domain/types';
 import { formatRub } from '../../../shared/format/price';
 import { cartTotal } from '../../../shared/orders/cart';
 import { buyerFacingAmount, confirmedAmount, ordersForBuyer, ordersForStore, statusLabel } from '../../../shared/orders/store-order';
-import { html, type SafeHtml } from '../../../shared/ui/html';
+import { html, raw, type SafeHtml } from '../../../shared/ui/html';
 import { buyerStore } from '../buyer/buyer-store';
 import { cartStore as store } from './cart-store';
 import { expireExpiredStoreOrders } from './actions';
+import { registerActions } from '../../../shared/ui/actions';
+import { telegramHandle } from '../../../shared/catalog/favorites';
 import { emit } from '../../../shared/events';
 
+import { storeTheme } from '../storefront/store-theme';
+
+const closeIcon = raw('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m6 6 12 12M18 6 6 18"/></svg>');
+const minusIcon = raw('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M5 12h14"/></svg>');
+const plusIcon = raw('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M5 12h14M12 5v14"/></svg>');
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T | null;
 
 const LINE_LABELS: Record<string, string> = { pending: 'ожидание', confirmed: 'ок', unavailable: 'нет', price_changed: 'новая цена', removed: 'снято' };
@@ -56,7 +63,7 @@ export function renderCart(): void {
           <span class="cart-card-store">${i.storeId}</span>
           <span class="cart-card-note">Отдельный заказ при оформлении</span>
         </div>
-        <button type="button" class="cart-card-x" data-action="cart-remove" data-product="${i.productId}" aria-label="Удалить">×</button>
+        <button type="button" class="cart-card-x" data-action="cart-remove" data-product="${i.productId}" aria-label="Удалить">${closeIcon}</button>
       </div>
       <div class="cart-card-body">
         <img src="${i.image ?? ''}" class="cart-card-photo" alt="">
@@ -65,16 +72,22 @@ export function renderCart(): void {
           ${i.variant ? html`<p class="cart-card-var">${i.variant}</p>` : null}
           <p class="cart-card-price">${formatRub(i.priceSnapshot)}</p>
           <div class="cart-qty">
-            <button type="button" data-action="cart-qty" data-product="${i.productId}" data-qty="${qty - 1}" aria-label="Меньше">−</button>
+            <button type="button" data-action="cart-qty" data-product="${i.productId}" data-qty="${qty - 1}" aria-label="Меньше">${minusIcon}</button>
             <span>${qty}</span>
-            <button type="button" data-action="cart-qty" data-product="${i.productId}" data-qty="${qty + 1}" aria-label="Больше">+</button>
+            <button type="button" data-action="cart-qty" data-product="${i.productId}" data-qty="${qty + 1}" aria-label="Больше">${plusIcon}</button>
           </div>
         </div>
         <p class="cart-card-sum">${formatRub((i.priceSnapshot || 0) * qty)}</p>
       </div>
     </div>`;
   });
-  container.innerHTML = html`${cards}<p class="cart-total">Итого: ${formatRub(cartTotal(items))}</p>`.value;
+  const names = [...new Set(items.map((item) => item.storeId))];
+  const groups = names.map((name) => {
+    const theme = storeTheme(name);
+    const groupItems = items.filter((item) => item.storeId === name);
+    return html`<section class="cart-store-group" style="--spine:${theme.ink};--on-spine:${theme.onInk}"><button type="button" class="cart-group-head" data-action="open-store" data-store="${name}"><span>${name}</span><span>${groupItems.length} тов.</span></button>${cards.filter((_, index) => items[index].storeId === name)}<div class="cart-group-foot"><span>Итого по магазину</span><b>${formatRub(cartTotal(groupItems))}</b></div><div class="cart-manager-actions"><button type="button" class="r-btn r-btn--primary" data-action="cart-contact-manager" data-store="${name}" data-channel="telegram">Отправить заказ менеджеру</button><div><button type="button" class="r-btn r-btn--ink" data-action="cart-contact-manager" data-store="${name}" data-channel="telegram">Telegram</button><button type="button" class="r-btn r-btn--line" data-action="cart-contact-manager" data-store="${name}" data-channel="max">MAX</button></div></div></section>`;
+  });
+  container.innerHTML = html`${groups}<p class="cart-total">Итого: ${formatRub(cartTotal(items))}</p>`.value;
   renderBuyerOrders();
 }
 
@@ -92,7 +105,7 @@ function buyerOrderCard(o: StoreOrder): SafeHtml {
     ['pending_review', 'awaiting_buyer', 'partial', 'confirmed'].includes(o.status) && btn('so-cancel', o.id, 'flex-1 bg-slate-100 text-slate-600 text-[10px] font-bold py-2 rounded-lg', 'Отменить'),
     ['expired', 'rejected', 'cancelled'].includes(o.status) && btn('so-return', o.id, 'flex-1 bg-slate-800 text-white text-[10px] font-bold py-2 rounded-lg', 'Вернуть в корзину'),
   ].filter((x): x is SafeHtml => !!x);
-  return html`<div class="bg-white rounded-2xl border border-slate-100 p-3 space-y-2">
+  return html`<div class="r-order-card" data-status="${o.status}">
     <div class="flex justify-between gap-2"><span class="text-xs font-bold">${o.storeId}</span><span class="text-[10px] text-slate-500">${statusLabel(o.status)}</span></div>
     ${lines}
     <p class="text-xs font-bold text-right">${formatRub(buyerFacingAmount(o))}</p>
@@ -172,3 +185,23 @@ export function refreshCartSurfaces(): void {
   safely(() => { if (state.userRole === 'shop') { w.updateShopStats?.(); renderShopOrders(); } });
   emit('app:cart-changed');
 }
+
+registerActions({
+  'cart-contact-manager': (el) => {
+    const name = el.dataset.store ?? '';
+    const shop = shopsProfileDb[name];
+    const lines = store.list().filter((line) => line.storeId === name);
+    const text = [`Здравствуйте! Заказ в ${name}:`, ...lines.map((line) => `${line.titleSnapshot} — ${line.qty} шт., ${formatRub(line.priceSnapshot * line.qty)}`), `Итого: ${formatRub(cartTotal(lines))}`].join('\n');
+    const contact = Array.isArray(shop?.managers) && shop.managers[0] && typeof shop.managers[0] === 'object' ? shop.managers[0] as Record<string, unknown> : {};
+    if (el.dataset.channel === 'max') {
+      const target = String(contact.max || shop?.max || '');
+      if (!target) { window.showSmsToast?.('У магазина не указан MAX. Выберите Telegram.'); return; }
+      if (/^https:\/\/(?:max\.ru|max\.com)\//i.test(target)) window.open(target, '_blank', 'noopener');
+      else window.showSmsToast?.('Контакт MAX уточните у магазина');
+    } else {
+      const handle = telegramHandle(String(contact.telegram || shop?.telegram || ''));
+      if (!handle) { window.showSmsToast?.('У магазина не указан Telegram. Контакты — в витрине.'); return; }
+      window.open(`https://t.me/${encodeURIComponent(handle)}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    }
+  },
+});

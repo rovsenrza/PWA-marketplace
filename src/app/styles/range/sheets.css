@@ -1,0 +1,9 @@
+#phone-container[data-ui] :is(#assistant-sheet,#lg-notif-sheet,#about-sheet,#compare-modal,#buyer-editor) { background: var(--r-paper) !important; color: var(--r-ink); border-radius: 0 !important; border-top: 2px solid var(--r-ink); box-shadow: none; backdrop-filter: none; }
+#phone-container[data-ui] :is(.lg-sheet-grab,.sheet-grabber,.assistant-grab) { border-radius: 0; }
+#phone-container[data-ui] :is(.lg-sheet-grab,.sheet-grabber,.assistant-grab)::before { width: 36px; height: 4px; border-radius: 0; background: var(--r-ink); }
+#phone-container[data-ui] :is(.lg-sheet-scrim,.sheet-scrim,.assistant-scrim) { background: var(--r-scrim); backdrop-filter: none; }
+#phone-container[data-ui] #assistant-sheet :is(input,button) { border-radius: 0 !important; }
+#phone-container[data-ui] #sv-progress > div { border-radius: 0 !important; }
+#phone-container[data-ui] .sv-user-row { background: var(--story-ink,var(--r-ink)); color: var(--story-on-ink,var(--r-paper)); padding-top: 8px; padding-bottom: 8px; }
+#phone-container[data-ui] #sv-name { color: inherit !important; font: 800 22px var(--r-font-x); text-transform: uppercase; text-shadow: none; }
+#phone-container[data-ui] #sv-store { min-height: 44px; padding: 0 8px; color: inherit; border: 1px solid currentColor; font-size: 12px; }

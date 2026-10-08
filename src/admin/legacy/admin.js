@@ -2,7 +2,8 @@
 //  Супер-Апп · Управление
 //  Роли: администратор, магазин, агентство недвижимости.
 //  Товары, витрины, сторис и баннеры сохраняются в общий каталог (CatalogStore, src/admin/main.ts);
-//  импорт из 1С / Excel — модуль src/admin/features/import.
+//  импорт из 1С / Excel — модуль src/admin/features/import; оформление, блоки и фильтры витрины —
+//  модуль src/admin/features/storefront-designer.
 //  Общие карточки, фильтры, разделы, недвижимость и доступы — демо-данные в памяти:
 //  серверной части пока нет.
 // ==========================================================
@@ -296,7 +297,7 @@ PAGES.overview = function () {
     if (weakShops.length === 1) rows.push(['shops', 'info', 'store', `Витрина «${esc(weakShops[0].name)}» заполнена на ${shopCompleteness(weakShops[0])}%`, 'Добавьте фасады, менеджеров и режим работы', '']);
     else if (weakShops.length) rows.push(['shops', 'info', 'store', `${weakShops.length} ${plural(weakShops.length, 'витрина заполнена', 'витрины заполнены', 'витрин заполнены')} не до конца`, 'Не хватает фасадов, менеджеров или режима работы', '']);
 
-    const tint = { wait: ['var(--wait-soft)', 'var(--wait)'], bad: ['var(--sale-soft)', 'var(--sale)'], info: ['var(--brand-soft)', 'var(--brand)'] };
+    const tint = { wait: ['var(--wait-soft)', 'var(--wait)'], bad: ['var(--sale-soft)', 'var(--sale)'], info: ['var(--brand-soft)', 'var(--brand-text)'] };
     const attn = rows.map(([page, tone, icon, title, sub, pre]) => `
         <div class="attn-row" onclick="${pre ? pre + ';' : ''}go('${page}')">
             <div class="attn-ico" style="background:${tint[tone][0]};color:${tint[tone][1]}">${ico(icon)}</div>
@@ -448,7 +449,7 @@ PAGES.products = function () {
     return `
         <div class="toolbar">
             <div class="search">${ico('search')}<input class="input" placeholder="Название или артикул" value="${esc(ui.prodSearch)}" oninput="ui.prodSearch=this.value;renderProductsList()"></div>
-            <select class="select" style="width:auto;min-width:180px;background-color:var(--card);box-shadow:inset 0 0 0 1px var(--line)" onchange="ui.prodStore=this.value;renderAll()">
+            <select class="select" style="width:auto;min-width:180px" onchange="ui.prodStore=this.value;renderAll()">
                 <option value="">Все магазины</option>
                 ${Object.keys(shopsProfileDb).map(n => `<option${ui.prodStore === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}
             </select>
@@ -614,15 +615,12 @@ function filterBuilder(list, scope) {
                 : `<div class="range-demo">${f.type === 'Диапазон' ? 'Покупатель задаёт «от» и «до» — значения берутся из товаров' : 'Переключатель «да / нет» у покупателя'}</div>`}
         </div>`).join('');
 }
-function filterList(scope) {
-    if (scope === 'cat') return demo.filters[ui.filterCat];
-    shopDraft.filters = shopDraft.filters || [];
-    return shopDraft.filters;
-}
-function refreshFilters(scope) { if (scope === 'cat') renderAll(); else renderShopTab(); }
+/* фильтры категорий (демо в памяти); свои фильтры магазина — в витрине, вкладка «Фильтры» редактора */
+function filterList() { return demo.filters[ui.filterCat]; }
+function refreshFilters() { renderAll(); }
 function addFilterValue(btn, scope, i) {
     const inp = document.createElement('input');
-    inp.className = 'input'; inp.placeholder = 'Новое значение'; inp.style.cssText = 'width:160px;min-height:30px;padding:4px 12px;border-radius:999px';
+    inp.className = 'input'; inp.placeholder = 'Новое значение'; inp.style.cssText = 'width:160px;min-height:30px;padding:4px 12px';
     btn.replaceWith(inp); inp.focus();
     const done = () => { const v = inp.value.trim(); if (v) filterList(scope)[i].vals.push(v); refreshFilters(scope); };
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') done(); if (e.key === 'Escape') refreshFilters(scope); });
@@ -639,7 +637,6 @@ function openFilterEditor(scope) {
             const name = $('e-fname').value.trim(); if (!name) return toast('Введите название фильтра');
             const type = $('e-ftype').value;
             filterList(scope).push({ name, type, home: false, vals: type === 'Список' ? $('e-fvals').value.split(',').map(x => x.trim()).filter(Boolean) : [] });
-            if (scope !== 'cat') setTimeout(renderShopTab);
             return true;
         });
 }
@@ -650,11 +647,12 @@ PAGES.shops = function () {
     const cards = Object.values(shopsProfileDb).map(s => {
         const mine = prods.filter(p => p.store === s.name);
         const pct = shopCompleteness(s);
+        const ink = storeInkOf(s);
         return `
         <div class="shop-card" onclick="openShopEditor(${arg(s.name)})">
             <div class="cover">${s.banner ? `<img src="${esc(s.banner)}" alt="" loading="lazy">` : ''}</div>
+            <h4 class="spine" style="--spine:${esc(ink.ink)};--on-spine:${esc(ink.on)}"><span>${esc(s.name)}</span></h4>
             <div class="body">
-                <h4>${esc(s.name)}</h4>
                 <p>${esc(s.address || 'Адрес не указан')}</p>
                 <div class="shop-stats"><span><b>${mine.length}</b> товаров</span><span><b>${(s.managers || []).length}</b> менеджеров</span><span><b>${(s.facades || []).length}</b> адресов</span></div>
                 <div class="completeness"><div><span>Витрина заполнена</span><b class="num" style="color:var(--ink)">${pct}%</b></div><div class="bar"><i style="width:${pct}%;background:var(--brand)"></i></div></div>
@@ -669,7 +667,8 @@ PAGES.shops = function () {
 function renderShops() { if (ui.page === 'shops') renderAll(); }
 
 let shopDraft = null, shopKey = null, shopTab = 'main';
-const SHOP_TABS = [['main', 'О магазине'], ['facades', 'Адреса'], ['map', 'Карта'], ['hours', 'Часы'], ['managers', 'Менеджеры'], ['pay', 'Оплата'], ['services', 'Услуги'], ['filters', 'Фильтры'], ['access', 'Доступ']];
+/* «Оформление», «Блоки» и «Фильтры» рисует модуль src/admin/features/storefront-designer */
+const SHOP_TABS = [['main', 'О магазине'], ['design', 'Оформление'], ['blocks', 'Блоки'], ['filters', 'Фильтры'], ['facades', 'Адреса'], ['map', 'Карта'], ['hours', 'Часы'], ['managers', 'Менеджеры'], ['pay', 'Оплата'], ['services', 'Услуги'], ['access', 'Доступ']];
 const DAYS = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
 
 function openShopEditor(name) {
@@ -680,7 +679,6 @@ function openShopEditor(name) {
     shopDraft.managers = shopDraft.managers || [];
     shopDraft.hours = shopDraft.hours || DAYS.map((d, i) => ({ from: '10:00', to: i === 6 ? '18:00' : '20:00', off: false }));
     shopDraft.services = shopDraft.services || [{ name: 'Доставка', on: false, price: '' }, { name: 'Сборка', on: false, price: '' }, { name: 'Замер', on: false, price: '' }];
-    shopDraft.filters = shopDraft.filters || [];
     shopTab = 'main';
     $('shop-modal-title').textContent = src ? src.name : 'Новая витрина';
     renderShopTab();
@@ -688,8 +686,14 @@ function openShopEditor(name) {
 }
 function closeShopEditor() { closeOverlay('shop-modal'); }
 function sd(k, v) { shopDraft[k] = v; }
+function setShopTab(id) {
+    if (!SHOP_TABS.some(([t]) => t === id)) return;
+    shopTab = id;
+    renderShopTab();
+    $('shop-body').scrollTop = 0;
+}
 function renderShopTab() {
-    $('shop-tabs').innerHTML = SHOP_TABS.map(([id, l]) => `<button class="${shopTab === id ? 'on' : ''}" onclick="shopTab='${id}';renderShopTab()">${l}</button>`).join('');
+    $('shop-tabs').innerHTML = SHOP_TABS.map(([id, l]) => `<button class="${shopTab === id ? 'on' : ''}" onclick="setShopTab('${id}')"${shopTab === id ? ' aria-current="page"' : ''}>${l}</button>`).join('');
     const d = shopDraft;
     const T = {
         main: () => `
@@ -770,20 +774,9 @@ function renderShopTab() {
                     <input class="input" value="${esc(s.price)}" placeholder="Цена или «бесплатно»" oninput="shopDraft.services[${i}].price=this.value">
                 </div>`).join('')}
             </div>`,
-        filters: () => {
-            const cat = (d.category || '').toLowerCase();
-            const base = Object.keys(demo.filters).find(c => cat.includes(c.slice(0, 5))) || 'мебель';
-            return `
-            <div class="panel">
-                <h4>Общие фильтры категории «${esc(base)}»</h4><p>Подключаются автоматически — меняются в разделе «Фильтры каталога».</p>
-                <div class="chips">${demo.filters[base].map(f => `<span class="chip" style="cursor:default">${esc(f.name)}</span>`).join('')}</div>
-            </div>
-            <div class="panel">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><h4 style="flex:1;margin:0">Свои фильтры магазина</h4><button class="btn btn-sm btn-secondary" onclick="openFilterEditor('shop')">${ico('plus', 'ico-sm')}Фильтр</button></div>
-                <p>Только для каталога этой витрины — например, коллекция или фабрика.</p>
-                ${filterBuilder(d.filters, 'shop')}
-            </div>`;
-        },
+        design: () => renderStorefrontTab('design', d, shopKey),
+        blocks: () => renderStorefrontTab('blocks', d, shopKey),
+        filters: () => renderStorefrontTab('filters', d, shopKey),
         access: () => `
             <div class="panel">
                 <h4>Кабинет магазина</h4><p>Магазин сам добавляет товары по 1–5 штук, они приходят вам на проверку.</p>
@@ -798,6 +791,7 @@ function saveShop() {
     const name = (shopDraft.name || '').trim();
     if (!name) { shopTab = 'main'; renderShopTab(); toast('Введите название магазина'); return; }
     shopDraft.name = name;
+    prepareStorefrontForSave(shopDraft);
     if (shopDraft.facades[0] && shopDraft.facades[0].address) shopDraft.address = shopDraft.facades[0].address;
     if (shopKey && shopKey !== name) {
         delete shopsProfileDb[shopKey];
@@ -1186,7 +1180,7 @@ PAGES['s-home'] = function () {
     return `
         <div class="toolbar">
             <label style="display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-3)">Демо: войти как
-                <select class="select" style="width:auto;min-width:200px;background-color:var(--card);box-shadow:inset 0 0 0 1px var(--line)" onchange="ui.myStore=this.value;ui.batch=[blankBatchRow()];renderAll()">${Object.keys(shopsProfileDb).map(k => `<option${k === ui.myStore ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select>
+                <select class="select" style="width:auto;min-width:200px" onchange="ui.myStore=this.value;ui.batch=[blankBatchRow()];renderAll()">${Object.keys(shopsProfileDb).map(k => `<option${k === ui.myStore ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select>
             </label>
         </div>
         <div class="dash">
@@ -1292,7 +1286,7 @@ PAGES['a-home'] = function () {
     return `
         <div class="toolbar">
             <label style="display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-3)">Демо: войти как
-                <select class="select" style="width:auto;min-width:180px;background-color:var(--card);box-shadow:inset 0 0 0 1px var(--line)" onchange="ui.myAgency=this.value;renderAll()">${demo.agencies.map(a => `<option${a.name === ui.myAgency ? ' selected' : ''}>${esc(a.name)}</option>`).join('')}</select>
+                <select class="select" style="width:auto;min-width:180px" onchange="ui.myAgency=this.value;renderAll()">${demo.agencies.map(a => `<option${a.name === ui.myAgency ? ' selected' : ''}>${esc(a.name)}</option>`).join('')}</select>
             </label>
             <span class="sp"></span><button class="btn btn-primary" onclick="go('a-add')">${ico('plus')}Добавить объект</button>
         </div>

@@ -16,20 +16,9 @@
         const badge = shopData.isRealEstate ? (shopData.category || 'Недвижимость') : 'Магазин';
         const btnText = shopData.isRealEstate ? 'Перейти к каталогу' : 'Витрина';
         const clickAction = shopData.isRealEstate ? `openRealEstateCatalog('${escJsArg(store)}')` : `openShopCatalogModal('${escJsArg(store)}')`;
-        const imgClass = shopData.bannerFit === 'contain' ? 'object-contain bg-[#132337]' : 'object-cover';
-        const cardHtml = `
-            <div onclick="${clickAction}" class="relative w-full h-44 rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.99] transition-transform mb-3">
-                <img src="${escHtml(shopData.banner)}" class="absolute inset-0 w-full h-full ${imgClass}">
-                <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent"></div>
-                <div class="absolute top-3 right-3 bg-black/50 backdrop-blur-md text-white text-[10px] font-medium px-3 py-1.5 rounded-full">${badge}</div>
-                <div class="absolute inset-0 p-4 flex flex-col justify-between max-w-[68%]">
-                    <div>
-                        <h4 class="text-white font-semibold text-xl leading-tight drop-shadow">${escHtml(store)}</h4>
-                        <p class="text-white/90 text-xs mt-1.5 leading-snug line-clamp-2">${escHtml(shopData.description)}</p>
-                    </div>
-                    <span class="text-[12px] font-medium text-sky-200/90">${btnText}</span>
-                </div>
-            </div>`;
+        const theme = typeof storeTheme === 'function' ? storeTheme(store) : { ink: '#FE5000', onInk: '#111110' };
+        const action = shopData.isRealEstate ? `onclick="${clickAction}"` : `data-action="open-store" data-store="${escHtml(store)}"`;
+        const cardHtml = `<button type="button" ${action} class="r-store-row" style="--store-ink:${theme.ink};--store-text:${theme.onInk}"><div class="r-store-row__field"><h4>${escHtml(store)}</h4><p>${escHtml(shopData.category || badge)}</p><span>${escHtml(shopData.address || shopData.addresses && shopData.addresses[0] && shopData.addresses[0].address || shopData.description || btnText)}</span><b>${btnText} →</b></div><img src="${escHtml(shopData.banner || '')}" alt="" loading="lazy"></button>`;
 
         if (shopData.isRealEstate) {
             realEstateHtml += cardHtml;
@@ -97,29 +86,29 @@
                 : t.includes('бюро') ? ['бюро', 'под ключ', 'проект']
                 : (des.name || '').includes('Д-Дизайн') ? ['квартиры', 'дома', 'офисы']
                 : ['интерьер', 'проект', '3D'];
-            const tagsHtml = tags.map(tag => `<span class="text-[10px] px-2 py-0.5 rounded-md bg-[#e8f1fc] text-[#5b9bd5]">${tag}</span>`).join('');
+            const tagsHtml = tags.map(tag => `<span class="text-[10px] px-2 py-0.5 rounded-md bg-[var(--r-well)] text-[var(--r-ink-2)]">${tag}</span>`).join('');
             const avatarInner = des.avatarPhoto
                 ? `<img src="${des.avatarPhoto}" class="w-full h-full object-cover">`
                 : des.avatar;
             desHtml += `
                 <div onclick="openPortfolioModal('designers', '${des.id}')" class="bg-white rounded-2xl p-3.5 shadow-sm border border-slate-100 mb-3 flex items-start gap-3 cursor-pointer active:scale-[0.99] transition-transform">
                     <div class="relative shrink-0">
-                        <div class="w-14 h-14 rounded-full overflow-hidden bg-[#dbeafe] flex items-center justify-center text-[#3b82f6] font-bold text-sm">${avatarInner}</div>
-                        <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#93c5fd] flex items-center justify-center shadow">
+                        <div class="w-14 h-14 rounded-full overflow-hidden bg-[var(--r-well)] flex items-center justify-center text-[var(--r-ink)] font-bold text-sm">${avatarInner}</div>
+                        <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[var(--r-ink)] flex items-center justify-center shadow">
                             <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                         </div>
                     </div>
                     <div class="flex-1 min-w-0">
                         <h4 class="font-bold text-slate-900 text-sm leading-tight">${escHtml(des.name)}</h4>
-                        <p class="text-[11px] text-[#5b9bd5] font-medium mt-0.5">${escHtml(des.title)}</p>
+                        <p class="text-[11px] text-[var(--r-orange-text)] font-medium mt-0.5">${escHtml(des.title)}</p>
                         <p class="text-[11px] text-slate-400 mt-1 leading-snug line-clamp-2">${escHtml(des.description)}</p>
                         <div class="flex flex-wrap gap-1.5 mt-2">${tagsHtml}</div>
                     </div>
                     <div class="flex flex-col items-center shrink-0 pt-1">
-                        <div class="w-9 h-9 rounded-full bg-[#e8f1fc] flex items-center justify-center text-[#5b9bd5]">
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-[var(--r-ink)] shadow-[inset_0_0_0_1px_var(--r-ink)]">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
-                        <span class="text-[9px] text-[#5b9bd5] font-medium mt-1">Портфолио</span>
+                        <span class="text-[9px] text-[var(--r-ink-3)] font-medium mt-1">Портфолио</span>
                     </div>
                 </div>`;
         });

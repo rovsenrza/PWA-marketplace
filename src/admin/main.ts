@@ -10,6 +10,7 @@ import { exposeToLegacy } from '../shared/legacy/expose';
 import { createLocalImportRepository } from '../shared/import/repository';
 import { LocalMediaStore } from '../shared/media/local-media-store';
 import { initImport, renderImportPage, startImport } from './features/import/wizard';
+import { initStorefrontDesigner, prepareStorefrontForSave, renderStorefrontTab, storeInkOf } from './features/storefront-designer/designer';
 
 const ADMIN_PARTS: CatalogPart[] = ['products', 'shops', 'stories', 'promo'];
 const catalog = new CatalogStore(seedFromLegacy);
@@ -28,8 +29,13 @@ exposeToLegacy({
   /* импорт из 1С / Excel: страница PAGES.import в admin.js рисуется модулем */
   renderImportPage,
   startImport,
+  /* витрина магазина в редакторе: вкладки «Оформление», «Блоки», «Фильтры» рисуются модулем */
+  renderStorefrontTab,
+  prepareStorefrontForSave,
+  storeInkOf,
 });
 initImport({ catalog, media: new LocalMediaStore(), repo: createLocalImportRepository() });
+initStorefrontDesigner({ catalog });
 
 /* the app or another admin tab saved the catalogue → reload and redraw */
 catalog.onExternalChange(() => {

@@ -123,22 +123,17 @@ function handleCatalogSearch() {
 
 
 // Фильтры и Поиск
-function toggleQuickSearchFilters() { document.getElementById('quick-search-filters').classList.toggle('hidden'); }
+function toggleQuickSearchFilters() { buildStoreFilters(); document.getElementById('quick-search-filters').classList.toggle('hidden'); }
 
 function applySearchQuery(query) { document.getElementById('search-input').value = query; handleSearch(); toggleQuickSearchFilters(); }
 
-function handleSearch() {
-    const q = document.getElementById('search-input').value.toLowerCase();
-    document.querySelectorAll('.product-card').forEach(c => {
-        c.classList.toggle('hidden', !c.innerText.toLowerCase().includes(q));
-    });
-}
+function handleSearch() { renderFilteredGrid(); }
 
 function toggleFilters() { document.getElementById('filter-panel').classList.toggle('hidden'); }
 
-function filterCategory(cat) { document.querySelectorAll('.product-card').forEach(c => c.classList.toggle('hidden', c.dataset.category !== cat)); showSmsToast(`Категория: ${cat}`); }
+function filterCategory(cat) { activeFilters.category = cat; renderFilteredGrid(); showSmsToast(`Категория: ${cat}`); }
 
-function resetAllFilters() { document.querySelectorAll('.product-card').forEach(c => c.classList.remove('hidden')); document.getElementById('filter-panel').classList.add('hidden'); }
+function resetAllFilters() { resetTopFilters(); const panel = document.getElementById('filter-panel'); if (panel) panel.classList.add('hidden'); }
 
 
         // ========== НОВЫЕ ФИЛЬТРЫ (Wildberries-стиль) ==========
@@ -154,10 +149,11 @@ function buildTopFilters() {
     let html = '';
     for (const cat in filterCategories) {
         const active = selectedFilterCategory === cat;
-        html += `<button onclick="selectFilterCategory('${cat}')" class="px-3 py-1.5 text-xs rounded-full font-bold border ${active ? 'bg-[#1e6091] text-white border-[#1e6091]' : 'bg-white text-slate-600 border-slate-200'}">${cat}</button>`;
+        html += `<button onclick="selectFilterCategory('${cat}')" class="r-chip" aria-pressed="${active}">${cat}</button>`;
     }
     box.innerHTML = html;
     buildSubFilters();
+    buildStoreFilters();
 }
 
 
@@ -171,7 +167,7 @@ function buildSubFilters() {
     let html = '';
     filterCategories[selectedFilterCategory].forEach(sub => {
         const active = selectedFilterSub === sub;
-        html += `<button onclick="selectFilterSub('${sub}')" class="px-3 py-1.5 text-xs rounded-full font-bold border ${active ? 'bg-[#1e6091] text-white border-[#1e6091]' : 'bg-white text-slate-600 border-slate-200'}">${sub}</button>`;
+        html += `<button onclick="selectFilterSub('${sub}')" class="r-chip" aria-pressed="${active}">${sub}</button>`;
     });
     box.innerHTML = html;
 }
@@ -194,7 +190,12 @@ function selectFilterSub(sub) {
 
 // ===== ПРИМЕНИТЬ ФИЛЬТР =====
 function applyTopFilters() {
-    renderProductGrid();
+    activeFilters.category = selectedFilterSub || selectedFilterCategory || '';
+    const min = document.getElementById('filter-price-min').value;
+    const max = document.getElementById('filter-price-max').value;
+    activeFilters.priceMin = min === '' ? null : Number(min);
+    activeFilters.priceMax = max === '' ? null : Number(max);
+    renderFilteredGrid();
     toggleQuickSearchFilters();
 }
 
@@ -210,20 +211,26 @@ function pickFilterCat(cat) {
 
 
 // Выбрать магазин в фильтре (подсветка)
-function pickFilterStore(store) {
-    activeFilters.store = store;
-    document.querySelectorAll('.fstore-btn').forEach(b => {
-        const on = b.dataset.store === store;
-        b.className = 'fstore-btn text-[11px] px-3 py-1.5 rounded-lg font-bold ' + (on ? 'bg-[#1e6091] text-white' : 'bg-white border border-slate-200 text-slate-700');
-    });
+function buildStoreFilters() {
+    const box = document.getElementById('filter-store-list');
+    if (!box) return;
+    const stores = [...new Set(Object.values(productsDb).filter(p => p.status === 'published').map(p => p.store).filter(Boolean))];
+    box.innerHTML = ['', ...stores].map(name => `<button type="button" class="r-chip fstore-btn" data-store="${escHtml(name)}" aria-pressed="${activeFilters.store === name}" onclick="pickFilterStore('${escHtml(escJsArg(name))}')">${escHtml(name || 'Все магазины')}</button>`).join('');
 }
 
+function pickFilterStore(store) {
+    activeFilters.store = activeFilters.store === store ? '' : store;
+    buildStoreFilters();
+}
 
 // Сбросить верхние фильтры
 function resetTopFilters() {
     activeFilters = { category: '', store: '', priceMin: null, priceMax: null, sort: activeFilters.sort };
     document.getElementById('filter-price-min').value = '';
     document.getElementById('filter-price-max').value = '';
+    selectedFilterCategory = null;
+    selectedFilterSub = null;
+    buildTopFilters();
     pickFilterCat('');
     pickFilterStore('');
     renderFilteredGrid();
@@ -236,10 +243,11 @@ function applySort(mode) {
     activeFilters.sort = mode;
     // Подсветка активной кнопки сортировки
     document.querySelectorAll('.sort-btn').forEach(b => {
-        b.className = 'sort-btn text-[11px] bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold';
+        b.className = 'r-chip sort-btn';
+        b.setAttribute('aria-pressed', 'false');
     });
     const btn = document.getElementById('sort-' + mode);
-    if (btn) btn.className = 'sort-btn text-[11px] bg-[#1e6091] text-white px-3 py-1.5 rounded-lg font-bold';
+    if (btn) { btn.className = 'r-chip sort-btn'; btn.setAttribute('aria-pressed', 'true'); }
 
     renderFilteredGrid();
 }
@@ -248,12 +256,15 @@ function applySort(mode) {
 // === ГЛАВНАЯ ФУНКЦИЯ: собрать товары с учётом всех фильтров и сортировки ===
 function renderFilteredGrid() {
     let list = [];
+    const searchInput = document.getElementById('search-input');
+    const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
     for (const k in productsDb) {
         const p = productsDb[k];
         if (p.status !== 'published') continue;
 
         // Фильтр по категории
-        if (activeFilters.category && p.category !== activeFilters.category) continue;
+        if (activeFilters.category && ![p.category, p.subcategory].some(value => String(value || '').toLowerCase().includes(activeFilters.category.toLowerCase()))) continue;
+        if (query && ![p.title, p.store, p.category].join(' ').toLowerCase().includes(query)) continue;
         // Фильтр по магазину
         if (activeFilters.store && p.store !== activeFilters.store) continue;
         // Фильтр по цене

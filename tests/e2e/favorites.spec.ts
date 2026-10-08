@@ -10,13 +10,14 @@ test('favourites: survive a reload, state.favorites is an accessor', async ({ ap
 });
 
 test('«Очистить» and «убрать магазин» redraw the recommendation hearts (they used to stay stale)', async ({ app }) => {
-  const ids = await app.evaluate(() => [...document.querySelectorAll('.rec-card')].slice(0, 2)
-    .map((c) => c.getAttribute('onclick')!.match(/'([^']+)'/)![1]));
+  const ids = await app.evaluate(() => [...document.querySelectorAll<HTMLElement>('#recommendations-container .r-cell')].slice(0, 2)
+    .map((c) => c.dataset.product!));
+  const hearts = app.locator('#recommendations-container .r-cell__fav[aria-pressed="true"]');
   await app.evaluate((x) => x.forEach((id: string) => (window as any).toggleFavorite(id)), ids);
-  await expect(app.locator('.rec-card .rec-fav.on')).toHaveCount(2);
+  await expect(hearts).toHaveCount(2);
   const store = await app.evaluate((id) => eval('productsDb')[id].store, ids[0]);
   await app.evaluate((s) => (window as any).unfavoriteStore(s), store);
-  await expect(app.locator('.rec-card .rec-fav.on')).toHaveCount(1);
+  await expect(hearts).toHaveCount(1);
   await app.evaluate(() => (window as any).clearAllFavorites());
-  await expect(app.locator('.rec-card .rec-fav.on')).toHaveCount(0);
+  await expect(hearts).toHaveCount(0);
 });

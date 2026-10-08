@@ -63,28 +63,16 @@ function enableStoriesDragScroll() {
     const container = document.getElementById('stories-container');
     if (!container) return;
 
-    let html = '';
+    let seen = [];
+    try { seen = JSON.parse(localStorage.getItem('meb_stories_seen') || '[]'); } catch (_) {}
+    if (!Array.isArray(seen)) seen = [];
     const visibleStories = storiesData.filter(s => s.status === 'published' || !s.status);
-    visibleStories.forEach((s, index) => {
-        const divider = (index === 1) 
-            ? `<div class="flex-shrink-0 w-px h-14 bg-slate-200 mx-1 self-center"></div>` 
-            : '';
-
-        const ringColor = s.isLifehack 
-            ? 'from-amber-400 to-orange-500' 
-            : 'from-[#1e6091] to-[#2a7fb8]';
-
-        html += `
-            ${divider}
-            <div onclick="openStory('${s.id}')" class="flex flex-col items-center gap-1 flex-shrink-0 cursor-pointer active:scale-95 transition-transform" style="width:64px">
-                <div class="p-[2.5px] rounded-full bg-gradient-to-tr ${ringColor}">
-                    <div class="p-[2px] bg-white rounded-full">
-                        <img src="${s.slides ? s.slides[0] : s.image}" class="w-14 h-14 rounded-full object-cover">
-                    </div>
-                </div>
-                <span class="text-[10px] font-bold text-slate-600 truncate w-full text-center">${escHtml(s.name)}</span>
-            </div>`;
-    });
+    const html = visibleStories.map(s => {
+        const theme = typeof storeTheme === 'function' ? storeTheme(s.store || s.name) : { ink: '#FE5000' };
+        const ink = s.isLifehack ? '#FFC20E' : theme.ink;
+        const viewed = seen.includes(s.id);
+        return `<button type="button" onclick="openStory('${escHtml(escJsArg(s.id))}')" class="r-story${viewed ? ' is-viewed' : ''}" data-story="${escHtml(s.id)}" style="--story-ink:${ink}" aria-label="История: ${escHtml(s.name)}${viewed ? ', просмотрено' : ''}"><span class="r-story__ring"><img src="${escHtml(s.slides ? s.slides[0] : s.image)}" alt="" loading="lazy"></span><span class="r-story__name">${escHtml(s.name)}</span></button>`;
+    }).join('');
 
     container.innerHTML = html;
 }
@@ -109,10 +97,25 @@ function openStory(id) {
     const s = storiesData.find(x => x.id === id);
     if (!s) return;
 
+    try {
+        let seen = JSON.parse(localStorage.getItem('meb_stories_seen') || '[]');
+        if (!Array.isArray(seen)) seen = [];
+        if (!seen.includes(id)) localStorage.setItem('meb_stories_seen', JSON.stringify([...seen, id].slice(-500)));
+    } catch (_) {}
     currentStory = s;
     slideIndex = 0;
 
     document.getElementById('sv-name').textContent = s.name;
+    const storeName = s.store || s.name;
+    const storyTheme = typeof storeTheme === 'function' ? storeTheme(storeName) : { ink: '#FE5000', onInk: '#111110' };
+    const viewer = document.getElementById('story-viewer');
+    viewer.style.setProperty('--story-ink', s.isLifehack ? '#FFC20E' : storyTheme.ink);
+    viewer.style.setProperty('--story-on-ink', s.isLifehack ? '#111110' : storyTheme.onInk);
+    const storeButton = document.getElementById('sv-store');
+    if (storeButton) {
+        storeButton.hidden = !!s.isLifehack || !Object.prototype.hasOwnProperty.call(shopsProfileDb, storeName);
+        storeButton.dataset.store = storeName;
+    }
 
     renderSlide();
 
@@ -280,6 +283,7 @@ function prevSlide() {
 
         // Закрыть сторис
 function closeStory() {
+    renderStories();
     clearTimeout(storyTimer); // останавливаем таймер
     // Останавливаем видео, если оно играло
     const videoEl = document.getElementById('sv-video');

@@ -1,0 +1,119 @@
+/* Product cell, store spine in every cell (Task 4: product cell).
+   One cell for every grid and rail (src/app/ui/product-cell.ts holds the markup contract). Grids and rails are
+   shared-rule cells: 1px rules in 1px gaps, so neighbours share one hairline and a grid reflows by whole cells.
+   .r-grid draws its rules only round .r-cell children (each cell rings itself, the ground is paper): anything else
+   placed straight in a grid (a tile, a promo) needs the same ring, `box-shadow: 0 0 0 1px var(--r-rule)`.
+   The title's size and weight are !important: the old layers force every h3 to 700, and to 20px inside
+   #view-catalog (that rule has two ids, hence the second selector). */
+
+/* ---------- containers ---------- */
+/* Each grid cell rings itself with a 1px rule that falls exactly in the gaps (a hairline, not a shadow: no blur, no
+   offset). The ground stays paper, so the empty slot an odd number of cells leaves in the last row is paper too,
+   whatever hid the cells (the home search hides them by class, which a counting selector would not follow). */
+#phone-container[data-ui] .r-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
+  background: var(--r-paper); border-block: 1px solid var(--r-rule);
+}
+#phone-container[data-ui] .r-grid > .r-cell { box-shadow: 0 0 0 1px var(--r-rule); }
+/* the grid runs edge to edge: it cancels the 20px side padding of the screen it sits in */
+#phone-container[data-ui] .r-grid--bleed { margin-inline: -20px; }
+/* a message in place of the goods spans the row */
+#phone-container[data-ui] .r-grid > :not(.r-cell) { grid-column: 1 / -1; }
+
+#phone-container[data-ui] .r-rail {
+  display: flex; gap: 1px; overflow-x: auto; scroll-snap-type: x mandatory;
+  background: var(--r-rule); border-block: 1px solid var(--r-rule);
+}
+/* paper after the last cell while the rail is shorter than the screen; once it scrolls, one closing hairline */
+#phone-container[data-ui] .r-rail::after { content: ''; flex: 1 0 0; background: var(--r-paper); }
+#phone-container[data-ui] .r-rail > .r-cell { flex: 0 0 156px; scroll-snap-align: start; }
+
+#phone-container[data-ui] :is(.r-grid, .r-rail):empty,
+#phone-container[data-ui] :is(.r-grid, .r-rail, .r-cell).hidden { display: none; }
+
+/* ---------- the cell: photo, price and title, the cart key at the body's bottom-right, the spine at the foot ---------- */
+#phone-container[data-ui] .r-cell {
+  position: relative; isolation: isolate; min-width: 0;
+  display: grid; grid-template-columns: minmax(0, 1fr) 40px; grid-template-rows: auto 1fr auto;
+  background: var(--r-paper); color: var(--r-ink);
+}
+
+#phone-container[data-ui] .r-cell__media { grid-column: 1 / -1; grid-row: 1; position: relative; aspect-ratio: 1; overflow: hidden; background: var(--r-well); }
+#phone-container[data-ui] .r-cell__media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* a photo that failed to load shows the well, as a product without a photo does (not the light «Фото» stand-in) */
+#phone-container[data-ui] .r-cell__media > img[data-offline-fallback] { visibility: hidden; }
+#phone-container[data-ui] .r-cell__media > .r-sticker { position: absolute; top: 8px; left: 8px; }
+
+#phone-container[data-ui] .r-cell__fav {
+  position: absolute; top: 0; right: 0; z-index: 1;
+  display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 0;
+  background: var(--r-paper); color: var(--r-ink); cursor: pointer;
+}
+#phone-container[data-ui] .r-cell__fav svg { width: 22px; height: 22px; }
+#phone-container[data-ui] .r-cell__fav[aria-pressed="true"] { color: var(--r-orange); }
+#phone-container[data-ui] .r-cell__fav[aria-pressed="true"] svg { fill: currentColor; }
+
+#phone-container[data-ui] .r-cell__body { grid-column: 1 / -1; grid-row: 2; display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 10px 12px 8px; transition: background-color .25s var(--r-ease); }
+#phone-container[data-ui] .r-cell .r-price--ask b { font-size: 18px; line-height: 28px; }
+
+#phone-container[data-ui] .r-cell__title,
+#phone-container[data-ui] #view-catalog .r-cell__title {
+  margin: 0; font-size: 14px !important; font-weight: 500 !important; line-height: 18px;
+  letter-spacing: 0; color: var(--r-ink) !important;
+}
+/* two lines reserved: cells in a row stay level and the cart key never reaches the price; a note takes that place */
+#phone-container[data-ui] .r-cell__title { min-height: 36px; }
+#phone-container[data-ui] .r-cell__title:has(+ .r-cell__note) { min-height: 0; }
+/* a word longer than the line («Гидроизоляционный» at 360px) breaks inside the two lines instead of being cut */
+#phone-container[data-ui] .r-cell__open {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere;
+  width: 100%; padding: 0; border: 0; border-radius: 0; background: none;
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+}
+/* the whole cell opens the product; the heart, the cart key and the spine sit above this layer */
+#phone-container[data-ui] .r-cell__open::after { content: ''; position: absolute; inset: 0; }
+#phone-container[data-ui] .r-cell__note { margin: 0; font-size: 13px; font-weight: 500; line-height: 16px; color: var(--r-ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* the cart key stands beside the last lines of the body, never on them */
+#phone-container[data-ui] .r-cell:has(> .r-cell__cart) :is(.r-cell__title, .r-cell__note) { padding-right: 32px; }
+
+/* a paper hairline under the key keeps the orange apart from the store's ink on the spine */
+#phone-container[data-ui] .r-cell__cart {
+  grid-column: 2; grid-row: 2; align-self: end; margin-bottom: 1px; position: relative; z-index: 1;
+  display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 0;
+  background: var(--r-orange); color: var(--r-on-orange); cursor: pointer;
+  transition: background-color .15s var(--r-ease);
+}
+#phone-container[data-ui] .r-cell__cart svg { width: 22px; height: 22px; }
+#phone-container[data-ui] .r-cell__cart:active { background: var(--r-orange-press); }
+#phone-container[data-ui] .r-cell__cart.is-on { background: var(--r-ink); color: var(--r-paper); }
+
+#phone-container[data-ui] .r-cell__spine { grid-column: 1 / -1; grid-row: 3; position: relative; z-index: 1; width: 100%; min-width: 0; padding-inline: 12px; cursor: pointer; }
+
+/* mini: a shorter photo and a smaller price (the product page's rails, lifehack picks) */
+#phone-container[data-ui] .r-cell--mini .r-cell__media { aspect-ratio: auto; height: 120px; }
+#phone-container[data-ui] .r-cell--mini .r-price b { font-size: 20px; }
+#phone-container[data-ui] .r-cell--mini .r-price i { font-size: 15px; }
+#phone-container[data-ui] .r-cell--mini .r-price s { font-size: 13px; }
+
+/* ---------- states ---------- */
+/* pressed: the body takes the sunk tone at once and lets it go softly; no scale, so the shared rules stay put
+   (the well tone, n1, is too close to paper to read in the dark theme) */
+#phone-container[data-ui] .r-cell:has(.r-cell__open:active) .r-cell__body { background: var(--r-sunk); transition-duration: 0s; }
+@media (hover: hover) {
+  #phone-container[data-ui] .r-cell__open:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  #phone-container[data-ui] .r-cell__fav:hover { background: var(--r-well); }
+  #phone-container[data-ui] .r-cell__cart:not(.is-on):hover { background: var(--r-orange-press); }
+}
+/* keyboard focus on the title rings the whole cell from a layer of its own above the photo, the keys and the spine
+   (an outline on the cell would sit under them); it lets every tap through, and the click layer (::after) is left
+   alone, so a tap on the photo still opens the product while the title has focus. The keys ring inside, being
+   flush to the cell's edges. */
+#phone-container[data-ui] .r-cell__open:focus-visible { outline: none !important; }
+#phone-container[data-ui] .r-cell__open:focus-visible::before {
+  content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  outline: 2px solid var(--r-orange); outline-offset: -2px;
+}
+#phone-container[data-ui] :is(.r-cell__fav, .r-cell__cart, .r-cell__spine):focus-visible { outline-offset: -4px !important; }
+#phone-container[data-ui] .r-cell__cart:focus-visible { outline-color: var(--r-on-orange) !important; }
+#phone-container[data-ui] .r-cell__cart.is-on:focus-visible { outline-color: var(--r-paper) !important; }
+#phone-container[data-ui] .r-cell__spine:focus-visible { outline-color: var(--on-spine, var(--r-paper)) !important; }
