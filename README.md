@@ -15,6 +15,19 @@ npm test           # typecheck + unit (Vitest) + fresh build + browser tests (Pl
 
 Requires Node 20+. The build output (`dist/`) is fully static with relative paths, so it can go into any folder on any static host (Apache, nginx, S3, Netlify, GitHub Pages).
 
+## Публикация демо
+
+Заказчику вместо скриншотов можно отправить ссылку на рабочий прототип. Сборка `dist/` статическая, с относительными путями, поэтому подходит любой бесплатный статический хостинг. На ноутбуке прототип открывается в рамке телефона и показывает QR-код своей же ссылки, на телефоне занимает весь экран. Панель управления лежит рядом: `…/admin.html`.
+
+Сначала соберите проект: `npm ci && npm run build`. `npm ci` скачивает библиотеку xlsx с cdn.sheetjs.com, поэтому нужен доступ в интернет. Дальше выберите один способ.
+
+- **GitHub Pages**: публикуется само при каждом обновлении `main`. Создайте репозиторий на GitHub и отправьте в него проект (`git push`). В репозитории откройте Settings → Pages и в поле Source выберите **GitHub Actions**. Остальное делает `.github/workflows/pages.yml`: собирает проект и публикует `dist` при каждом push в `main`, а вручную его запускают на вкладке Actions → Pages → Run workflow. Адрес: `https://<имя>.github.io/<репозиторий>/`.
+- **Netlify Drop**: откройте app.netlify.com/drop и перетащите в окно папку `dist/`. Ссылка появится сразу. Без входа в аккаунт Netlify сайт может быть удалён через некоторое время, для постоянной ссылки войдите в аккаунт.
+- **Cloudflare Pages**: `npx wrangler pages deploy dist`. При первом запуске wrangler предложит войти в аккаунт Cloudflare и создать проект.
+- **Surge**: `npx surge dist`. При первом запуске он спросит e-mail и пароль и предложит адрес вида `*.surge.sh`.
+
+Данные каждого зрителя (корзина, избранное, заказы, правки в панели управления) хранятся в его собственном браузере (`localStorage`), поэтому правки, сделанные на одном устройстве, на другие не попадают.
+
 ## Layout
 
 ```

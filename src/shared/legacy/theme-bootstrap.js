@@ -33,9 +33,4 @@
     window.addEventListener('storage', function (e) { if (e.key === 'ui-theme') apply(); });
     document.addEventListener('DOMContentLoaded', apply);
     apply();
-    // преломление через SVG-фильтр в backdrop-filter умеет только Chromium; Safari/Firefox — обычное размытие
-    try {
-        var brands = (navigator.userAgentData && navigator.userAgentData.brands) || [];
-        if (brands.some(function (b) { return /Chromium/.test(b.brand); })) document.documentElement.classList.add('lg-refract');
-    } catch (e) {}
 })();

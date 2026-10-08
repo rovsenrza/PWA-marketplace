@@ -19,8 +19,6 @@ function setAppUi(id) {
     var phone = document.getElementById('phone-container');
     if (phone) phone.setAttribute('data-ui', id);
     try { localStorage.setItem('app-ui-skin', id); } catch (e) {}
-    var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', '#FFFFFF');
 }
 (function () {
     if (document.readyState === 'loading') {

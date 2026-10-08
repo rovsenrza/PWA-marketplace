@@ -1,1 +1,82 @@
-/* Desktop stage around the phone (Task 9: deploy and stage). */
+/* Desktop stage: the page around the phone frame (index.html, from <body> to #phone-container). Below 1024px it is
+   the frame alone on paper; from 1024px a column on the left carries the wordmark as a pack label, the tagline,
+   one line about the prototype and the QR code of the demo link (src/app/vendor/stage-qr.ts fills it).
+   The column is drawn at the frame's own reference size (360 x 844) and scaled with it by --app-fit, so one
+   composition fits every window. Phone and installed app (<= 720px, standalone) stay full-bleed, as base.css has it. */
+
+/* Tokens. The «Линейка» tokens live on #phone-container[data-ui], so the stage declares the ones it uses on the
+   page itself, with the same names and the values of tokens.css (light, and the dark ramp on html[data-theme="dark"]). */
+:root {
+  --r-n0: #FFFFFF; --r-n6: #4A4A46; --r-n9: #111110;
+  --r-paper: var(--r-n0);
+  --r-ink: var(--r-n9);
+  --r-ink-2: var(--r-n6);
+  --r-orange: #FE5000;
+  --r-on-orange: #111110;
+  --r-band: 2px;
+  --r-font: 'Sofia Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --r-font-x: 'Sofia Sans Extra Condensed', 'Sofia Sans', system-ui, sans-serif;
+  /* a QR code is always dark on light, or some cameras do not read it: in the dark theme the pair swaps back */
+  --stage-qr-paper: var(--r-n0);
+  --stage-qr-ink: var(--r-n9);
+}
+html[data-theme="dark"] {
+  --r-n0: #121211; --r-n6: #C4C3BD; --r-n9: #F6F6F2;
+  --r-orange: #FF6526;
+  --stage-qr-paper: var(--r-n9);
+  --stage-qr-ink: var(--r-n0);
+}
+
+/* The window around the frame is paper in both themes (it was navy; glass.css still paints the dark one #05080F,
+   and base.css fills the full-bleed modes white: the same !important at the same weight, later in the cascade). */
+html,
+html body.stage { background: var(--r-paper) !important; }
+
+/* --app-fit: the share of the reference frame (400 x 844) that fits the window with 12px to spare, never above 1.
+   base.css writes it as min(1, (100dvw - 24px) / 400, (100dvh - 24px) / 844): a number mixed with lengths, which is
+   invalid, so the frame never scaled and a laptop window shorter than 868px cut it off. tan(atan2(a, b)) is a / b as a
+   plain number in every browser with CSS trigonometry, where length / length needs the newer typed arithmetic. */
+:root { --app-fit: min(1, tan(atan2(100dvw - 24px, 400px)), tan(atan2(100dvh - 24px, 844px))); }
+@media (max-width: 720px), (display-mode: standalone) {
+  :root { --app-fit: 1; }
+}
+
+/* The frame: a plain ink bezel round a square-cornered screen. glass.css forces the dark border colour with
+   !important; the notch pill is a rounded device the square screen has no room for (the status line stays).
+   flex: none keeps the frame 400px wide inside #app-stage: with a valid --app-fit that box is narrower than 400px,
+   and as a flex item the frame would shrink to it and then be scaled by --app-fit a second time. */
+#phone-container[data-ui] { flex: none; border-radius: 0; box-shadow: none; }
+html[data-theme] #phone-container[data-ui] { border-color: var(--r-ink) !important; }
+#phone-container[data-ui] #phone-notch { display: none; }
+/* Once the frame is scaled its inner edge falls between device pixels: the screen's clip, the tab bar's box and the
+   bezel are each rounded their own way, so along the bottom edge a row of the content under the tab bar showed
+   through (a dotted line of text and card edges). The bezel is drawn once more over the scaled frame, in whole pixels
+   (rounded up, so it always covers that row); at --app-fit 1 it lies exactly on the frame's own border. */
+@media (min-width: 721px) and (not (display-mode: standalone)) {
+  #app-stage { position: relative; }
+  #app-stage::after { content: ''; position: absolute; inset: 0; box-sizing: border-box; border: round(up, calc(12px * var(--app-fit)), 1px) solid var(--r-ink); pointer-events: none; }
+}
+
+/* The column: off below 1024px and in the installed app, which is full-bleed. */
+.stage-copy { display: none; }
+.stage-qr[hidden] { display: none; }
+
+@media (min-width: 1024px) and (not (display-mode: standalone)) {
+  body.stage { flex-direction: row; gap: calc(96px * var(--app-fit)); }
+  .stage-copy { display: block; flex: none; width: calc(360px * var(--app-fit)); height: calc(844px * var(--app-fit)); }
+  .stage-copy__in { display: flex; flex-direction: column; width: 360px; height: 844px; transform: scale(var(--app-fit)); transform-origin: 0 0; font-family: var(--r-font); color: var(--r-ink); }
+  .stage-copy ::selection { background: var(--r-orange); color: var(--r-on-orange); }
+
+  /* the wordmark of the header (chrome.css), set at 82px: the orange plate and its 45° corner scale with the type */
+  .stage-mark { display: flex; align-items: baseline; margin: 0; font-family: var(--r-font-x); font-weight: 900; font-size: 82px; line-height: 1; letter-spacing: 0; text-transform: uppercase; color: var(--r-ink); }
+  .stage-mark b { margin-left: .133em; padding: .1em .4em 0 .233em; background: var(--r-orange); color: var(--r-on-orange); font-weight: 900; clip-path: polygon(0 0, calc(100% - .333em) 0, 100% .333em, 100% 100%, 0 100%); }
+  .stage-tag { margin: 14px 0 0; font-size: 24px; font-weight: 600; line-height: 1.2; color: var(--r-ink); }
+  .stage-note { margin: 28px 0 0; padding-top: 24px; border-top: var(--r-band) solid var(--r-ink); font-size: 20px; line-height: 1.45; color: var(--r-ink-2); text-wrap: balance; }
+
+  /* the code sits on the bottom edge of the frame, under its own band */
+  .stage-qr { margin: auto 0 0; padding-top: 24px; border-top: var(--r-band) solid var(--r-ink); }
+  /* the frame is the page ink: a visible frame on the white paper, and in the dark theme the same light as the plate */
+  .stage-qr__code { width: max-content; border: var(--r-band) solid var(--r-ink); background: var(--stage-qr-paper); color: var(--stage-qr-ink); forced-color-adjust: none; }
+  .stage-qr__code svg { display: block; }
+  .stage-qr__cap { margin-top: 14px; font-size: 20px; font-weight: 700; line-height: 1.2; color: var(--r-ink); }
+}
