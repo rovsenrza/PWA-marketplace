@@ -3,10 +3,10 @@ import { test, expect } from './fixtures';
 test('home: categories, recommendations, product grid', async ({ app }) => {
   await expect(app.locator('.home-cat').first()).toHaveText('Все');
   expect(await app.locator('.home-cat').count()).toBeGreaterThan(3);
-  expect(await app.locator('#recommendations-container .rec-card').count()).toBeGreaterThan(2);
-  expect(await app.locator('#product-grid .pc-card').count()).toBeGreaterThan(4);
-  /* бейджи и цены рисуются функциями из модуля (src/app/ui/product-badges.ts) через мост */
-  await expect(app.locator('#product-grid .pc-badge span').first()).toHaveText(/ХИТ|НОВИНКА|РАСПРОДАЖА/);
+  expect(await app.locator('#recommendations-container .r-cell').count()).toBeGreaterThan(2);
+  expect(await app.locator('#product-grid .r-cell').count()).toBeGreaterThan(4);
+  /* наклейки и цены ячеек рисует модуль ячейки (src/app/ui/product-cell.ts) через мост */
+  await expect(app.locator('#product-grid .r-sticker').first()).toHaveText(/^(Хит|Новинка|−\d+%)$/);
 });
 
 test('favourites: prices through getPriceHtml, the store total through parsePrice', async ({ app }) => {
@@ -16,7 +16,7 @@ test('favourites: prices through getPriceHtml, the store total through parsePric
 });
 
 test('cart: add from the card, badge, swipe to delete', async ({ app }) => {
-  await app.locator('.rec-add').first().click();
+  await app.locator('#recommendations-container .r-cell__cart').first().click();
   await expect(app.locator('#cart-badge')).toHaveText('1');
   await app.evaluate(() => (window as any).switchTab('cart'));
   const card = app.locator('#cart-list .cart-card').first();
