@@ -52,7 +52,7 @@ function renderOnboarding() {
         const s = onboardingSlides[i];
         const hidden = i === 0 ? '' : 'hidden';
         const badgeHtml = s.badge
-            ? `<div class="absolute top-3 left-3 onb-badge ${s.badgeColor || 'bg-[#E5195E]'} text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">${s.badge}</div>`
+            ? `<div class="absolute top-3 left-3 onb-badge ${s.badgeColor || 'bg-[#E5195E]'} text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">${escHtml(s.badge)}</div>`
             : '';
         
         slidesHtml += `
@@ -116,6 +116,11 @@ function nextSlide() {
         goToOnboardingSlide(state.currentSlide + 1);
         return;
     }
+    if (document.getElementById('consent-agreement')) {
+        if (typeof acceptConsent === 'function' && acceptConsent()) closeOnboarding();
+        return;
+    }
+    if (typeof showConsent === 'function' && showConsent()) return;
     closeOnboarding();
 }
 

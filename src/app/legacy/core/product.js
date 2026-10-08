@@ -163,8 +163,8 @@ function pmPaintGalleryChrome() {
     if (prev) prev.classList.toggle('hidden', !many);
     if (next) next.classList.toggle('hidden', !many);
     if (count) {
-        count.classList.toggle('hidden', imgs.length < 2);
-        count.textContent = ((window.pmIndex || 0) + 1) + ' / ' + imgs.length;
+        count.classList.remove('hidden');
+        count.textContent = String((window.pmIndex || 0) + 1).padStart(2, '0') + ' / ' + String(imgs.length).padStart(2, '0');
     }
     if (dots) {
         dots.classList.toggle('hidden', !many);
@@ -433,13 +433,13 @@ function pmRenderOfferBoard(prod) {
     if (sizeEl) sizeEl.textContent = size;
     if (matEl) matEl.textContent = material;
     if (weightEl) weightEl.textContent = pmGuessWeight(prod, specs);
-    if (warEl) warEl.textContent = pmSpecValue(specs, ['Гарантия']) || '12 месяцев';
-    if (delEl) delEl.textContent = String(prod.category || '').toLowerCase() === 'стройматериалы' ? '1–2 дня' : '1–3 дня';
+    if (warEl) warEl.textContent = pmSpecValue(specs, ['Гарантия']) || 'Уточните у магазина';
+    if (delEl) delEl.textContent = 'По договорённости';
     window.pmOfferHints = {
         weight: 'Вес: ' + (weightEl ? weightEl.textContent : '—') + '. Точное значение уточните у продавца.',
         warranty: 'Гарантия: ' + (warEl ? warEl.textContent : '12 месяцев') + '. Условия у продавца.',
         delivery: 'Доставка: ' + (delEl ? delEl.textContent : '1–3 дня') + '. Самовывоз — в день подтверждения.',
-        quality: 'Товар от проверенного продавца. Наличие и комплектацию подтверждают перед отгрузкой.'
+        quality: 'Наличие и комплектацию уточните у продавца перед заказом.'
     };
     pmPaintColorDots(colors);
 }
@@ -453,7 +453,7 @@ function pmPaintColorDots(colors) {
     if (label && selected) label.textContent = selected.label;
     box.innerHTML = (colors || []).map(function (c) {
         const on = selected && selected.id === c.id ? ' on' : '';
-        const bg = 'linear-gradient(135deg, ' + (c.hex[0] || '#ddd') + ' 0%, ' + (c.hex[1] || c.hex[0] || '#bbb') + ' 100%)';
+        const bg = c.hex[0] || 'var(--r-rule)';
         return '<button type="button" class="pm-color-dot' + on + '" style="background:' + bg + '" onclick="pmSelectColor(\'' + c.id + '\')" aria-label="' + pmEsc(c.label) + '"></button>';
     }).join('');
 }
@@ -623,6 +623,20 @@ function openProductModal(id) {
 
     document.getElementById('pm-title').textContent = prod.title || 'Без названия';
     document.getElementById('pm-store').textContent = prod.store || '—';
+    const seller = document.querySelector('.pm-seller');
+    if (seller && typeof storeTheme === 'function') {
+        const theme = storeTheme(prod.store);
+        seller.style.setProperty('--spine', theme.ink);
+        seller.style.setProperty('--on-spine', theme.onInk);
+    }
+    const table = document.getElementById('pm-technical-table');
+    if (table) table.innerHTML = productPassport(prod).specs.map(function(row) { return '<div><dt>' + pmEsc(row[0]) + '</dt><dd>' + pmEsc(row[1]) + '</dd></div>'; }).join('');
+    const serviceBox = document.getElementById('pm-store-services');
+    if (serviceBox) {
+        const shopData = shopsProfileDb[prod.store] || {};
+        const services = Array.isArray(shopData.services) ? shopData.services : [];
+        serviceBox.innerHTML = services.filter(function(service) { return typeof service === 'string' || (service && typeof service === 'object' && service.on !== false); }).map(function(service) { return '<div class="r-pict"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m5 12 4 4L19 6"/></svg></i><span>' + pmEsc(typeof service === 'string' ? service : service.name || service.label || service.title || '') + '</span></div>'; }).join('');
+    }
     const sellerSub = document.getElementById('pm-seller-sub');
     if (sellerSub) sellerSub.textContent = pmIsGoods(prod) ? 'Самовывоз · витрина магазина' : 'Продавец';
     pmFillAbout(prod);
@@ -691,6 +705,7 @@ function pmRefreshCart() {
     const n = cartQtyOf(window.currentProductId);
     btn.classList.remove('bg-[#e11d48]', 'bg-[#1c3a34]');
     btn.classList.add('bg-[#1e6091]');
+    btn.classList.toggle('is-on', !!n);
     if (label) label.textContent = n ? ('В корзине · ' + n + ' шт') : 'В корзину';
 }
 
@@ -710,6 +725,10 @@ function pmOpenShop() {
     if (shop) {
         const pmZ = parseInt((pm && pm.style.zIndex) || '60', 10) || 60;
         shop.style.zIndex = String(Math.max(70, pmZ + 10));
+    }
+    if (typeof window.openStorefront === 'function' && pmIsGoods(prod)) {
+        window.openStorefront(prod.store, document.querySelector('.pm-seller'));
+        return;
     }
     openShopCatalogModal(prod.store);
 }
