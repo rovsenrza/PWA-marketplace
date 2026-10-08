@@ -1,4 +1,4 @@
-/* «Линейка» (redesign v2): the new visual layer over the whole buyer app. Loaded after tailwind.css (src/app/main.ts),
+/* V3 (wb.css, last) over «Линейка» (redesign v2): the visual layer over the whole buyer app. Loaded after tailwind.css (src/app/main.ts),
    so it outranks the old layers at equal weight. Order: tokens and faces, global transforms, chrome, primitives,
    then one file per screen family (each owned by one task of the redesign plan). */
 @import './tokens.css';
@@ -15,3 +15,4 @@
 @import './sheets.css';
 @import './storefront.css';
 @import './stage.css';
+@import './wb.css';

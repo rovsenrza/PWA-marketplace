@@ -1,41 +1,41 @@
 /* The product reads as a pack: image, price, technical facts, the store's spine. */
 #phone-container[data-ui] #product-modal { background: var(--r-paper) !important; }
 #phone-container[data-ui] .pm-aurora { display: none !important; }
-#phone-container[data-ui] .pm-head { background: var(--r-paper) !important; border-bottom: 2px solid var(--r-ink); }
-#phone-container[data-ui] .pm-head button { border-radius: 0 !important; background: var(--r-paper) !important; color: var(--r-ink) !important; }
-#phone-container[data-ui] .pm-hero { margin: 0; border-radius: 0; aspect-ratio: 1; background: var(--r-well); box-shadow: none; }
-#phone-container[data-ui] #pm-main-image { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
-#phone-container[data-ui] #pm-photo-count { background: var(--r-ink) !important; color: var(--r-paper) !important; border-radius: 0; font: 800 20px var(--r-font-x); }
-#phone-container[data-ui] .pm-hero-nav { border-radius: 0; background: var(--r-paper); color: var(--r-ink); box-shadow: none; border: 1px solid var(--r-ink); }
+#phone-container[data-ui] .pm-head { background: var(--r-paper) !important; border-bottom: 0; }
+#phone-container[data-ui] .pm-head button { border-radius: var(--w-r-ctl) !important; background: var(--r-paper) !important; color: var(--r-ink) !important; }
+#phone-container[data-ui] .pm-hero { margin: 0; border-radius: var(--w-r-ctl); aspect-ratio: 1; background: var(--r-well); box-shadow: none; }
+#phone-container[data-ui] #pm-main-image { width: 100%; height: 100%; object-fit: contain; border-radius: var(--w-r-ctl); }
+#phone-container[data-ui] #pm-photo-count { background: var(--r-ink) !important; color: var(--r-paper) !important; border-radius: var(--w-r-ctl); font: 600 17px var(--r-font-x); }
+#phone-container[data-ui] .pm-hero-nav { border-radius: var(--w-r-ctl); background: var(--r-paper); color: var(--r-ink); box-shadow: none; border: 0; }
 #phone-container[data-ui] .pm-hero-nav svg { width: 24px; height: 24px; }
-#phone-container[data-ui] .pm-thumbs img { border-radius: 0; }
-#phone-container[data-ui] #pm-title { font-size: 20px !important; font-weight: 600 !important; letter-spacing: 0; }
-#phone-container[data-ui] #pm-price .oz-price-main { font: 900 44px/1 var(--r-font-x) !important; color: var(--r-ink) !important; }
-#phone-container[data-ui] :is(.pm-chip,.pm-about-open,.pm-calc,.pm-spec-tile,.pm-trust) { border-radius: 0; box-shadow: none; background: var(--r-paper); color: var(--r-ink); }
-#phone-container[data-ui] .pm-spec-grid { gap: 0; border-top: 1px solid var(--r-rule); }
-#phone-container[data-ui] .pm-spec-tile { border-bottom: 1px solid var(--r-rule); }
-#phone-container[data-ui] .pm-trust-row { gap: 0; border-bottom: 1px solid var(--r-rule); }
-#phone-container[data-ui] .pm-technical { margin: 24px 20px 0; border-top: 2px solid var(--r-ink); }
-#phone-container[data-ui] .pm-technical h3 { padding: 14px 0 10px; font: 800 26px var(--r-font-x) !important; text-transform: uppercase; }
-#phone-container[data-ui] #pm-technical-table > div { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--r-rule); font-size: 14px; }
+#phone-container[data-ui] .pm-thumbs img { border-radius: var(--w-r-ctl); }
+#phone-container[data-ui] #pm-title { font-size: 17px !important; font-weight: 600 !important; letter-spacing: 0; }
+#phone-container[data-ui] #pm-price .oz-price-main { font: 600 18px/1 var(--r-font-x) !important; color: var(--r-ink) !important; }
+#phone-container[data-ui] :is(.pm-chip,.pm-about-open,.pm-calc,.pm-spec-tile,.pm-trust) { border-radius: var(--w-r-ctl); box-shadow: none; background: var(--r-paper); color: var(--r-ink); }
+#phone-container[data-ui] .pm-spec-grid { gap: 0; border-top: 0; }
+#phone-container[data-ui] .pm-spec-tile { border-bottom: 0; }
+#phone-container[data-ui] .pm-trust-row { gap: 0; border-bottom: 0; }
+#phone-container[data-ui] .pm-technical { margin: 24px 20px 0; border-top: 0; }
+#phone-container[data-ui] .pm-technical h3 { padding: 14px 0 10px; font: 600 18px var(--r-font-x) !important; text-transform: none; }
+#phone-container[data-ui] #pm-technical-table > div { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 0; border-bottom: 0; font-size: 14px; }
 #phone-container[data-ui] #pm-technical-table dt { color: var(--r-ink-3); }
 #phone-container[data-ui] #pm-technical-table dd { font-weight: 600; }
 #phone-container[data-ui] #pm-store-services { display: flex; gap: 16px; overflow-x: auto; padding: 16px 0; }
 #phone-container[data-ui] #pm-seller-wrap { padding: 0; }
-#phone-container[data-ui] .pm-seller { min-height: 60px; padding: 12px 20px; background: var(--spine,var(--r-ink)) !important; color: var(--on-spine,var(--r-paper)) !important; border-radius: 0; border: 0; box-shadow: none; }
+#phone-container[data-ui] .pm-seller { min-height: 60px; padding: 12px 20px; background: var(--spine,var(--r-ink)) !important; color: var(--on-spine,var(--r-paper)) !important; border-radius: var(--w-r-ctl); border: 0; box-shadow: none; }
 #phone-container[data-ui] .pm-seller :is(p,svg) { color: inherit !important; }
-#phone-container[data-ui] #pm-store { font: 800 24px var(--r-font-x) !important; text-transform: uppercase; }
+#phone-container[data-ui] #pm-store { font: 600 18px var(--r-font-x) !important; text-transform: none; }
 #phone-container[data-ui] #pm-seller-sub { opacity: .85; }
-#phone-container[data-ui] .pm-bottom-bar { background: var(--r-paper) !important; backdrop-filter: none; border-top: 2px solid var(--r-ink); flex-wrap: wrap; gap: 8px; }
-#phone-container[data-ui] .pm-bottom-bar #pm-fav-btn { width: 52px; height: 52px; border: 2px solid var(--r-ink); border-radius: 0 !important; background: var(--r-paper) !important; color: var(--r-ink) !important; }
+#phone-container[data-ui] .pm-bottom-bar { background: var(--r-paper) !important; backdrop-filter: none; border-top: 0; flex-wrap: wrap; gap: 8px; }
+#phone-container[data-ui] .pm-bottom-bar #pm-fav-btn { width: 52px; height: 52px; border: 0; border-radius: var(--w-r-ctl) !important; background: var(--r-paper) !important; color: var(--r-ink) !important; }
 #phone-container[data-ui] .pm-bottom-bar #pm-fav-btn.text-red-500 { color: var(--r-bad) !important; }
-#phone-container[data-ui] #pm-cart-btn { height: 52px; font-size: 16px; background: var(--r-orange) !important; color: var(--r-on-orange) !important; border-radius: 0; }
+#phone-container[data-ui] #pm-cart-btn { height: 52px; font-size: 16px; background: var(--r-orange) !important; color: var(--r-on-orange) !important; border-radius: var(--w-r-ctl); }
 #phone-container[data-ui] #pm-cart-btn.is-on { background: var(--r-ink) !important; color: var(--r-paper) !important; }
 #phone-container[data-ui] #pm-manager-btn { display: none; }
-#phone-container[data-ui] .pm-qty { border-radius: 0; background: var(--r-paper); border: 1px solid var(--r-rule); }
+#phone-container[data-ui] .pm-qty { border-radius: var(--w-r-ctl); background: var(--r-paper); border: 0; }
 #phone-container[data-ui] .pm-qty button { width: 36px; height: 36px; }
 #phone-container[data-ui] .pm-qty svg { width: 18px; height: 18px; }
-#phone-container[data-ui] .pm-about-sheet { border-radius: 0; background: var(--r-paper); border-top: 2px solid var(--r-ink); box-shadow: none; }
+#phone-container[data-ui] .pm-about-sheet { border-radius: var(--w-r-ctl); background: var(--r-paper); border-top: 0; box-shadow: none; }
 #phone-container[data-ui] .pm-about-sheet-close svg { width: 24px; height: 24px; }
-#phone-container[data-ui] #product-modal :is(#pm-cart-btn, .pm-qty, .pm-chip, .pm-about-open, .pm-calc, .pm-spec-tile, .pm-trust) { border-radius: 0 !important; box-shadow: none !important; }
-#phone-container[data-ui] #pm-badge > * { background: var(--r-sticker) !important; color: var(--r-on-sticker) !important; border-radius: 0 !important; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%); }
+#phone-container[data-ui] #product-modal :is(#pm-cart-btn, .pm-qty, .pm-chip, .pm-about-open, .pm-calc, .pm-spec-tile, .pm-trust) { border-radius: var(--w-r-ctl) !important; box-shadow: none !important; }
+#phone-container[data-ui] #pm-badge > * { background: var(--r-sticker) !important; color: var(--r-on-sticker) !important; border-radius: var(--w-r-ctl) !important;  }

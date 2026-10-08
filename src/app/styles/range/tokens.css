@@ -1,12 +1,19 @@
-/* «Линейка» (redesign v2): tokens. Loaded last; the old --mk-* names are remapped here so rules
+/* V3 (Russian e-commerce: off-white ground, white rounded cards, no rules or shadows) on the «Линейка» token names. Loaded last; the old --mk-* names are remapped here so rules
    nobody has restyled yet already follow the new world. Neutrals come only from the n0–n9 ramp. */
 /* The second selector carries the weight of glass.css's dark block (html[data-theme="dark"] #phone-container[data-ui]),
    which declares the --mk-* names again; without it the old navy and blue would win in the dark theme.
    The dark ramp below still wins: same weight, later in the file. */
 #phone-container[data-ui],
 html[data-theme] #phone-container[data-ui] {
-  --r-n0: #FFFFFF; --r-n1: #F4F4F2; --r-n2: #E9E9E6; --r-n3: #D6D6D1; --r-n4: #ADADA7;
-  --r-n5: #6B6B66; --r-n6: #4A4A46; --r-n7: #333331; --r-n8: #1F1F1D; --r-n9: #111110;
+  --r-n0: #FFFFFF; --r-n1: #F4F5F7; --r-n2: #EAEBEF; --r-n3: #DCDEE3; --r-n4: #A3A6AF;
+  --r-n5: #686C77; --r-n6: #4A4D57; --r-n7: #33353D; --r-n8: #24262C; --r-n9: #1A1B20;
+  /* V3: the page is the off-white ground, content sits on white cards; nothing is outlined or shadowed */
+  --r-ground: var(--r-n1);
+  --w-r-card: 14px;
+  --w-r-ctl: 10px;
+  --w-r-sm: 8px;
+  --w-gap-x: 3px;
+  --w-gap-y: 10px;
 
   --r-paper: var(--r-n0);
   --r-well: var(--r-n1);
@@ -32,16 +39,16 @@ html[data-theme] #phone-container[data-ui] {
   --r-wait-wash: #FFF1D6;
   --r-scrim: rgba(17, 17, 16, .48);
 
-  --r-font: 'Sofia Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --r-font-x: 'Sofia Sans Extra Condensed', 'Sofia Sans', system-ui, sans-serif;
-  --r-font-modern: 'Unbounded', 'Sofia Sans', system-ui, sans-serif;
-  --r-font-classic: 'Prata', Georgia, serif;
-  --r-band: 2px;
-  --r-chamfer: 10px;
+  --r-font: 'Google Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --r-font-x: var(--r-font);
+  --r-font-modern: var(--r-font);
+  --r-font-classic: var(--r-font);
+  --r-band: 0px;
+  --r-chamfer: 0px;
   --r-ease: cubic-bezier(.32, .72, 0, 1);
   --r-gutter: 16px;
 
-  --mk-page: var(--r-paper);
+  --mk-page: var(--r-ground);
   --mk-card: var(--r-paper);
   --mk-raised: var(--r-paper);
   --mk-sunk: var(--r-well);
@@ -61,24 +68,24 @@ html[data-theme] #phone-container[data-ui] {
   --mk-ok: var(--r-ok);
   --mk-ok-soft: var(--r-ok-wash);
   --mk-warn: var(--r-wait);
-  --mk-r-sm: 0px;
-  --mk-r-md: 0px;
-  --mk-r-lg: 0px;
-  --mk-shadow: 0 0 0 1px var(--r-rule);
-  --mk-shadow-up: 0 calc(-1 * var(--r-band)) 0 var(--r-ink);
-  --mk-sheet: 0 calc(-1 * var(--r-band)) 0 var(--r-ink);
+  --mk-r-sm: var(--w-r-sm);
+  --mk-r-md: var(--w-r-ctl);
+  --mk-r-lg: var(--w-r-card);
+  --mk-shadow: none;
+  --mk-shadow-up: none;
+  --mk-sheet: none;
   --mk-ease: var(--r-ease);
   --font-sans: var(--r-font);
 
-  background: var(--r-paper) !important;
+  background: var(--r-ground) !important;
   color: var(--r-ink);
   caret-color: var(--r-orange);
   accent-color: var(--r-orange);
 }
 
 html[data-theme="dark"] #phone-container[data-ui] {
-  --r-n0: #121211; --r-n1: #1B1B1A; --r-n2: #252523; --r-n3: #363632; --r-n4: #5E5E59;
-  --r-n5: #A09F99; --r-n6: #C4C3BD; --r-n7: #DCDBD6; --r-n8: #ECECE8; --r-n9: #F6F6F2;
+  --r-n0: #1C1D22; --r-n1: #111215; --r-n2: #2A2B31; --r-n3: #36383F; --r-n4: #5D6069;
+  --r-n5: #A2A5AE; --r-n6: #C5C7CE; --r-n7: #DCDEE3; --r-n8: #ECEDF0; --r-n9: #F5F6F8;
   --r-orange: #FF6526;
   --r-orange-press: #FF7B45;
   --r-orange-text: #FF8A57;

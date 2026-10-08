@@ -1,39 +1,24 @@
 #phone-container[data-ui] #view-profile { background: var(--r-paper); }
-#phone-container[data-ui] #view-profile :is(h2,h3) { font-family: var(--r-font-x) !important; font-weight: 800 !important; text-transform: uppercase; }
-#phone-container[data-ui] #view-profile :is(button,input,textarea,select) { border-radius: 0 !important; }
+#phone-container[data-ui] #view-profile :is(h2,h3) { font-family: var(--r-font-x) !important; font-weight: 600 !important; text-transform: none; }
+#phone-container[data-ui] #view-profile :is(button,input,textarea,select) { border-radius: var(--w-r-ctl) !important; }
 #phone-container[data-ui] #view-profile :is(input,textarea,select),
-#phone-container[data-ui] #buyer-editor input { border: 2px solid var(--r-ink); background: var(--r-paper); color: var(--r-ink); font-size: 16px; border-radius: 0; min-height: 48px; }
-#phone-container[data-ui] #view-profile > div { border-radius: 0; box-shadow: none; border-bottom: 1px solid var(--r-rule); }
-#phone-container[data-ui] [data-theme-opt] { min-height: 44px; background: var(--r-paper); color: var(--r-ink); border: 1px solid var(--r-rule); border-radius: 0 !important; }
+#phone-container[data-ui] #buyer-editor input { border: 0; background: var(--r-paper); color: var(--r-ink); font-size: 16px; border-radius: var(--w-r-ctl); min-height: 48px; }
+#phone-container[data-ui] #view-profile > div { border-radius: var(--w-r-ctl); box-shadow: none; border-bottom: 0; }
+#phone-container[data-ui] [data-theme-opt] { min-height: 44px; background: var(--r-paper); color: var(--r-ink); border: 0; border-radius: var(--w-r-ctl) !important; }
 #phone-container[data-ui] [data-theme-opt].on { background: var(--r-ink); color: var(--r-paper); }
 #phone-container[data-ui] #screen-onboarding { background: var(--r-paper) !important; color: var(--r-ink); padding: 40px 24px 24px; }
-#phone-container[data-ui] #onb-slides-container .slide-item > div { border-radius: 0 !important; box-shadow: none; border: 0; background: var(--r-well); max-width: 100%; height: min(45vh,380px); }
-#phone-container[data-ui] #onb-slides-container h2 { font: 800 34px/1 var(--r-font-x) !important; text-transform: uppercase; color: var(--r-ink) !important; }
+#phone-container[data-ui] #onb-slides-container .slide-item > div { border-radius: var(--w-r-ctl) !important; box-shadow: none; border: 0; background: var(--r-well); max-width: 100%; height: min(45vh,380px); }
+#phone-container[data-ui] #onb-slides-container h2 { font: 600 18px/1 var(--r-font-x) !important; text-transform: none; color: var(--r-ink) !important; }
 #phone-container[data-ui] #onb-slides-container p { font-size: 14px; color: var(--r-ink-2) !important; }
-#phone-container[data-ui] #onb-footer > button { height: 52px; border-radius: 0 !important; background: var(--r-orange); color: var(--r-on-orange); box-shadow: none; font-size: 16px; font-weight: 700; }
+#phone-container[data-ui] #onb-footer > button { height: 52px; border-radius: var(--w-r-ctl) !important; background: var(--r-orange); color: var(--r-on-orange); box-shadow: none; font-size: 16px; font-weight: 600; }
 #phone-container[data-ui] #onb-footer > button:disabled { background: var(--r-sunk); color: var(--r-ink-3); cursor: default; }
-#phone-container[data-ui] #onb-dots-container button { border-radius: 0; height: 4px; background: var(--r-ink-4); }
+#phone-container[data-ui] #onb-dots-container button { border-radius: var(--w-r-ctl); height: 4px; background: var(--r-ink-4); }
 #phone-container[data-ui] #onb-dots-container button.w-6 { background: var(--r-orange); }
-#phone-container[data-ui] .onb-badge { border-radius: 0 !important; background: var(--r-sticker) !important; color: var(--r-on-sticker) !important; }
+#phone-container[data-ui] .onb-badge { border-radius: var(--w-r-ctl) !important; background: var(--r-sticker) !important; color: var(--r-on-sticker) !important; }
 #phone-container[data-ui] .r-consent { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 16px; }
 #phone-container[data-ui] .r-consent label { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; font-size: 16px; line-height: 1.35; }
 #phone-container[data-ui] .r-consent input { flex: 0 0 24px; width: 24px; height: 24px; margin-top: 0; }
 #phone-container[data-ui] .r-consent .r-chip { white-space: normal; height: auto; min-height: 44px; }
-#phone-container[data-ui] .r-consent-sheet { position: absolute; inset: auto 0 0; z-index: 20; padding: 24px; background: var(--r-paper); border-top: 2px solid var(--r-ink); box-shadow: 0 -100vh 0 100vh var(--r-scrim); text-align: left; }
-#phone-container[data-ui] .r-consent-sheet h2 { font: 800 30px var(--r-font-x); margin-bottom: 16px; }
+#phone-container[data-ui] .r-consent-sheet { position: absolute; inset: auto 0 0; z-index: 20; padding: 24px; background: var(--r-paper); border-top: 0; box-shadow: none; text-align: left; }
+#phone-container[data-ui] .r-consent-sheet h2 { font: 600 18px var(--r-font-x); margin-bottom: 16px; }
 #phone-container[data-ui] .r-consent-sheet p { margin: 0 0 16px; font-size: 16px; line-height: 1.5; }
-
-/* theme control: square segments; the moving marker is an ink square, the chosen label reads on it */
-html[data-theme] #phone-container[data-ui] .lg-seg { border-radius: 0; padding: 0; gap: 0; background: var(--r-paper); box-shadow: inset 0 0 0 1px var(--r-rule); }
-html[data-theme] #phone-container[data-ui] .lg-seg::before { top: 0; left: 0; width: calc(100% / 3); height: 100%; border-radius: 0; background: var(--r-ink); box-shadow: none; transition-timing-function: var(--r-ease); }
-html[data-theme] #phone-container[data-ui] .lg-seg button { height: 44px; border-radius: 0 !important; border: 0; background: transparent; color: var(--r-ink); transition: color .2s var(--r-ease); }
-html[data-theme] #phone-container[data-ui] .lg-seg button.on { background: transparent; color: var(--r-paper); font-weight: 600; box-shadow: none; }
-@media (prefers-reduced-motion: reduce) { html[data-theme] #phone-container[data-ui] .lg-seg::before { transition: none; } }
-
-/* admin dashboard counts are navigation, not the next action: a ruled well with a big numeral */
-html[data-theme] #phone-container[data-ui] #dash-admin [onclick^="statGoTo"] { background: var(--r-well) !important; color: var(--r-ink) !important; border-radius: 0 !important; box-shadow: inset 0 0 0 1px var(--r-rule) !important; text-align: left; }
-html[data-theme] #phone-container[data-ui] #dash-admin [onclick^="statGoTo"] :is(p, .text-white) { color: var(--r-ink) !important; }
-html[data-theme] #phone-container[data-ui] #dash-admin [onclick^="statGoTo"] p:first-child { font: 900 28px/1 var(--r-font-x) !important; font-variant-numeric: tabular-nums lining-nums; }
-html[data-theme] #phone-container[data-ui] #dash-admin [onclick^="statGoTo"] p:last-child { color: var(--r-ink-3) !important; opacity: 1; font-size: 11px; }
-/* per-row edit keys in the CRM lists are secondary: a line button; «+ Добавить…» keeps the orange */
-html[data-theme] #phone-container[data-ui] :is(#dash-admin, #dash-shop) button.text-\[10px\]:is(.bg-\[\#1e6091\], .bg-blue-600) { background: var(--r-paper) !important; color: var(--r-ink) !important; box-shadow: inset 0 0 0 1px var(--r-ink) !important; }

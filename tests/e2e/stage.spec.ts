@@ -110,7 +110,7 @@ test('a dark launch: the browser bar and the page behind the app take the dark p
 test('service worker: the self-hosted shell fonts are precached, and the files exist', () => {
   const sw = readFileSync(resolve(dist, 'sw.js'), 'utf8');
   const precache: string[] = JSON.parse(sw.match(/const PRECACHE = (\[[\s\S]*?\]);/)![1]);
-  for (const face of ['sofia-sans-cyrillic', 'sofia-sans-latin', 'sofia-sans-extra-condensed-cyrillic', 'sofia-sans-extra-condensed-latin', 'rub-text', 'rub-condensed']) {
+  for (const face of ['google-sans-cyrillic', 'google-sans-latin', 'google-sans-latin-ext']) {
     expect(precache, face).toContain(`./fonts/${face}.woff2`);
     expect(existsSync(resolve(dist, 'fonts', `${face}.woff2`)), face).toBe(true);
   }
