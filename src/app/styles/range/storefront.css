@@ -1,1 +1,124 @@
-/* Store storefront overlay (Task 7: storefront UI). */
+/* Each shop carries its own ink, voice and paper through one shared skeleton. */
+#phone-container[data-ui] .sf-page { z-index: 140; display: flex; flex-direction: column; background: var(--sf-ground); color: var(--sf-text); overflow: hidden; }
+#phone-container[data-ui] .sf-page.hidden { display: none; }
+#phone-container[data-ui] .sf-page :is(button, input, select) { border-radius: 0; }
+#phone-container[data-ui] .sf-page .r-btn--line { background: var(--sf-ground); color: var(--sf-text); border-color: var(--sf-text); box-shadow: inset 0 0 0 2px var(--sf-text); }
+#phone-container[data-ui] .sf-top { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 6px 12px; border-bottom: 2px solid var(--sf-text); background: var(--sf-ground); flex-shrink: 0; }
+#phone-container[data-ui] .sf-top > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 700; }
+#phone-container[data-ui] .sf-top .r-back { background: var(--sf-ground); color: var(--sf-text); border-color: var(--sf-text); box-shadow: inset 0 0 0 2px var(--sf-text); }
+#phone-container[data-ui] .sf-top svg, #phone-container[data-ui] .sf-cart svg { width: 24px; height: 24px; }
+#phone-container[data-ui] .sf-scroll { overflow-y: auto; overscroll-behavior: contain; flex: 1; min-height: 0; scroll-padding-top: 12px; }
+#phone-container[data-ui] .sf-demo { padding: 8px 16px; font-size: 12px; line-height: 1.4; border-bottom: 1px solid var(--sf-rule); color: var(--sf-text-2); }
+#phone-container[data-ui] .sf-block { padding: 28px 16px; border-bottom: 1px solid var(--sf-rule); min-width: 0; }
+#phone-container[data-ui] .sf-block__head { display: flex; align-items: baseline; gap: 10px; justify-content: space-between; margin-bottom: 18px; }
+#phone-container[data-ui] .sf-page :is(.sf-h, .sf-manager h3, .sf-cover h1) { font-family: var(--sf-head) !important; font-weight: 700; line-height: 1.1; overflow-wrap: anywhere; text-wrap: balance; }
+#phone-container[data-ui] .sf-h { font-size: 25px; }
+#phone-container[data-ui] .sf-page[data-voice="industrial"] :is(.sf-h, .sf-manager h3, .sf-cover h1) { text-transform: uppercase; font-weight: 900; }
+#phone-container[data-ui] .sf-page[data-voice="industrial"] .sf-h { font-size: 34px; }
+#phone-container[data-ui] .sf-example { font-size: 12px; font-weight: 500; white-space: nowrap; opacity: .75; }
+#phone-container[data-ui] .sf-cover { display: grid; grid-template-columns: 60% 40%; padding: 0; }
+#phone-container[data-ui] .sf-cover__field { background: var(--sf-ink); color: var(--sf-on-ink); min-height: 290px; padding: 26px 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; min-width: 0; }
+#phone-container[data-ui] .sf-cover h1 { font-size: 48px; max-width: 100%; margin: 0; }
+#phone-container[data-ui] .sf-page[data-voice="industrial"] .sf-cover h1 { font-size: 56px; overflow-wrap: normal; }
+#phone-container[data-ui] .sf-page[data-voice="modern"] .sf-cover h1 { font-size: 24px; overflow-wrap: normal; }
+#phone-container[data-ui] .sf-page[data-voice="classic"] .sf-cover h1 { font-size: 27px; overflow-wrap: normal; }
+#phone-container[data-ui] .sf-cover p { font-size: 15px; line-height: 1.4; opacity: .85; }
+#phone-container[data-ui] .sf-cover .r-btn { background: var(--sf-ground); color: var(--sf-text); border-color: var(--sf-ground); margin-top: auto; }
+#phone-container[data-ui] .sf-cover__photo { width: 100%; height: 100%; object-fit: cover; min-height: 290px; }
+#phone-container[data-ui] .sf-page[data-cover="split"] .sf-cover { grid-template-columns: 50% 50%; }
+#phone-container[data-ui] .sf-page[data-cover="full"] .sf-cover { grid-template-columns: 1fr; position: relative; }
+#phone-container[data-ui] .sf-page[data-cover="full"] .sf-cover__photo { grid-row: 1; grid-column: 1; height: 420px; }
+#phone-container[data-ui] .sf-page[data-cover="full"] .sf-cover__field { grid-row: 1; grid-column: 1; z-index: 1; align-self: end; margin: 16px; min-height: 0; width: calc(100% - 32px); background: var(--sf-ground); color: var(--sf-text); padding: 20px; }
+#phone-container[data-ui] .sf-facts { grid-column: 1 / -1; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; line-height: 1.4; border-top: 2px solid var(--sf-text); }
+#phone-container[data-ui] .sf-facts > span:first-child { font-weight: 700; }
+#phone-container[data-ui] .sf-services__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 10px; }
+#phone-container[data-ui] .sf-services .r-pict { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--sf-text); }
+#phone-container[data-ui] .sf-services .r-pict i { border-color: var(--sf-rule); color: var(--sf-text); }
+#phone-container[data-ui] .sf-services small { display: block; color: var(--sf-text-2); }
+#phone-container[data-ui] :is(.sf-categories__rail, .sf-gallery__rail, .sf-quick) { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 8px; scroll-snap-type: x proximity; }
+#phone-container[data-ui] .sf-category { width: 140px; min-width: 140px; border: 1px solid var(--sf-rule); text-align: left; scroll-snap-align: start; }
+#phone-container[data-ui] .sf-category img { width: 100%; height: 88px; object-fit: cover; }
+#phone-container[data-ui] .sf-category span { display: block; padding: 10px; font-size: 14px; font-weight: 600; }
+#phone-container[data-ui] .sf-catalog { padding-left: 0; padding-right: 0; }
+#phone-container[data-ui] .sf-catalog .sf-block__head { padding: 0 16px; }
+#phone-container[data-ui] .sf-catalog__bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 12px 16px; background: var(--sf-ground); position: sticky; top: 0; z-index: 3; border-top: 1px solid var(--sf-rule); border-bottom: 1px solid var(--sf-rule); }
+#phone-container[data-ui] .sf-catalog__count { font-size: 13px; color: var(--sf-text-2); }
+#phone-container[data-ui] .sf-sort { flex: 1; min-width: 125px; }
+#phone-container[data-ui] .sf-sort select { height: 44px; padding: 8px; width: 100%; }
+#phone-container[data-ui] .sf-page .r-input { background: var(--sf-ground); color: var(--sf-text); border-color: var(--sf-rule); }
+#phone-container[data-ui] .sf-page .r-input::placeholder { color: var(--sf-text-2); }
+#phone-container[data-ui] .sf-quick { padding: 12px 16px; gap: 8px; }
+#phone-container[data-ui] .sf-page .r-chip { border-color: var(--sf-rule); color: var(--sf-text); background: var(--sf-ground); white-space: nowrap; min-height: 44px; }
+#phone-container[data-ui] .sf-page .r-chip[aria-pressed="true"] { background: var(--sf-ink); color: var(--sf-on-ink); border-color: var(--sf-ink); }
+#phone-container[data-ui] .sf-grid .r-cell__spine { display: none; }
+#phone-container[data-ui] .sf-grid .r-cell { background: var(--sf-ground); color: var(--sf-text); }
+#phone-container[data-ui] .sf-grid .r-cell__title { color: var(--sf-text); }
+#phone-container[data-ui] .sf-empty { padding: 24px 16px; display: grid; gap: 16px; }
+#phone-container[data-ui] .sf-lookbook { padding-left: 0; padding-right: 0; }
+#phone-container[data-ui] .sf-lookbook .sf-block__head, #phone-container[data-ui] .sf-lookbook > p { margin-left: 16px; margin-right: 16px; }
+#phone-container[data-ui] .sf-lookbook__image { position: relative; }
+#phone-container[data-ui] .sf-lookbook__image > img { width: 100%; aspect-ratio: 1.1; object-fit: cover; }
+#phone-container[data-ui] .sf-pin { position: absolute; width: 44px; height: 44px; transform: translate(-50%, -50%); background: var(--sf-ink); color: var(--sf-on-ink); font-size: 24px; font-family: var(--r-font-x) !important; font-weight: 800; border: 2px solid var(--sf-on-ink); }
+#phone-container[data-ui] .sf-lookbook__row { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--sf-rule); }
+#phone-container[data-ui] .sf-lookbook__row img { width: 64px; height: 64px; object-fit: cover; }
+#phone-container[data-ui] .sf-lookbook__row > span:first-child { font-family: var(--r-font-x) !important; font-size: 32px; }
+#phone-container[data-ui] .sf-lookbook__row b { display: block; margin-top: 4px; }
+#phone-container[data-ui] .sf-lookbook__row.is-on { background: var(--sf-ink); color: var(--sf-on-ink); }
+#phone-container[data-ui] .sf-steps { list-style: none; }
+#phone-container[data-ui] .sf-steps li { display: flex; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--sf-rule); }
+#phone-container[data-ui] .sf-steps li > b { font-size: 64px; line-height: 1; font-weight: 900; }
+#phone-container[data-ui] .sf-block h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+#phone-container[data-ui] .sf-block p { line-height: 1.5; }
+#phone-container[data-ui] .sf-swatches__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 10px; }
+#phone-container[data-ui] .sf-swatch { aspect-ratio: 1; border: 1px solid var(--sf-rule); margin-bottom: 8px; }
+#phone-container[data-ui] .sf-swatch img { width: 100%; height: 100%; object-fit: cover; }
+#phone-container[data-ui] .sf-swatches__grid b, #phone-container[data-ui] .sf-swatches__grid small { display: block; font-size: 13px; }
+#phone-container[data-ui] .sf-swatches__grid small { color: var(--sf-text-2); }
+#phone-container[data-ui] .sf-calculator__form { display: grid; gap: 18px; }
+#phone-container[data-ui] .sf-calculator label, #phone-container[data-ui] .sf-fields label { display: grid; gap: 7px; font-size: 14px; }
+#phone-container[data-ui] .sf-calculator .r-input { width: 100%; min-width: 0; height: 48px; padding: 10px; }
+#phone-container[data-ui] .sf-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+#phone-container[data-ui] .sf-fields .r-input { width: 100%; min-width: 0; }
+#phone-container[data-ui] .sf-calculator__note { font-size: 13px; color: var(--sf-text-2); }
+#phone-container[data-ui] #sf-mix-result { font-size: 42px; line-height: 1; font-weight: 900; }
+#phone-container[data-ui] .sf-promo { display: grid; grid-template-columns: 1fr 1fr; padding: 0; background: var(--sf-ink); color: var(--sf-on-ink); }
+#phone-container[data-ui] .sf-promo .sf-block__head { grid-column: 1/-1; margin: 0; padding: 22px 16px 0; }
+#phone-container[data-ui] .sf-promo__body { padding: 20px 16px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+#phone-container[data-ui] .sf-promo > img { width: 100%; height: 100%; object-fit: cover; }
+#phone-container[data-ui] .sf-promo .r-sticker { position: static; }
+#phone-container[data-ui] .sf-gallery__rail button { min-width: 200px; width: 200px; scroll-snap-align: start; }
+#phone-container[data-ui] .sf-gallery__rail img { width: 200px; height: 200px; object-fit: cover; }
+#phone-container[data-ui] .sf-prose { white-space: pre-line; }
+#phone-container[data-ui] .sf-address { padding-bottom: 20px; }
+#phone-container[data-ui] .sf-address img { width: 100%; max-height: 220px; object-fit: cover; }
+#phone-container[data-ui] .sf-address p { margin: 12px 0; }
+#phone-container[data-ui] .sf-hours { margin-top: 20px; border-collapse: collapse; width: 100%; font-size: 14px; }
+#phone-container[data-ui] .sf-hours caption { text-align: left; font-weight: 700; padding-bottom: 12px; }
+#phone-container[data-ui] .sf-hours td, #phone-container[data-ui] .sf-hours th { padding: 10px 0; border-bottom: 1px solid var(--sf-rule); text-align: left; }
+#phone-container[data-ui] .sf-hours td { text-align: right; white-space: nowrap; }
+#phone-container[data-ui] .sf-hours th { font-weight: 400; }
+#phone-container[data-ui] .sf-hours .is-today th { font-weight: 700; }
+#phone-container[data-ui] .sf-contacts { display: flex; flex-wrap: wrap; gap: 8px; }
+#phone-container[data-ui] .sf-manager { padding: 16px 0; border-bottom: 1px solid var(--sf-rule); }
+#phone-container[data-ui] .sf-manager p { color: var(--sf-text-2); margin-bottom: 12px; }
+#phone-container[data-ui] .sf-dock { display: flex; gap: 1px; background: var(--sf-rule); padding-bottom: env(safe-area-inset-bottom); border-top: 2px solid var(--sf-text); flex-shrink: 0; }
+#phone-container[data-ui] .sf-message { flex: 1; min-height: 56px; padding: 10px 16px; background: var(--sf-ink); color: var(--sf-on-ink); font-weight: 700; }
+#phone-container[data-ui] .sf-cart { width: 76px; min-height: 56px; background: var(--sf-ground); color: var(--sf-text); display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 700; }
+#phone-container[data-ui] .sf-reveal { position: absolute; inset: 0; z-index: 145; pointer-events: none; }
+#phone-container[data-ui] .sf-filter-sheet { position: absolute; inset: 0; z-index: 10; background: var(--r-scrim); display: flex; align-items: flex-end; }
+#phone-container[data-ui] .sf-filter-sheet.hidden { display: none; }
+#phone-container[data-ui] .sf-filter-panel { width: 100%; max-height: 88%; overflow-y: auto; background: var(--sf-ground); color: var(--sf-text); padding: 20px 16px; border-top: 2px solid var(--sf-text); }
+#phone-container[data-ui] .sf-filter-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+#phone-container[data-ui] .sf-filter-panel fieldset { border: 0; margin: 0; padding: 0 0 24px; }
+#phone-container[data-ui] .sf-filter-panel legend { font-weight: 700; margin-bottom: 12px; }
+#phone-container[data-ui] .sf-filter-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+#phone-container[data-ui] .sf-filter-panel > .r-btn { margin-top: 12px; }
+#phone-container[data-ui] .sf-page :is(button, a):active { opacity: .8; }
+#phone-container[data-ui] .sf-page button:disabled { opacity: .45; cursor: default; }
+@media (prefers-reduced-motion: reduce) { #phone-container[data-ui] .sf-scroll { scroll-behavior: auto; } }
+#phone-container[data-ui] .sf-grid .r-price { color: var(--sf-text); }
+#phone-container[data-ui] .sf-grid .r-price s { color: var(--sf-text-2); }
+#phone-container[data-ui] .sf-services .r-pict > span { overflow-wrap: anywhere; }
+#phone-container[data-ui] .sf-cover h1 { hyphens: auto; }
+#phone-container[data-ui] .sf-cover h1 { hyphens: none; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+#phone-container[data-ui] .sf-page[data-voice="classic"] .sf-cover h1 { font-size: 24px; }

@@ -30,6 +30,7 @@ function isView(el: Element): boolean {
 function overlayKind(el: Element): OverlayKind | null {
   const id = el.id;
   if (SKIP_IDS.has(id) || (el.closest('#story-viewer') && id !== 'story-viewer')) return null;
+  if (id === 'storefront') return 'fade';
   if (id === 'story-viewer') return 'story';
   if (id === 'lightbox') return 'zoom';
   if (id === 'pm-about-sheet') return 'rise';

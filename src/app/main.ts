@@ -18,6 +18,7 @@ import { initSwipeToDelete } from './features/swipe-to-delete';
 import { initNotificationsSheet } from './features/notifications/sheet';
 import { initTabLens } from './features/tab-lens';
 import { registerServiceWorker } from './features/pwa';
+import { initStorefront } from './features/storefront/open';
 
 const phone = document.getElementById('phone-container');
 if (phone && 'animate' in Element.prototype) {
@@ -26,4 +27,5 @@ if (phone && 'animate' in Element.prototype) {
   initNotificationsSheet(phone);
 }
 initTabLens();
+initStorefront();
 registerServiceWorker();
