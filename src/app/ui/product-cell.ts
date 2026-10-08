@@ -194,6 +194,21 @@ function refreshCells(): void {
   });
 }
 
+/**
+ * Runs a cart or favourites change for the key `el`. The change redraws the cell's container at once, so a focused
+ * key (Enter or Space from the keyboard) would leave focus on <body>: it goes back to the same key of the same
+ * product in the same container.
+ */
+function keepingFocus(el: HTMLElement, change: () => void): void {
+  const focused = document.activeElement === el;
+  const scope = el.closest<HTMLElement>('[id]')?.id;
+  const { action, product } = el.dataset;
+  change();
+  if (!focused || el.isConnected || !scope || !action || !product) return;
+  const key = `[data-action="${CSS.escape(action)}"][data-product="${CSS.escape(product)}"]`;
+  document.getElementById(scope)?.querySelector<HTMLElement>(key)?.focus({ preventScroll: true });
+}
+
 let wired = false;
 
 /**
@@ -204,10 +219,13 @@ export function initProductCells(): void {
   if (wired) return;
   wired = true;
   registerActions({
-    'cell-cart': (el) => addToCart(el.dataset.product ?? ''),
-    'cell-fav': (el) => { if (el.dataset.product) toggleFavorite(el.dataset.product); },
+    'cell-cart': (el) => keepingFocus(el, () => addToCart(el.dataset.product ?? '')),
+    'cell-fav': (el) => keepingFocus(el, () => { if (el.dataset.product) toggleFavorite(el.dataset.product); }),
     'open-store': (el) => openStore(el.dataset.store ?? '', el),
   });
   on('app:cart-changed', refreshCells);
   on('app:favorites-changed', refreshCells);
+  /* iOS Safari applies :active only under a touch listener: this passive, empty one turns on the pressed states
+     (the cell's tone, the keys) on iPhones; it blocks nothing */
+  document.addEventListener('touchstart', () => {}, { passive: true });
 }

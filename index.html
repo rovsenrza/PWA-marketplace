@@ -108,7 +108,8 @@
                 <div class="sv-user-row absolute top-[3.75rem] left-0 right-0 z-20 px-3 flex items-center gap-2">
                     <img id="sv-avatar" src="" class="w-8 h-8 rounded-full object-cover border-2 border-white shrink-0">
                     <span id="sv-name" class="text-white font-bold text-sm flex-1 truncate drop-shadow"></span>
-                    <button onclick="closeStory()" class="text-white text-xl font-bold leading-none w-8 h-8 flex items-center justify-center">✕</button>
+                    <button type="button" id="sv-store" class="hidden" data-action="open-store">В витрину</button>
+                    <button onclick="closeStory()" aria-label="Закрыть историю" class="text-white w-11 h-11 flex items-center justify-center"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
                 </div>
                 <div onclick="event.stopPropagation(); prevStorySlide();" onmousedown="event.stopPropagation(); pauseStory();" onmouseup="event.stopPropagation(); resumeStory();" ontouchstart="event.stopPropagation(); pauseStory();" ontouchend="event.stopPropagation(); resumeStory();" class="absolute top-0 left-0 w-1/4 h-full z-10 cursor-pointer"></div>
                 <div onmousedown="event.stopPropagation(); pauseStory();" onmouseup="event.stopPropagation(); resumeStory();" ontouchstart="event.stopPropagation(); pauseStory();" ontouchend="event.stopPropagation(); resumeStory();" class="absolute top-0 left-1/4 w-1/2 h-full z-10 cursor-pointer"></div>
@@ -140,35 +141,6 @@
             
                         <!-- ГЛАВНАЯ СТРАНИЦА (ОЗОН-СТИЛЬ) -->
             <div id="view-catalog" class="home-page space-y-4">
-                <div class="home-aurora" aria-hidden="true">
-                    <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-                        <defs>
-                            <linearGradient id="homeIce" x1="0%" y1="0%" x2="100%" y2="70%">
-                                <stop offset="0%" stop-color="#9BD4FF" stop-opacity="0"/>
-                                <stop offset="30%" stop-color="#8EC9F8" stop-opacity="0.9"/>
-                                <stop offset="100%" stop-color="#4A9BE0" stop-opacity="0"/>
-                            </linearGradient>
-                            <linearGradient id="homeGold" x1="100%" y1="100%" x2="0%" y2="0%">
-                                <stop offset="0%" stop-color="#E8D5A8" stop-opacity="0"/>
-                                <stop offset="50%" stop-color="#D4B56A" stop-opacity="0.55"/>
-                                <stop offset="100%" stop-color="#C9A36A" stop-opacity="0"/>
-                            </linearGradient>
-                            <filter id="homeGlow" x="-20%" y="-20%" width="140%" height="140%">
-                                <feGaussianBlur stdDeviation="2.2" result="b"/>
-                                <feMerge>
-                                    <feMergeNode in="b"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
-                            </filter>
-                        </defs>
-                        <g filter="url(#homeGlow)" stroke-linecap="round">
-                            <path d="M-40 48 C 90 4, 170 128, 300 52 S 410 20, 470 96" stroke="url(#homeIce)" stroke-width="1.25"/>
-                            <path d="M-24 210 C 110 140, 200 300, 380 200" stroke="url(#homeIce)" stroke-width="0.75" opacity="0.65"/>
-                            <path d="M 30 430 C 160 350, 240 520, 420 410" stroke="url(#homeGold)" stroke-width="1.05"/>
-                            <path d="M-30 680 C 120 600, 250 760, 440 650" stroke="url(#homeIce)" stroke-width="0.7" opacity="0.4"/>
-                        </g>
-                    </svg>
-                </div>
 
                 <div class="px-5 pt-3 space-y-2">
                     <div class="flex items-center gap-2 lg lg--pill lg-search">
@@ -198,21 +170,16 @@
                         <div class="space-y-2">
                             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Цена, ₽</p>
                             <div class="flex items-center gap-2">
-                                <input id="filter-price-min" type="number" placeholder="от" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs">
+                                <input id="filter-price-min" type="number" placeholder="от" class="r-input" min="0" inputmode="decimal" aria-label="Цена">
                                 <span class="text-slate-400">—</span>
-                                <input id="filter-price-max" type="number" placeholder="до" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs">
+                                <input id="filter-price-max" type="number" placeholder="до" class="r-input" min="0" inputmode="decimal" aria-label="Цена">
                             </div>
                         </div>
                         <div class="flex gap-2 pt-1">
-                            <button onclick="resetTopFilters()" class="flex-1 bg-slate-200 text-slate-700 py-2 text-xs rounded-lg font-bold">Сбросить</button>
-                            <button onclick="applyTopFilters()" class="flex-1 bg-[#1e6091] text-white py-2 text-xs rounded-lg font-bold">Применить</button>
+                            <button onclick="resetTopFilters()" class="r-btn r-btn--line">Сбросить</button>
+                            <button onclick="applyTopFilters()" class="r-btn r-btn--primary">Применить</button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Категории (плитки) -->
-                <div class="home-cats-scroll no-scrollbar" role="list" aria-label="Категории">
-                    <div class="home-cats" id="home-cats"></div>
                 </div>
 
                                                <!-- Сториз -->
@@ -222,47 +189,37 @@
                     </div>
 
                     <!-- Стрелка влево -->
-                    <button onclick="scrollStories('left')" class="absolute left-1 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center text-slate-600 z-10 active:scale-90">
+                    <button aria-label="Предыдущие истории" onclick="scrollStories('left')" class="absolute left-1 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center text-slate-600 z-10 active:scale-90">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
                     </button>
 
                     <!-- Стрелка вправо -->
-                    <button onclick="scrollStories('right')" class="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center text-slate-600 z-10 active:scale-90">
+                    <button aria-label="Следующие истории" onclick="scrollStories('right')" class="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center text-slate-600 z-10 active:scale-90">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                     </button>
                 </div>
 
               <!-- Промо-баннер (Слайдер) -->
-<div class="px-5 mb-6 relative home-promo-frame">
-    <div class="relative w-full h-[228px] rounded-2xl overflow-hidden home-promo-card bg-white">
-        
-        <div id="home-shop-slides" class="absolute inset-0"></div>
-
-        <!-- Зоны для клика (Влево / Вправо) -->
-        <div class="absolute top-0 h-[140px] left-0 w-[18%] z-20 cursor-pointer" onclick="prevPromoSlide()"></div>
-        <div class="absolute top-0 h-[140px] right-0 w-[18%] z-20 cursor-pointer" onclick="nextPromoSlide()"></div>
-
-        <!-- Декоративные точки (слайдер) -->
-        <div class="absolute top-[124px] left-1/2 transform -translate-x-1/2 flex items-center gap-1.5 z-30" id="promo-dots">
-            <div class="w-4 h-1.5 bg-white rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-1.5 bg-white/50 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-1.5 bg-white/50 rounded-full transition-all duration-300"></div>
-        </div>
-        
-    </div>
-
-    <!-- Скрипт для работы слайдера -->
+<div class="home-promo-frame">
+    <div class="home-promo-card"><div id="home-shop-slides" class="absolute inset-0"></div></div>
+    <div class="home-promo-controls"><button type="button" class="r-promo-key" onclick="prevPromoSlide()" aria-label="Предыдущий магазин"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m14 6-6 6 6 6"/></svg></button><button type="button" class="r-promo-key" onclick="nextPromoSlide()" aria-label="Следующий магазин"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m10 6 6 6-6 6"/></svg></button></div>
     <script src="/src/app/legacy/promo-slider.js"></script>
 </div>
 <!-- /Промо-баннер (Слайдер) -->
+                <!-- Категории (плитки) -->
+                <div class="home-cats-scroll no-scrollbar" role="list" aria-label="Категории">
+                    <div class="home-cats" id="home-cats"></div>
+                </div>
+
+
 
 <!-- БЛОК РЕКОМЕНДАЦИЙ (Динамический) -->
 <div class="mb-2 mt-2">
     <!-- Шапка блока -->
-    <div class="flex items-center justify-between px-5 mb-3">
-        <h3 class="font-bold text-[17px] text-slate-900">Рекомендуем для вас</h3>
-        <button onclick="openRecModal()" class="home-see-all">
-            Смотреть все
+    <div class="r-head">
+        <h3 class="r-head__t">Рекомендуем для вас</h3>
+        <button onclick="openRecModal()" class="r-head__a home-see-all">
+            Все
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </button>
     </div>
@@ -282,20 +239,20 @@
 
                 <!-- Товары -->
                 <div class="px-5 pb-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="oz-h2">Популярные товары</h3>
-                        <button onclick="openProductCatalogFromHome()" class="home-see-all">Смотреть все<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+                    <div class="r-head">
+                        <h3 class="r-head__t">Популярные товары</h3>
+                        <button onclick="openProductCatalogFromHome()" class="r-head__a home-see-all">Все<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
                     </div>
 
                     <!-- НИЖНЯЯ ПАНЕЛЬ: СОРТИРОВКА (по цене, новинки, хиты) -->
 <div id="filter-panel" class="hidden bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-3 space-y-3 animate-scaleUp">
     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Сортировка</p>
     <div class="flex flex-wrap gap-1.5">
-        <button onclick="applySort('popular')" id="sort-popular" class="sort-btn text-[11px] bg-[#1e6091] text-white px-3 py-1.5 rounded-lg font-bold">Популярные</button>
-        <button onclick="applySort('cheap')" id="sort-cheap" class="sort-btn text-[11px] bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold">Сначала дешёвые</button>
-        <button onclick="applySort('expensive')" id="sort-expensive" class="sort-btn text-[11px] bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold">Сначала дорогие</button>
-        <button onclick="applySort('new')" id="sort-new" class="sort-btn text-[11px] bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold">Новинки</button>
-        <button onclick="applySort('name')" id="sort-name" class="sort-btn text-[11px] bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold">По названию</button>
+        <button onclick="applySort('popular')" id="sort-popular" class="r-chip sort-btn text-[11px] bg-[#1e6091] text-white px-3 py-1.5 rounded-lg font-bold">Популярные</button>
+        <button onclick="applySort('cheap')" id="sort-cheap" class="r-chip sort-btn text-[11px] bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold">Сначала дешёвые</button>
+        <button onclick="applySort('expensive')" id="sort-expensive" class="r-chip sort-btn text-[11px] bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold">Сначала дорогие</button>
+        <button onclick="applySort('new')" id="sort-new" class="r-chip sort-btn text-[11px] bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold">Новинки</button>
+        <button onclick="applySort('name')" id="sort-name" class="r-chip sort-btn text-[11px] bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold">По названию</button>
     </div>
 </div>
 
@@ -304,97 +261,68 @@
             </div>
 
             <div id="view-directory" class="dir-page hidden px-4 pt-3 pb-8">
-                <div class="dir-aurora" aria-hidden="true">
-                    <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-                        <defs>
-                            <linearGradient id="dirIce" x1="0%" y1="0%" x2="100%" y2="80%">
-                                <stop offset="0%" stop-color="#9BD4FF" stop-opacity="0"/>
-                                <stop offset="28%" stop-color="#8EC9F8" stop-opacity="0.95"/>
-                                <stop offset="100%" stop-color="#4A9BE0" stop-opacity="0"/>
-                            </linearGradient>
-                            <linearGradient id="dirGold" x1="100%" y1="100%" x2="0%" y2="0%">
-                                <stop offset="0%" stop-color="#E8D5A8" stop-opacity="0"/>
-                                <stop offset="48%" stop-color="#D4B56A" stop-opacity="0.55"/>
-                                <stop offset="100%" stop-color="#C9A36A" stop-opacity="0"/>
-                            </linearGradient>
-                            <filter id="dirGlow" x="-20%" y="-20%" width="140%" height="140%">
-                                <feGaussianBlur stdDeviation="2.2" result="b"/>
-                                <feMerge>
-                                    <feMergeNode in="b"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
-                            </filter>
-                        </defs>
-                        <g filter="url(#dirGlow)" stroke-linecap="round">
-                            <path d="M-36 64 C 86 8, 176 148, 292 62 S 408 28, 468 118" stroke="url(#dirIce)" stroke-width="1.3"/>
-                            <path d="M-18 240 C 108 168, 198 328, 370 228" stroke="url(#dirIce)" stroke-width="0.75" opacity="0.7"/>
-                            <path d="M 22 540 C 150 448, 236 640, 410 520" stroke="url(#dirGold)" stroke-width="1.05"/>
-                            <path d="M-40 760 C 120 680, 250 820, 430 710" stroke="url(#dirIce)" stroke-width="0.7" opacity="0.4"/>
-                        </g>
-                    </svg>
-                </div>
                 <div class="dir-head">
                     <h3>Каталог</h3>
                     <p>Каталог предприятий и специалистов региона</p>
                 </div>
 
                 <div class="dir-list dir-grid">
-                    <div onclick="switchDirectoryView('product_categories')" class="dir-row">
+                    <div onclick="switchDirectoryView('product_categories')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#FE5000;--section-text:#111110">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=200" class="w-full h-full object-cover rounded-lg"></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Каталог товаров</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Строительные материалы, инструменты и оборудование</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('shops')" class="dir-row">
+                    <div onclick="switchDirectoryView('shops')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#3A3A38;--section-text:#FFFFFF">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200" class="w-full h-full object-cover rounded-lg"></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Магазины</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Мебель, техника и товары для дома</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('specialists')" class="dir-row">
+                    <div onclick="switchDirectoryView('specialists')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#0067B1;--section-text:#FFFFFF">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=200" class="w-full h-full object-cover rounded-lg"></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Специалисты</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Частные мастера и компании полного цикла</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('spectech')" class="dir-row">
+                    <div onclick="switchDirectoryView('spectech')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#FFC20E;--section-text:#111110">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=200" class="w-full h-full object-cover rounded-lg" alt=""></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Спецтехника</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Аренда тракторов, КАМАЗов, газелей и кранов</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('designers')" class="dir-row">
+                    <div onclick="switchDirectoryView('designers')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#6D2C91;--section-text:#FFFFFF">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=200" class="w-full h-full object-cover rounded-lg"></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Дизайнеры</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Интерьер, ландшафт и авторские проекты</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('companies')" class="dir-row">
+                    <div onclick="switchDirectoryView('companies')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#00A19A;--section-text:#111110">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=200" class="w-full h-full object-cover rounded-lg"></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Компании</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Проверенные подрядчики региона</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('jobs')" class="dir-row">
+                    <div onclick="switchDirectoryView('jobs')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#00753A;--section-text:#FFFFFF">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=200" class="w-full h-full object-cover rounded-lg"></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Вакансии</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Работа в строительстве и отделке</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('realestate')" class="dir-row">
+                    <div onclick="switchDirectoryView('realestate')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#D7261E;--section-text:#FFFFFF">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=200" class="w-full h-full object-cover rounded-lg"></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Недвижимость</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Жилая и коммерческая</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('landscaping')" class="dir-row">
+                    <div onclick="switchDirectoryView('landscaping')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#4C8C2B;--section-text:#111110">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1558904541-efa843a96f01?w=200" class="w-full h-full object-cover rounded-lg" alt=""></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Ландшафт</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Сады, газоны и озеленение участка</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('other')" class="dir-row">
+                    <div onclick="switchDirectoryView('other')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#A8803F;--section-text:#111110">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=200" class="w-full h-full object-cover rounded-lg" alt=""></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Прочее</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Клининг, монтаж, вывоз мусора и грузчики</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="switchDirectoryView('calculator')" class="dir-row">
+                    <div onclick="switchDirectoryView('calculator')" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#3AA0DB;--section-text:#111110">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=200" class="w-full h-full object-cover rounded-lg"></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Онлайн калькулятор</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Расчёт материалов и сметы</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div onclick="openLifehacksCatalog()" class="dir-row">
+                    <div onclick="openLifehacksCatalog()" class="dir-row" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" style="--section-ink:#FFDD00;--section-text:#111110">
                         <div class="dir-thumb-wrap"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=200" class="w-full h-full object-cover rounded-lg"></div>
                         <div class="flex-1 min-w-0"><h5 class="font-bold text-[14px] text-slate-900">Лайфхаки</h5><p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Советы, сметы и товары из каталога</p></div>
                         <svg class="dir-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -404,35 +332,6 @@
 
 <!-- ЭКРАН: КАТАЛОГ ТОВАРОВ -->
 <div id="subview-product_categories" class="goods-page hidden px-5 pt-4 space-y-4">
-    <div class="goods-aurora" aria-hidden="true">
-        <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-            <defs>
-                <linearGradient id="goodsIce" x1="0%" y1="0%" x2="100%" y2="70%">
-                    <stop offset="0%" stop-color="#9BD4FF" stop-opacity="0"/>
-                    <stop offset="30%" stop-color="#8EC9F8" stop-opacity="0.9"/>
-                    <stop offset="100%" stop-color="#4A9BE0" stop-opacity="0"/>
-                </linearGradient>
-                <linearGradient id="goodsGold" x1="100%" y1="100%" x2="0%" y2="0%">
-                    <stop offset="0%" stop-color="#E8D5A8" stop-opacity="0"/>
-                    <stop offset="50%" stop-color="#D4B56A" stop-opacity="0.55"/>
-                    <stop offset="100%" stop-color="#C9A36A" stop-opacity="0"/>
-                </linearGradient>
-                <filter id="goodsGlow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="2.2" result="b"/>
-                    <feMerge>
-                        <feMergeNode in="b"/>
-                        <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                </filter>
-            </defs>
-            <g filter="url(#goodsGlow)" stroke-linecap="round">
-                <path d="M-40 56 C 80 8, 180 140, 310 60 S 420 28, 480 110" stroke="url(#goodsIce)" stroke-width="1.3"/>
-                <path d="M-20 200 C 100 130, 190 290, 360 200 S 440 250, 500 170" stroke="url(#goodsIce)" stroke-width="0.8" opacity="0.7"/>
-                <path d="M 24 480 C 150 390, 230 580, 400 470" stroke="url(#goodsGold)" stroke-width="1.05"/>
-                <path d="M-30 720 C 110 640, 250 790, 440 680" stroke="url(#goodsIce)" stroke-width="0.7" opacity="0.45"/>
-            </g>
-        </svg>
-    </div>
 
     <div class="goods-head flex items-center space-x-2">
         <button onclick="backToDirectory()" class="text-slate-500 hover:text-black font-light text-sm serif-font mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button>
@@ -530,16 +429,6 @@
 
             <!-- ЭКРАН: СТРОИТЕЛЬНЫЕ МАТЕРИАЛЫ (ПОДКАТЕГОРИИ) -->
             <div id="subview-building_materials" class="goods-subpage hidden px-5 pt-4 space-y-4">
-                <div class="goods-aurora" aria-hidden="true">
-                    <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-                        <g filter="url(#goodsGlow)" stroke-linecap="round">
-                            <path d="M-40 56 C 80 8, 180 140, 310 60 S 420 28, 480 110" stroke="url(#goodsIce)" stroke-width="1.3"/>
-                            <path d="M-20 200 C 100 130, 190 290, 360 200 S 440 250, 500 170" stroke="url(#goodsIce)" stroke-width="0.8" opacity="0.7"/>
-                            <path d="M 24 480 C 150 390, 230 580, 400 470" stroke="url(#goodsGold)" stroke-width="1.05"/>
-                            <path d="M-30 720 C 110 640, 250 790, 440 680" stroke="url(#goodsIce)" stroke-width="0.7" opacity="0.45"/>
-                        </g>
-                    </svg>
-                </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="backToProductCatalog()" class="text-slate-500 hover:text-black font-light text-sm serif-font mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button>
                     <h3 class="font-light text-black text-xl serif-font">Строительные материалы</h3>
@@ -549,16 +438,6 @@
 
             <!-- ЭКРАН: ОТДЕЛОЧНЫЕ МАТЕРИАЛЫ (ПОДКАТЕГОРИИ) -->
             <div id="subview-finishing_materials" class="goods-subpage hidden px-5 pt-4 space-y-4">
-                <div class="goods-aurora" aria-hidden="true">
-                    <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-                        <g filter="url(#goodsGlow)" stroke-linecap="round">
-                            <path d="M-40 56 C 80 8, 180 140, 310 60 S 420 28, 480 110" stroke="url(#goodsIce)" stroke-width="1.3"/>
-                            <path d="M-20 200 C 100 130, 190 290, 360 200 S 440 250, 500 170" stroke="url(#goodsIce)" stroke-width="0.8" opacity="0.7"/>
-                            <path d="M 24 480 C 150 390, 230 580, 400 470" stroke="url(#goodsGold)" stroke-width="1.05"/>
-                            <path d="M-30 720 C 110 640, 250 790, 440 680" stroke="url(#goodsIce)" stroke-width="0.7" opacity="0.45"/>
-                        </g>
-                    </svg>
-                </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="backFromFinishing()" class="text-slate-500 hover:text-black font-light text-sm serif-font mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button>
                     <h3 class="font-light text-black text-xl serif-font">Отделочные материалы</h3>
@@ -568,16 +447,6 @@
 
                         <!-- ЭКРАН: МЕБЕЛЬ (ПОДКАТЕГОРИИ) -->
             <div id="subview-furniture" class="goods-subpage hidden px-5 pt-4 space-y-4">
-                <div class="goods-aurora" aria-hidden="true">
-                    <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-                        <g filter="url(#goodsGlow)" stroke-linecap="round">
-                            <path d="M-40 56 C 80 8, 180 140, 310 60 S 420 28, 480 110" stroke="url(#goodsIce)" stroke-width="1.3"/>
-                            <path d="M-20 200 C 100 130, 190 290, 360 200 S 440 250, 500 170" stroke="url(#goodsIce)" stroke-width="0.8" opacity="0.7"/>
-                            <path d="M 24 480 C 150 390, 230 580, 400 470" stroke="url(#goodsGold)" stroke-width="1.05"/>
-                            <path d="M-30 720 C 110 640, 250 790, 440 680" stroke="url(#goodsIce)" stroke-width="0.7" opacity="0.45"/>
-                        </g>
-                    </svg>
-                </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="backFromFurniture()" class="text-slate-500 hover:text-black font-light text-sm serif-font mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button>
                     <h3 class="font-light text-black text-xl serif-font">Мебель</h3>
@@ -587,16 +456,6 @@
 
                         <!-- ЭКРАН: САНТЕХНИКА (ПОДКАТЕГОРИИ) -->
             <div id="subview-plumbing" class="goods-subpage hidden px-5 pt-4 space-y-4">
-                <div class="goods-aurora" aria-hidden="true">
-                    <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-                        <g filter="url(#goodsGlow)" stroke-linecap="round">
-                            <path d="M-40 56 C 80 8, 180 140, 310 60 S 420 28, 480 110" stroke="url(#goodsIce)" stroke-width="1.3"/>
-                            <path d="M-20 200 C 100 130, 190 290, 360 200 S 440 250, 500 170" stroke="url(#goodsIce)" stroke-width="0.8" opacity="0.7"/>
-                            <path d="M 24 480 C 150 390, 230 580, 400 470" stroke="url(#goodsGold)" stroke-width="1.05"/>
-                            <path d="M-30 720 C 110 640, 250 790, 440 680" stroke="url(#goodsIce)" stroke-width="0.7" opacity="0.45"/>
-                        </g>
-                    </svg>
-                </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="backFromPlumbing()" class="text-slate-500 hover:text-black font-light text-sm serif-font mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button>
                     <h3 class="font-light text-black text-xl serif-font">Сантехника</h3>
@@ -606,16 +465,6 @@
 
                         <!-- ЭКРАН: АКСЕССУАРЫ (ПОДКАТЕГОРИИ) -->
             <div id="subview-accessories" class="goods-subpage hidden px-5 pt-4 space-y-4">
-                <div class="goods-aurora" aria-hidden="true">
-                    <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-                        <g filter="url(#goodsGlow)" stroke-linecap="round">
-                            <path d="M-40 56 C 80 8, 180 140, 310 60 S 420 28, 480 110" stroke="url(#goodsIce)" stroke-width="1.3"/>
-                            <path d="M-20 200 C 100 130, 190 290, 360 200 S 440 250, 500 170" stroke="url(#goodsIce)" stroke-width="0.8" opacity="0.7"/>
-                            <path d="M 24 480 C 150 390, 230 580, 400 470" stroke="url(#goodsGold)" stroke-width="1.05"/>
-                            <path d="M-30 720 C 110 640, 250 790, 440 680" stroke="url(#goodsIce)" stroke-width="0.7" opacity="0.45"/>
-                        </g>
-                    </svg>
-                </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="backFromAccessories()" class="text-slate-500 hover:text-black font-light text-sm serif-font mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button>
                     <h3 class="font-light text-black text-xl serif-font">Аксессуары</h3>
@@ -625,16 +474,6 @@
 
                         <!-- ЭКРАН: ЛАНДШАФТ (ПОДКАТЕГОРИИ) -->
             <div id="subview-landscape" class="goods-subpage hidden px-5 pt-4 space-y-4">
-                <div class="goods-aurora" aria-hidden="true">
-                    <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-                        <g filter="url(#goodsGlow)" stroke-linecap="round">
-                            <path d="M-40 56 C 80 8, 180 140, 310 60 S 420 28, 480 110" stroke="url(#goodsIce)" stroke-width="1.3"/>
-                            <path d="M-20 200 C 100 130, 190 290, 360 200 S 440 250, 500 170" stroke="url(#goodsIce)" stroke-width="0.8" opacity="0.7"/>
-                            <path d="M 24 480 C 150 390, 230 580, 400 470" stroke="url(#goodsGold)" stroke-width="1.05"/>
-                            <path d="M-30 720 C 110 640, 250 790, 440 680" stroke="url(#goodsIce)" stroke-width="0.7" opacity="0.45"/>
-                        </g>
-                    </svg>
-                </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="backFromLandscape()" class="text-slate-500 hover:text-black font-light text-sm serif-font mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button>
                     <h3 class="font-light text-black text-xl serif-font">Ландшафт</h3>
@@ -970,14 +809,7 @@
                 <div class="space-y-3" id="other-profiles-list"></div>
             </div>
 <div id="subview-designers" class="hidden px-5 pt-3 space-y-4 pb-6">
-    <div class="relative flex items-center justify-between">
-        <button onclick="backToDirectory()" class="flex items-center gap-1 text-slate-500 text-sm font-medium">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-            Назад
-        </button>
-        <h3 class="font-bold text-slate-900 text-base absolute left-1/2 -translate-x-1/2 pointer-events-none">Дизайнеры</h3>
-        <div class="w-9"></div>
-    </div>
+    <div class="flex items-center space-x-2"><button onclick="backToDirectory()" class="mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button><h3 class="oz-h1">Дизайнеры</h3></div>
     <div class="space-y-3" id="designers-list-container"></div>
 </div>
             <div id="subview-companies" class="hidden px-5 pt-4 space-y-4">
@@ -1008,10 +840,7 @@
             <!-- ЭКРАН: СПИСОК КАЛЬКУЛЯТОРОВ -->
             <div id="subview-calculator" class="hidden px-5 pt-4 space-y-4 pb-10">
                 <div class="flex items-center space-x-3 mb-6">
-                    <button onclick="backToDirectory()" class="text-slate-800 hover:text-black p-1 active:scale-90 transition-transform">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    </button>
-                    <h3 class="font-bold text-slate-900 text-xl">Онлайн калькуляторы</h3>
+                    <button onclick="backToDirectory()" class="mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button><h3 class="oz-h1">Онлайн калькуляторы</h3>
                 </div>
                 
                 <div class="space-y-3">
@@ -1128,10 +957,7 @@
             <!-- ЭКРАН: ВНУТРЕННЯЯ СТРАНИЦА КОНКРЕТНОГО КАЛЬКУЛЯТОРА -->
 <div id="subview-specific-calc" class="hidden px-5 pt-4 space-y-4 pb-10 min-h-full bg-white">
     <div class="flex items-center space-x-3 mb-2">
-        <button onclick="backToCalcList()" class="text-slate-800 hover:text-black p-1 active:scale-90 transition-transform">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-        </button>
-        <h3 id="specific-calc-title" class="font-bold text-slate-900 text-lg leading-none mt-1">Калькулятор</h3>
+        <button onclick="backToCalcList()" class="mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button><h3 id="specific-calc-title" class="oz-h1">Калькулятор</h3>
     </div>
     
     <!-- ЗАГЛУШКА -->
@@ -1468,16 +1294,6 @@
 
             <!-- ЭКРАН: ИНСТРУМЕНТЫ (ПОДКАТЕГОРИИ) -->
 <div id="subview-tools" class="goods-subpage hidden px-5 pt-4 space-y-4">
-    <div class="goods-aurora" aria-hidden="true">
-        <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-            <g filter="url(#goodsGlow)" stroke-linecap="round">
-                <path d="M-40 56 C 80 8, 180 140, 310 60 S 420 28, 480 110" stroke="url(#goodsIce)" stroke-width="1.3"/>
-                <path d="M-20 200 C 100 130, 190 290, 360 200 S 440 250, 500 170" stroke="url(#goodsIce)" stroke-width="0.8" opacity="0.7"/>
-                <path d="M 24 480 C 150 390, 230 580, 400 470" stroke="url(#goodsGold)" stroke-width="1.05"/>
-                <path d="M-30 720 C 110 640, 250 790, 440 680" stroke="url(#goodsIce)" stroke-width="0.7" opacity="0.45"/>
-            </g>
-        </svg>
-    </div>
     <div class="flex items-center space-x-2">
         <button onclick="backFromTools()" class="text-slate-500 hover:text-black font-light text-sm serif-font mk-back" aria-label="Назад"><svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 18l-6-6 6-6"/></svg></button>
         <h3 class="font-light text-black text-xl serif-font">Инструменты</h3>
@@ -2120,20 +1936,12 @@
             
 <!-- ЭКРАН ТОВАРОВ ПО КАТЕГОРИИ (Открывается из модалки) -->
 <div id="view-category-products" class="goods-page hidden px-5 pt-4 space-y-4 min-h-full pb-10">
-    <div class="goods-aurora" aria-hidden="true">
-        <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" fill="none">
-            <g filter="url(#goodsGlow)" stroke-linecap="round">
-                <path d="M-40 56 C 80 8, 180 140, 310 60 S 420 28, 480 110" stroke="url(#goodsIce)" stroke-width="1.3"/>
-                <path d="M-20 200 C 100 130, 190 290, 360 200 S 440 250, 500 170" stroke="url(#goodsIce)" stroke-width="0.8" opacity="0.7"/>
-                <path d="M 24 480 C 150 390, 230 580, 400 470" stroke="url(#goodsGold)" stroke-width="1.05"/>
-                <path d="M-30 720 C 110 640, 250 790, 440 680" stroke="url(#goodsIce)" stroke-width="0.7" opacity="0.45"/>
-            </g>
-        </svg>
+    <div class="r-head goods-head goods-head--stack">
+        <button type="button" onclick="closeCategoryProducts()" class="r-back lg-crumb"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/></svg>Главная</button>
+        <h3 id="cat-prod-title" class="r-head__t">Категория</h3>
     </div>
-    <div class="goods-head goods-head--stack pb-2">
-        <button type="button" onclick="closeCategoryProducts()" class="lg-crumb"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/></svg>Главная</button>
-        <h3 id="cat-prod-title" class="font-bold text-slate-900 text-lg">Категория</h3>
-    </div>
+    <p id="cat-prod-count" class="r-result-count" aria-live="polite"></p>
+    <div id="cat-prod-filters" class="r-category-filters"></div>
     <div class="r-grid r-grid--bleed" id="cat-prod-grid"></div>
 </div>
 
@@ -2397,9 +2205,7 @@
                     <button type="button" id="pm-comm-share-btn" onclick="shareProduct()" class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center text-slate-500">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
                     </button>
-                    <button type="button" onclick="toggleFavorite(window.currentProductId); pmRefreshFav(); renderPmSimilar(); renderPmRecent();" id="pm-fav-btn" class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center text-slate-300">
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    </button>
+
                 </div>
             </div>
 
@@ -2408,8 +2214,8 @@
                     <img id="pm-main-image" src="" alt="" class="cursor-pointer" onclick="openLightbox(document.getElementById('pm-main-image').src)">
                     <div id="pm-badge" class="absolute top-3 left-3 z-10"></div>
                     <div id="pm-photo-count" class="hidden absolute top-3 right-3 z-10 bg-black/55 text-white text-[11px] font-bold px-2.5 py-1 rounded-full"></div>
-                    <button type="button" id="pm-prev" class="pm-hero-nav prev hidden" onclick="event.stopPropagation(); pmGalleryStep(-1)">‹</button>
-                    <button type="button" id="pm-next" class="pm-hero-nav next hidden" onclick="event.stopPropagation(); pmGalleryStep(1)">›</button>
+                    <button type="button" id="pm-prev" class="pm-hero-nav prev hidden" onclick="event.stopPropagation(); pmGalleryStep(-1)" aria-label="Предыдущее фото"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m15 5-7 7 7 7"/></svg></button>
+                    <button type="button" id="pm-next" class="pm-hero-nav next hidden" onclick="event.stopPropagation(); pmGalleryStep(1)" aria-label="Следующее фото"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m9 5 7 7-7 7"/></svg></button>
                     <div id="pm-dots" class="pm-dots hidden"></div>
                 </div>
 
@@ -2532,11 +2338,12 @@
                     <div id="pm-comm" class="hidden mt-4 space-y-4"></div>
                 </div>
 
+                <section class="pm-technical"><h3>Характеристики</h3><dl id="pm-technical-table"></dl><div id="pm-store-services"></div></section>
                 <div id="pm-seller-wrap" class="px-5 mt-4">
                     <button type="button" onclick="pmOpenShop()" class="pm-seller">
                         <div class="min-w-0">
                             <p id="pm-store" class="text-[14px] font-bold text-slate-900 truncate"></p>
-                            <p id="pm-seller-sub" class="text-[12px] text-slate-400 mt-0.5">Самовывоз · витрина магазина</p>
+                            <p id="pm-seller-sub" class="text-[12px] text-slate-400 mt-0.5">В витрину</p>
                         </div>
                         <span class="text-[12px] font-bold text-[#1e6091] shrink-0">Витрина ›</span>
                     </button>
@@ -2562,10 +2369,13 @@
             </div>
 
             <div class="pm-bottom-bar absolute bottom-0 inset-x-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 p-3 flex gap-2 shrink-0 items-center">
+                                    <button type="button" onclick="toggleFavorite(window.currentProductId); pmRefreshFav(); renderPmSimilar(); renderPmRecent();" id="pm-fav-btn" class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center text-slate-300">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </button>
                 <div id="pm-qty-wrap" class="pm-qty">
-                    <button type="button" onclick="pmSetQty(-1)">−</button>
+                    <button type="button" onclick="pmSetQty(-1)" aria-label="Уменьшить количество"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M5 12h14"/></svg></button>
                     <span id="pm-qty">1</span>
-                    <button type="button" onclick="pmSetQty(1)">+</button>
+                    <button type="button" onclick="pmSetQty(1)" aria-label="Увеличить количество"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M5 12h14M12 5v14"/></svg></button>
                 </div>
                 <button type="button" id="pm-cart-btn" onclick="pmAddToCart()" class="flex-[1.4] min-w-0 bg-[#1e6091] text-white font-bold py-3 rounded-xl text-[13px] flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -2597,7 +2407,7 @@
                 </div>
                 <div class="pm-about-sheet-head">
                     <h3 id="pm-about-sheet-title">Характеристики и описание</h3>
-                    <button type="button" class="pm-about-sheet-close" onclick="closePmAboutSheet()" aria-label="Закрыть">×</button>
+                    <button type="button" class="pm-about-sheet-close" onclick="closePmAboutSheet()" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
                 </div>
                 <div class="pm-about-sheet-pills">
                     <button type="button" id="pm-sheet-pill-specs" class="pm-sheet-pill" onclick="pmJumpTo('specs')">Характеристики</button>

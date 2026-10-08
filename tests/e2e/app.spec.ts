@@ -1,7 +1,7 @@
 import { test, expect } from './fixtures';
 
 test('home: categories, recommendations, product grid', async ({ app }) => {
-  await expect(app.locator('.home-cat').first()).toHaveText('Все');
+  await expect(app.locator('.home-cat').first()).toHaveText('Все товары');
   expect(await app.locator('.home-cat').count()).toBeGreaterThan(3);
   expect(await app.locator('#recommendations-container .r-cell').count()).toBeGreaterThan(2);
   expect(await app.locator('#product-grid .r-cell').count()).toBeGreaterThan(4);

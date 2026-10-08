@@ -12,6 +12,32 @@ async function closeProduct(app: import('@playwright/test').Page) {
   await expect(app.locator('[data-lg-ghost]')).toHaveCount(0);
 }
 
+/** Share of pixels of a colour on each edge of an element's screenshot, one pixel in from the edge. */
+async function edgeShare(app: import('@playwright/test').Page, el: import('@playwright/test').Locator, rgb: [number, number, number]) {
+  const png = await el.screenshot();
+  return app.evaluate(async ({ b64, rgb: [r, g, b] }) => {
+    const img = new Image();
+    img.src = `data:image/png;base64,${b64}`;
+    await img.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width; canvas.height = img.height;
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(img, 0, 0);
+    const { data, width: w, height: h } = ctx.getImageData(0, 0, img.width, img.height);
+    const near = (x: number, y: number) => {
+      const i = (y * w + x) * 4;
+      return Math.abs(data[i] - r) < 40 && Math.abs(data[i + 1] - g) < 40 && Math.abs(data[i + 2] - b) < 40;
+    };
+    const share = (pts: number[][]) => pts.filter(([x, y]) => near(x, y)).length / pts.length;
+    const xs = Array.from({ length: w - 8 }, (_, i) => i + 4);
+    const ys = Array.from({ length: h - 8 }, (_, i) => i + 4);
+    return {
+      top: share(xs.map((x) => [x, 1])), right: share(ys.map((y) => [w - 2, y])),
+      bottom: share(xs.map((x) => [x, h - 2])), left: share(ys.map((y) => [1, y])),
+    };
+  }, { b64: png.toString('base64'), rgb });
+}
+
 test('home: the grid and the rail are product cells, each with its store\'s spine in the store\'s ink', async ({ app }) => {
   const grid = app.locator('#product-grid .r-cell');
   expect(await grid.count()).toBeGreaterThan(4);
@@ -47,6 +73,93 @@ test('tapping the title or the photo opens the product; the heart and the cart k
   await cell.locator('.r-cell__fav').click();
   await cell.locator('.r-cell__cart').click();
   await expect(app.locator('#product-modal')).toBeHidden();
+});
+
+test('keyboard focus on the title rings the whole cell, over the photo, keys and spine; taps still go through', async ({ app }) => {
+  const cell = app.locator(firstGoodsCell).first();
+  await cell.scrollIntoViewIfNeeded();
+  await cell.locator('.r-cell__fav').focus();
+  await app.keyboard.press('Tab');
+  expect(await app.evaluate(() => {
+    const a = document.activeElement!;
+    return `${a.className} ${a.matches(':focus-visible')}`;
+  })).toBe('r-cell__open true');
+  /* Orange 021 (#FE5000) on every edge of the cell, the corners under the heart, the cart key and the spine included */
+  const ring = await edgeShare(app, cell, [254, 80, 0]);
+  for (const side of ['top', 'right', 'bottom', 'left'] as const) expect(ring[side], side).toBeGreaterThan(0.95);
+  /* the ring's layer lets taps through: the heart is still the top element at its centre… */
+  expect(await cell.evaluate((c) => {
+    const r = c.querySelector('.r-cell__fav')!.getBoundingClientRect();
+    return !!document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('.r-cell__fav');
+  })).toBe(true);
+  /* …and a tap on the photo still opens the product while the title has focus */
+  const media = (await cell.locator('.r-cell__media').boundingBox())!;
+  await app.mouse.click(media.x + media.width / 3, media.y + media.height * 0.7);
+  await expect(app.locator('#product-modal')).toBeVisible();
+});
+
+test('pressing a cell tones its body at once, without scaling it; pressing a key does not', async ({ app }) => {
+  const cell = app.locator(firstGoodsCell).first();
+  await cell.scrollIntoViewIfNeeded();
+  const body = cell.locator('.r-cell__body');
+  const tone = () => body.evaluate((b) => getComputedStyle(b).backgroundColor);
+  /* the sunk token (n2) as the browser resolves it */
+  const sunk = await cell.evaluate((c) => {
+    const probe = document.createElement('i');
+    probe.style.background = 'var(--r-sunk)';
+    c.append(probe);
+    const colour = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return colour;
+  });
+  const rest = await tone();
+  expect(rest).not.toBe(sunk);
+
+  const fav = (await cell.locator('.r-cell__fav').boundingBox())!;
+  await app.mouse.move(fav.x + fav.width / 2, fav.y + fav.height / 2);
+  await app.mouse.down();
+  expect(await tone()).toBe(rest);
+  await app.mouse.up();
+
+  const media = (await cell.locator('.r-cell__media').boundingBox())!;
+  await app.mouse.move(media.x + media.width / 3, media.y + media.height * 0.7);
+  await app.mouse.down();
+  expect(await tone()).toBe(sunk);
+  expect(await cell.evaluate((c) => getComputedStyle(c).transform)).toBe('none');
+  await app.mouse.up();
+  await expect(app.locator('#product-modal')).toBeVisible();
+});
+
+test('a long single word in a title breaks inside its two lines at 360px instead of being cut', async ({ app }) => {
+  await app.setViewportSize({ width: 360, height: 780 });
+  const id = await app.evaluate(() => {
+    const p = (Object.values(eval('productsDb')) as any[]).find((x) => x.status === 'published' && x.category !== 'недвижимость');
+    p.title = 'Гидроизоляционный';
+    (window as any).renderProductGrid();
+    return p.id as string;
+  });
+  const title = app.locator(`#product-grid .r-cell[data-product="${id}"] .r-cell__open`);
+  await expect(title).toHaveText('Гидроизоляционный');
+  const box = await title.evaluate((b) => ({ scroll: b.scrollWidth, client: b.clientWidth, height: b.getBoundingClientRect().height }));
+  expect(box.scroll).toBeLessThanOrEqual(box.client);
+  expect(box.height).toBeLessThanOrEqual(36);
+});
+
+test('Enter on the cart key or the heart keeps focus on that key after the grid redraws', async ({ app }) => {
+  const cell = app.locator(firstGoodsCell).first();
+  const id = (await cell.getAttribute('data-product'))!;
+  const focused = () => app.evaluate(() => {
+    const a = document.activeElement as HTMLElement;
+    return { key: a.className, product: a.dataset.product, inGrid: !!a.closest('#product-grid'), pressed: a.getAttribute('aria-pressed') };
+  });
+  await cell.locator('.r-cell__cart').focus();
+  await app.keyboard.press('Enter');
+  await expect(app.locator('#cart-badge')).toHaveText('1');
+  expect(await focused()).toEqual({ key: 'r-cell__cart is-on', product: id, inGrid: true, pressed: null });
+  await cell.locator('.r-cell__fav').focus();
+  await app.keyboard.press('Enter');
+  await expect(app.locator(`#product-grid .r-cell[data-product="${id}"] .r-cell__fav`)).toHaveAttribute('aria-pressed', 'true');
+  expect(await focused()).toEqual({ key: 'r-cell__fav', product: id, inGrid: true, pressed: 'true' });
 });
 
 test('the cart key: in the cart it turns ink with a check, and the tab badge counts it', async ({ app }) => {
@@ -121,6 +234,7 @@ test('a spine in «Похожие» on the product page opens the store over the
 
 test('the home search still narrows the grid; an odd number of cells left ends on paper, not on a grey hole', async ({ app }) => {
   const shown = app.locator('#product-grid .r-cell:visible');
+  const total = await shown.count();
   /* the search matches the cell's text, the store on its spine included; take a query that leaves an odd count */
   let query = '';
   let n = 0;
@@ -130,7 +244,7 @@ test('the home search still narrows the grid; an odd number of cells left ends o
     if (n % 2) { query = q; break; }
   }
   expect(n % 2, 'a query that leaves an odd number of cells').toBe(1);
-  expect(n).toBeLessThan(await app.locator('#product-grid .r-cell').count());
+  expect(n).toBeLessThan(total);
   for (const text of await shown.allInnerTexts()) expect(text.toLowerCase()).toContain(query);
   /* the slot beside the last cell shown is the grid's own ground: paper, like the cells */
   await shown.last().scrollIntoViewIfNeeded();

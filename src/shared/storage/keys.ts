@@ -9,6 +9,7 @@ export const StorageKeys = {
   products: 'meb_products',
   shops: 'meb_shops',
   stories: 'meb_stories',
+  storiesSeen: 'meb_stories_seen',
   promo: 'meb_promo',
   updatedAt: 'meb_updated',
   /* панель: импорт каталога */
@@ -21,6 +22,7 @@ export const StorageKeys = {
   marketplace: 'meb_marketplace',
   recentProducts: 'meb_pm_recent',
   onboarding: 'meb_onboarding',
+  consent: 'meb_consent',
   onboardingOffset: 'meb_onb_offset',
   notificationsDismissed: 'meb_notif_dismissed',
   notificationsSeen: 'meb_notif_seen',

@@ -4,12 +4,14 @@
    Сборка: плагин legacy-scripts в vite.config.ts (минификация без переименования, хэш в имени). */
 
 let currentPromoIdx = 0;
-const totalPromoSlides = 3;
+function promoSlideCount() { return (window.homePromoShops || []).length || 1; }
 
 function updatePromoSlider() {
-    for (let i = 0; i < totalPromoSlides; i++) {
+    for (let i = 0; i < promoSlideCount(); i++) {
         const slide = document.getElementById('promo-slide-' + i);
         if (!slide) continue;
+        slide.setAttribute('aria-hidden', String(i !== currentPromoIdx));
+        slide.inert = i !== currentPromoIdx;
         if (i === currentPromoIdx) {
             slide.classList.replace('opacity-0', 'opacity-100');
             slide.classList.replace('z-0', 'z-10');
@@ -32,12 +34,12 @@ function updatePromoSlider() {
 
 // Листаем вперед
 function nextPromoSlide() {
-    currentPromoIdx = (currentPromoIdx + 1) % totalPromoSlides;
+    currentPromoIdx = (currentPromoIdx + 1) % promoSlideCount();
     updatePromoSlider();
 }
 
 // Листаем назад
 function prevPromoSlide() {
-    currentPromoIdx = (currentPromoIdx - 1 + totalPromoSlides) % totalPromoSlides;
+    currentPromoIdx = (currentPromoIdx - 1 + promoSlideCount()) % promoSlideCount();
     updatePromoSlider();
 }

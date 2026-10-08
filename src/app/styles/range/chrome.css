@@ -26,7 +26,7 @@
 #phone-container[data-ui] #app-tabbar > button > span:not(#cart-badge) { font-size: 11px !important; font-weight: 600 !important; }
 #phone-container[data-ui] #app-tabbar > button > svg { width: 24px; height: 24px; }
 #phone-container[data-ui] #app-tabbar > button > svg path { stroke-width: 1.75; }
-#phone-container[data-ui] #app-tabbar .tab-lens { position: absolute; top: calc(-1 * var(--r-band) - 1px); left: 0; height: 5px; background: transparent !important; box-shadow: none !important; border: 0 !important; border-radius: 0 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; animation: none !important; transition: translate .38s var(--r-ease), width .38s var(--r-ease) !important; }
+#phone-container[data-ui] #app-tabbar .tab-lens { position: absolute; top: calc(-1 * var(--r-band) - 1px); left: 0; height: 5px; background: transparent !important; box-shadow: none !important; border: 0 !important; border-radius: 0 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; animation: none !important; transition: translate .38s var(--r-ease) !important; }
 #phone-container[data-ui] #app-tabbar .tab-lens::after { content: ''; position: absolute; inset: 0 24%; background: var(--r-orange); }
 @media (prefers-reduced-motion: reduce) {
   #phone-container[data-ui] #app-tabbar .tab-lens { transition: none !important; }

@@ -63,14 +63,16 @@ function renderHomeCategories() {
         const p = productsDb[key];
         if (p && p.status === 'published' && p.category) has[String(p.category).toLowerCase()] = true;
     }
-    const tile = (onclick, icon, label, on) =>
-        `<button type="button" role="listitem" class="home-cat${on ? ' on' : ''}" onclick="${onclick}">` +
-        `<span class="home-cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg></span>` +
-        `<span class="home-cat-label">${label}</span></button>`;
-    let html = tile('openProductCatalogFromHome()', HOME_CAT_ICONS.all, 'Все', true);
-    order.filter(c => has[c]).forEach(c => {
+    const inks = ['#FE5000','#FFC20E','#0067B1','#6D2C91','#00A19A','#00753A','#D7261E','#4C8C2B'];
+    const tile = (action, label, ink, photo, all) => {
+        const foreground = typeof onInk === 'function' ? onInk(ink) : (['#FE5000','#FFC20E','#00A19A','#4C8C2B'].includes(ink) ? '#111110' : '#FFFFFF');
+        return `<button type="button" class="home-cat${all ? ' on' : ''}" onclick="${escHtml(action)}" style="--cat-ink:${ink};--cat-text:${foreground}"><span class="home-cat-label${label.length > 11 ? ' home-cat-label--long' : ''}">${escHtml(label)}</span>${photo ? `<img src="${escHtml(photo)}" alt="" loading="lazy">` : `<span class="home-cat-all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">${HOME_CAT_ICONS.all}</svg></span>`}</button>`;
+    };
+    let html = tile('openProductCatalogFromHome()', 'Все товары', '#111110', '', true);
+    order.filter(c => has[c]).forEach((c, i) => {
         const meta = typeof pmCategoryMeta === 'function' ? pmCategoryMeta({ category: c }) : { id: c, title: c, chip: c };
-        html += tile(`openCategoryProducts('${meta.id}', '${meta.title}')`, HOME_CAT_ICONS[c] || HOME_CAT_ICONS.all, meta.chip, false);
+        const product = Object.values(productsDb).find(p => p.status === 'published' && String(p.category).toLowerCase() === c);
+        html += tile(`openCategoryProducts('${escJsArg(meta.id)}', '${escJsArg(meta.title)}')`, meta.chip, inks[i % inks.length], product && product.image, false);
     });
     box.innerHTML = html;
 }
@@ -92,6 +94,8 @@ function openCategoryProducts(catId, catTitle) {
     
     document.getElementById('cat-prod-title').innerText = catTitle;
     window.currentOpenedCategory = catId;
+    window.categoryFilters = {};
+    window.categorySort = 'popular';
     document.getElementById('main-scroll-container').scrollTop = 0;
     
     renderCategoryProducts();
@@ -105,18 +109,37 @@ function closeCategoryProducts() {
 }
 
 
-function renderCategoryProducts() {
-    if (!window.currentOpenedCategory) return;
-    let html = '';
-    let found = 0;
-    for (const key in productsDb) {
-        const prod = productsDb[key];
-        if (prod.status !== 'published') continue;
-        if (prod.category !== window.currentOpenedCategory) continue;
+const categoryFilterDefs = [{ key: 'store', label: 'Магазин', type: 'chips' }, { key: 'price', label: 'Цена', type: 'range', unit: '₽' }];
 
-        found++;
-        html += productCardHtml(prod);
+function pickCategoryStore(name) {
+    window.categoryFilters = window.categoryFilters || {};
+    window.categoryFilters.store = (window.categoryFilters.store || []).includes(name) ? [] : [name];
+    renderCategoryProducts();
+}
+
+function setCategoryPrice(key, value) {
+    window.categoryFilters = window.categoryFilters || {};
+    const range = window.categoryFilters.price || {};
+    if (value === '') delete range[key]; else range[key] = Number(value);
+    window.categoryFilters.price = range;
+    renderCategoryProducts(false);
+}
+
+function setCategorySort(sort) { window.categorySort = sort; renderCategoryProducts(); }
+
+function renderCategoryProducts(refreshControls) {
+    if (!window.currentOpenedCategory) return;
+    const products = Object.values(productsDb).filter(p => p.status === 'published' && p.category === window.currentOpenedCategory);
+    const state = window.categoryFilters || {};
+    const filtered = typeof applyFilters === 'function' ? applyFilters(products, categoryFilterDefs, state) : products.filter(p => !state.store || !state.store.length || state.store.includes(p.store));
+    const list = typeof sortProducts === 'function' ? sortProducts(filtered, window.categorySort || 'popular') : filtered;
+    const count = document.getElementById('cat-prod-count');
+    if (count) count.textContent = list.length + ' товаров';
+    const controls = document.getElementById('cat-prod-filters');
+    if (controls && refreshControls !== false) {
+        const facets = typeof buildFacets === 'function' ? buildFacets(products, categoryFilterDefs) : [];
+        controls.innerHTML = facets.map(f => f.type === 'chips' ? `<div class="r-filter-group"><span>${escHtml(f.def.label)}</span><div class="r-filter-chips">${f.values.map(v => `<button type="button" class="r-chip" aria-pressed="${(state.store || []).includes(v.value)}" onclick="pickCategoryStore('${escHtml(escJsArg(v.value))}')">${escHtml(v.value)} <small>${v.count}</small></button>`).join('')}</div></div>` : `<div class="r-filter-group"><span>Цена, ₽</span><div class="r-price-range"><input aria-label="Цена от" class="r-input" type="number" min="0" inputmode="decimal" placeholder="От ${f.min}" value="${state.price && state.price.min !== undefined ? state.price.min : ''}" onchange="setCategoryPrice('min',this.value)"><input aria-label="Цена до" class="r-input" type="number" min="0" inputmode="decimal" placeholder="До ${f.max}" value="${state.price && state.price.max !== undefined ? state.price.max : ''}" onchange="setCategoryPrice('max',this.value)"></div></div>`).join('') + `<div class="r-filter-chips">${[['popular','Популярные'],['cheap','Дешевле'],['expensive','Дороже'],['new','Новинки']].map(([key,label]) => `<button type="button" class="r-chip" aria-pressed="${(window.categorySort || 'popular') === key}" onclick="setCategorySort('${key}')">${label}</button>`).join('')}</div>`;
     }
     const grid = document.getElementById('cat-prod-grid');
-    if (grid) grid.innerHTML = html || `<p class="col-span-2 text-center text-xs text-slate-400 py-6">Товаров в этой категории пока нет</p>`;
+    if (grid) grid.innerHTML = list.map(productCardHtml).join('') || '<p class="r-empty">Товары не найдены. Измените фильтры.</p>';
 }

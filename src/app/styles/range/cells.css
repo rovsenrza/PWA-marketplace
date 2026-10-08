@@ -1,6 +1,8 @@
 /* Product cell, store spine in every cell (Task 4: product cell).
    One cell for every grid and rail (src/app/ui/product-cell.ts holds the markup contract). Grids and rails are
    shared-rule cells: 1px rules in 1px gaps, so neighbours share one hairline and a grid reflows by whole cells.
+   .r-grid draws its rules only round .r-cell children (each cell rings itself, the ground is paper): anything else
+   placed straight in a grid (a tile, a promo) needs the same ring, `box-shadow: 0 0 0 1px var(--r-rule)`.
    The title's size and weight are !important: the old layers force every h3 to 700, and to 20px inside
    #view-catalog (that rule has two ids, hence the second selector). */
 
@@ -51,7 +53,7 @@
 #phone-container[data-ui] .r-cell__fav[aria-pressed="true"] { color: var(--r-orange); }
 #phone-container[data-ui] .r-cell__fav[aria-pressed="true"] svg { fill: currentColor; }
 
-#phone-container[data-ui] .r-cell__body { grid-column: 1 / -1; grid-row: 2; display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 10px 12px 8px; }
+#phone-container[data-ui] .r-cell__body { grid-column: 1 / -1; grid-row: 2; display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 10px 12px 8px; transition: background-color .25s var(--r-ease); }
 #phone-container[data-ui] .r-cell .r-price--ask b { font-size: 18px; line-height: 28px; }
 
 #phone-container[data-ui] .r-cell__title,
@@ -62,8 +64,9 @@
 /* two lines reserved: cells in a row stay level and the cart key never reaches the price; a note takes that place */
 #phone-container[data-ui] .r-cell__title { min-height: 36px; }
 #phone-container[data-ui] .r-cell__title:has(+ .r-cell__note) { min-height: 0; }
+/* a word longer than the line («Гидроизоляционный» at 360px) breaks inside the two lines instead of being cut */
 #phone-container[data-ui] .r-cell__open {
-  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere;
   width: 100%; padding: 0; border: 0; border-radius: 0; background: none;
   font: inherit; color: inherit; text-align: left; cursor: pointer;
 }
@@ -93,14 +96,23 @@
 #phone-container[data-ui] .r-cell--mini .r-price s { font-size: 13px; }
 
 /* ---------- states ---------- */
+/* pressed: the body takes the sunk tone at once and lets it go softly; no scale, so the shared rules stay put
+   (the well tone, n1, is too close to paper to read in the dark theme) */
+#phone-container[data-ui] .r-cell:has(.r-cell__open:active) .r-cell__body { background: var(--r-sunk); transition-duration: 0s; }
 @media (hover: hover) {
   #phone-container[data-ui] .r-cell__open:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
   #phone-container[data-ui] .r-cell__fav:hover { background: var(--r-well); }
   #phone-container[data-ui] .r-cell__cart:not(.is-on):hover { background: var(--r-orange-press); }
 }
-/* keyboard focus: the title's ring goes round the whole cell; the keys, flush to the cell's edges, ring inside */
+/* keyboard focus on the title rings the whole cell from a layer of its own above the photo, the keys and the spine
+   (an outline on the cell would sit under them); it lets every tap through, and the click layer (::after) is left
+   alone, so a tap on the photo still opens the product while the title has focus. The keys ring inside, being
+   flush to the cell's edges. */
 #phone-container[data-ui] .r-cell__open:focus-visible { outline: none !important; }
-#phone-container[data-ui] .r-cell:has(.r-cell__open:focus-visible) { outline: 2px solid var(--r-orange); outline-offset: -2px; }
+#phone-container[data-ui] .r-cell__open:focus-visible::before {
+  content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  outline: 2px solid var(--r-orange); outline-offset: -2px;
+}
 #phone-container[data-ui] :is(.r-cell__fav, .r-cell__cart, .r-cell__spine):focus-visible { outline-offset: -4px !important; }
 #phone-container[data-ui] .r-cell__cart:focus-visible { outline-color: var(--r-on-orange) !important; }
 #phone-container[data-ui] .r-cell__cart.is-on:focus-visible { outline-color: var(--r-paper) !important; }

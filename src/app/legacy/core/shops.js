@@ -268,31 +268,20 @@ function openHomeShopFromPromo(i) {
 function renderHomeShopPromo() {
     const box = document.getElementById('home-shop-slides');
     if (!box) return;
-    const picked = pickHomePromoShops(3);
+    const names = Object.keys(shopsProfileDb).filter(name => {
+        const shop = shopsProfileDb[name];
+        return shop.status === 'published' && !shop.isRealEstate && shop.kind !== 'landscape';
+    });
+    names.sort((a,b) => Number(!!(shopsProfileDb[b].storefront && shopsProfileDb[b].storefront.demo)) - Number(!!(shopsProfileDb[a].storefront && shopsProfileDb[a].storefront.demo)));
+    const picked = names.slice(0, 3);
     window.homePromoShops = picked;
-    if (!picked.length) {
-        box.innerHTML = '';
-        return;
-    }
-    const esc = typeof pmEsc === 'function' ? pmEsc : function (s) {
-        return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-    };
-    box.innerHTML = picked.map(function (name, i) {
-        const s = shopsProfileDb[name] || {};
-        const img = s.banner || '';
-        const fit = s.bannerFit === 'contain' ? 'object-contain bg-white' : 'object-cover';
-        const title = s.name || name;
-        const desc = s.description || 'Витрина магазина';
-        const vis = i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0';
-        return '<div id="promo-slide-' + i + '" class="promo-slide absolute inset-0 transition-opacity duration-500 ' + vis + '">' +
-            '<div class="promo-img absolute inset-0 overflow-hidden"><img src="' + esc(img) + '" alt="" class="absolute inset-0 w-full h-full ' + fit + '"></div>' +
-            '<div class="promo-veil absolute inset-0 pointer-events-none"></div>' +
-            '<div class="promo-copy absolute inset-0 flex flex-col justify-end pointer-events-none">' +
-            '<h4 class="promo-name">' + esc(title) + '</h4>' +
-            '<p class="promo-desc line-clamp-2">' + esc(desc) + '</p>' +
-            '<button type="button" onclick="event.stopPropagation(); openHomeShopFromPromo(' + i + ')" class="promo-go pointer-events-auto relative z-30">' +
-            'Смотреть' +
-            '</button></div></div>';
+    box.innerHTML = picked.map((name, i) => {
+        const shop = shopsProfileDb[name];
+        const theme = typeof storeTheme === 'function' ? storeTheme(name) : { ink: '#FE5000', onInk: '#111110' };
+        const cover = shop.storefront && shop.storefront.blocks && shop.storefront.blocks.find(b => b.type === 'cover');
+        const photo = cover && cover.image || shop.banner || '';
+        const desc = cover && cover.line || shop.description || 'Товары и услуги рядом с вами';
+        return `<div id="promo-slide-${i}" class="promo-slide absolute inset-0 transition-opacity duration-500 ${i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}" aria-hidden="${i !== 0}" style="--promo-ink:${theme.ink};--promo-text:${theme.onInk}"><div class="promo-copy" data-action="open-store" data-store="${escHtml(name)}"><h4 class="promo-name${name.length > 16 ? ' promo-name--compact' : ''}">${escHtml(name)}</h4><p class="promo-desc">${escHtml(desc)}</p><button type="button" class="r-btn r-btn--sm promo-go">В витрину</button><span class="promo-pager">${String(i+1).padStart(2,'0')} / ${String(picked.length).padStart(2,'0')}</span></div><img class="promo-photo" src="${escHtml(photo)}" alt="" loading="${i ? 'lazy' : 'eager'}"></div>`;
     }).join('');
     currentPromoIdx = 0;
     if (typeof updatePromoSlider === 'function') updatePromoSlider();
