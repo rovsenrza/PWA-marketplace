@@ -1,0 +1,93 @@
+/* «Линейка» (redesign v2): tokens. Loaded last; the old --mk-* names are remapped here so rules
+   nobody has restyled yet already follow the new world. Neutrals come only from the n0–n9 ramp. */
+/* The second selector carries the weight of glass.css's dark block (html[data-theme="dark"] #phone-container[data-ui]),
+   which declares the --mk-* names again; without it the old navy and blue would win in the dark theme.
+   The dark ramp below still wins: same weight, later in the file. */
+#phone-container[data-ui],
+html[data-theme] #phone-container[data-ui] {
+  --r-n0: #FFFFFF; --r-n1: #F4F4F2; --r-n2: #E9E9E6; --r-n3: #D6D6D1; --r-n4: #ADADA7;
+  --r-n5: #6B6B66; --r-n6: #4A4A46; --r-n7: #333331; --r-n8: #1F1F1D; --r-n9: #111110;
+
+  --r-paper: var(--r-n0);
+  --r-well: var(--r-n1);
+  --r-sunk: var(--r-n2);
+  --r-rule: var(--r-n3);
+  --r-ink: var(--r-n9);
+  --r-ink-2: var(--r-n6);
+  --r-ink-3: var(--r-n5);
+  --r-ink-4: var(--r-n4);
+
+  --r-orange: #FE5000;
+  --r-orange-press: #E04600;
+  --r-on-orange: #111110;
+  --r-orange-text: #B83A00;
+  --r-orange-wash: #FFE9DE;
+  --r-sticker: #FFDD00;
+  --r-on-sticker: #111110;
+  --r-ok: #0B7A43;
+  --r-ok-wash: #E2F3E9;
+  --r-bad: #D0281E;
+  --r-bad-wash: #FDE7E5;
+  --r-wait: #9A5B00;
+  --r-wait-wash: #FFF1D6;
+  --r-scrim: rgba(17, 17, 16, .48);
+
+  --r-font: 'Sofia Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --r-font-x: 'Sofia Sans Extra Condensed', 'Sofia Sans', system-ui, sans-serif;
+  --r-font-modern: 'Unbounded', 'Sofia Sans', system-ui, sans-serif;
+  --r-font-classic: 'Prata', Georgia, serif;
+  --r-band: 2px;
+  --r-chamfer: 10px;
+  --r-ease: cubic-bezier(.32, .72, 0, 1);
+  --r-gutter: 16px;
+
+  --mk-page: var(--r-paper);
+  --mk-card: var(--r-paper);
+  --mk-raised: var(--r-paper);
+  --mk-sunk: var(--r-well);
+  --mk-well: var(--r-well);
+  --mk-cat: var(--r-paper);
+  --mk-ink: var(--r-ink);
+  --mk-ink-2: var(--r-ink-2);
+  --mk-ink-3: var(--r-ink-3);
+  --mk-line: var(--r-rule);
+  --mk-chevron: var(--r-ink-3);
+  --mk-brand: var(--r-ink);
+  --mk-brand-2: var(--r-n7);
+  --mk-brand-soft: var(--r-well);
+  --mk-on-brand: var(--r-paper);
+  --mk-sale: var(--r-bad);
+  --mk-sale-soft: var(--r-bad-wash);
+  --mk-ok: var(--r-ok);
+  --mk-ok-soft: var(--r-ok-wash);
+  --mk-warn: var(--r-wait);
+  --mk-r-sm: 0px;
+  --mk-r-md: 0px;
+  --mk-r-lg: 0px;
+  --mk-shadow: 0 0 0 1px var(--r-rule);
+  --mk-shadow-up: 0 calc(-1 * var(--r-band)) 0 var(--r-ink);
+  --mk-sheet: 0 calc(-1 * var(--r-band)) 0 var(--r-ink);
+  --mk-ease: var(--r-ease);
+  --font-sans: var(--r-font);
+
+  background: var(--r-paper) !important;
+  color: var(--r-ink);
+  caret-color: var(--r-orange);
+  accent-color: var(--r-orange);
+}
+
+html[data-theme="dark"] #phone-container[data-ui] {
+  --r-n0: #121211; --r-n1: #1B1B1A; --r-n2: #252523; --r-n3: #363632; --r-n4: #5E5E59;
+  --r-n5: #A09F99; --r-n6: #C4C3BD; --r-n7: #DCDBD6; --r-n8: #ECECE8; --r-n9: #F6F6F2;
+  --r-orange: #FF6526;
+  --r-orange-press: #FF7B45;
+  --r-orange-text: #FF8A57;
+  --r-orange-wash: #3A1E12;
+  --r-ok: #34C27A;
+  --r-ok-wash: #12301F;
+  --r-bad: #FF5A4E;
+  --r-bad-wash: #3A1714;
+  --r-wait: #F2B14C;
+  --r-wait-wash: #33260F;
+  --r-scrim: rgba(0, 0, 0, .62);
+}
