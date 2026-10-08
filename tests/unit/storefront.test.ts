@@ -5,7 +5,7 @@ import {
   resolveStorefront, normalizeBlock, buildFacets, applyFilters, activeCount, sortProducts, productValue, toNumber,
   mixSpecOf, calcBags,
 } from '../../src/shared/storefront';
-import type { ProductLike, StoreKind } from '../../src/shared/storefront';
+import type { ProductLike, StoreFilterDef, StoreKind } from '../../src/shared/storefront';
 
 describe('colour', () => {
   it('normalises hex', () => {
@@ -191,5 +191,78 @@ describe('calculator', () => {
   });
   it('nonsense input gives zero, not NaN', () => {
     for (const [a, l] of [[0, 10], [-5, 10], [Number.NaN, 10], [10, 0]]) expect(calcBags(a, l, { rate: 1, bagKg: 25 })).toEqual({ kg: 0, bags: 0 });
+  });
+});
+
+describe('a bare store', () => {
+  const one: ProductLike = { id: 'p', store: 'Голая', category: 'Что-то', price: '100 ₽', attrs: { 'Тип': 'Один' } };
+  it.each(['Мебель', 'Кухни', 'Стройматериалы', 'Ландшафт', undefined])(
+    'no storefront, no services or managers, one product, category %s: whole skeleton, nothing to filter by',
+    (category) => {
+      const sf = resolveStorefront({ name: 'Голая', category }, [one]);
+      const types = sf.blocks.map((b) => b.type);
+      for (const t of REQUIRED_BLOCKS) expect(types).toContain(t);
+      expect(types[0]).toBe('cover');
+      expect(buildFacets([one], sf.filters)).toEqual([]);
+    },
+  );
+});
+
+describe('a damaged saved storefront', () => {
+  it('is repaired, not thrown on', () => {
+    const sf = resolveStorefront({
+      name: 'Мусор', category: 'Мебель',
+      storefront: {
+        theme: { ink: '#GGGGGG' },
+        blocks: [{ type: 'categories' }, { type: 'lookbook', pins: 'x' }, { type: 'steps', items: [null, 1, { title: 'a', text: 'b' }] }, { type: 'teleport' }, null],
+        filters: 'nope',
+      } as never,
+    }, [{ id: 'p', store: 'Мусор', category: 'спальня' }]);
+    const by = (t: string) => sf.blocks.find((b) => b.type === t) as { items?: unknown[]; pins?: unknown[] };
+    expect(sf.theme.ink).toMatch(/^#[0-9A-F]{6}$/);
+    expect(by('categories').items).toHaveLength(1);
+    expect(by('lookbook').pins).toEqual([]);
+    expect(by('steps').items).toEqual([{ title: 'a', text: 'b' }]);
+    expect(sf.filters.length).toBeGreaterThan(0);
+    for (const t of REQUIRED_BLOCKS) expect(sf.blocks.map((b) => b.type)).toContain(t);
+  });
+  it('non-array blocks fall back to the preset; non-array content becomes []', () => {
+    expect(resolveStorefront({ name: 'A', storefront: { blocks: 'x' } as never }).blocks.length).toBeGreaterThan(0);
+    expect(normalizeBlock({ type: 'steps', items: 'x' })).toMatchObject({ items: [] });
+  });
+  it('never mutates or shares the saved blocks', () => {
+    const saved = { blocks: [{ id: 'a', type: 'about', on: false }, { id: 's', type: 'steps', items: [{ title: 't', text: 'x' }] }] };
+    const before = JSON.stringify(saved);
+    const sf = resolveStorefront({ name: 'A', storefront: saved as never });
+    (sf.blocks.find((b) => b.type === 'steps') as { items: { title: string }[] }).items[0].title = 'CHANGED';
+    expect(JSON.stringify(saved)).toBe(before);
+  });
+});
+
+describe('facets and bounds on products that lack a value', () => {
+  const defs: StoreFilterDef[] = [{ key: 'Тип', label: 'Тип', type: 'chips' }, { key: 'price', label: 'Цена', type: 'range' }];
+  it('one distinct value gives no chip, equal prices give no range', () => {
+    const same: ProductLike[] = [{ id: '1', price: '100 ₽', attrs: { 'Тип': 'A' } }, { id: '2', price: '100 ₽', attrs: { 'Тип': 'A' } }, { id: '3', price: '100 ₽' }];
+    expect(buildFacets(same, defs)).toEqual([]);
+    expect(buildFacets([{ id: '1', attrs: { 'Тип': 'A' } }, { id: '2' }, { id: '3' }], defs)).toEqual([]);
+  });
+  it('a max bound, like a min bound, leaves out products with no value', () => {
+    const ps: ProductLike[] = [{ id: '1', price: '100 ₽' }, { id: '2', price: '300 ₽' }, { id: '3' }];
+    expect(applyFilters(ps, defs, { price: { max: 250 } }).map((p) => p.id)).toEqual(['1']);
+    expect(applyFilters(ps, defs, { price: { min: 0 } }).map((p) => p.id)).toEqual(['1', '2']);
+  });
+});
+
+describe('repairs the implementation adds beyond the brief', () => {
+  it('a blank block id counts as missing', () => {
+    expect(normalizeBlock({ id: '  ', type: 'promo' })).toMatchObject({ id: 'promo-1' });
+  });
+  it('a mix with no usable rate or bag size calculates to zero, not Infinity', () => {
+    expect(calcBags(20, 10, { rate: 0, bagKg: 30 })).toEqual({ kg: 0, bags: 0 });
+    expect(calcBags(20, 10, { rate: 1, bagKg: 0 })).toEqual({ kg: 0, bags: 0 });
+  });
+  it('a saved filter of an unknown type is not kept', () => {
+    const sf = resolveStorefront({ name: 'A', category: 'Мебель', storefront: { filters: [{ key: 'k', label: 'K', type: 'dropdown' }] } as never });
+    expect(sf.filters).toEqual(presetFilters('furniture'));
   });
 });
