@@ -1,6 +1,6 @@
 import { defineConfig, type Plugin, type ResolvedConfig } from 'vite';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { transformWithEsbuild } from 'vite';
@@ -74,6 +74,16 @@ function legacyScripts(bundles: Record<string, string> = {}): Plugin {
 }
 
 /**
+ * The self-hosted faces (public/fonts/) every screen of the buyer app is set in: the text and the numeral faces in both
+ * subsets, and the two ruble signs. Precached with the shell, so a first visit that goes offline right after still opens
+ * in its own type. Unbounded and Prata (storefront voices) are cached on first use, like the admin panel.
+ */
+const SHELL_FONTS = [
+  'sofia-sans-cyrillic', 'sofia-sans-latin', 'sofia-sans-extra-condensed-cyrillic', 'sofia-sans-extra-condensed-latin',
+  'rub-text', 'rub-condensed',
+].map((name) => `fonts/${name}.woff2`);
+
+/**
  * Service worker: fills the src/sw/sw.js template with the build id and the list of files to precache.
  * Precached is only what the buyer app (index.html) loads, with its static imports: the admin panel
  * and the lazy parts (Excel, zip, XML readers) are cached on first use, a buyer never downloads them.
@@ -98,7 +108,9 @@ function serviceWorker(): Plugin {
       };
       for (const m of String(page.source).matchAll(/(?:src|href)="(?:\.\/)?(assets\/[^"]+\.(?:js|css))"/g)) visit(m[1]);
       const files = [...shell].sort();
-      const precache = ['./', './index.html', './manifest.json', './icons/icon-192.png', ...files.map((f) => `./${f}`)];
+      /* the worker tolerates a file that fails to download, so a typo here would only show up as a missing offline font */
+      for (const font of SHELL_FONTS) if (!existsSync(resolve(root, 'public', font))) return this.error(`service-worker: public/${font} is missing`);
+      const precache = ['./', './index.html', './manifest.json', './icons/icon-192.png', ...SHELL_FONTS.map((f) => `./${f}`), ...files.map((f) => `./${f}`)];
       /* id from every file of the build: a change in the panel also gets a fresh cache */
       const all = Object.keys(bundle).filter((f) => /\.(js|css)$/.test(f) && !f.endsWith('.map'));
       const buildId = createHash('sha256').update(all.sort().join('|')).digest('hex').slice(0, 10);

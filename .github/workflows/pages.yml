@@ -1,0 +1,49 @@
+# Публикация демо на GitHub Pages: сайт собирается при каждом push в main и по кнопке
+# (вкладка Actions → Pages → Run workflow). Один раз в репозитории:
+# Settings → Pages → Build and deployment → Source: GitHub Actions.
+# Сборка (dist/) статическая, с относительными путями, поэтому лежит и под адресом вида
+# https://<имя>.github.io/<репозиторий>/ без настройки base.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# одна публикация за раз; уже идущую не обрываем, новая ждёт её конца
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      # xlsx ставится с cdn.sheetjs.com (адрес и контрольная сумма зафиксированы в package-lock.json)
+      - run: npm ci
+      # typecheck + vite build в dist/
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
