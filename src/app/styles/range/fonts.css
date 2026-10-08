@@ -1,7 +1,7 @@
 /* Self-hosted faces (public/fonts/), the cyrillic and latin subsets from Google Fonts with Google's unicode ranges.
    Sofia Sans and Sofia Sans Extra Condensed © 2019 The Sofia Sans Project Authors; Unbounded © 2022 The Unbounded
-   Project Authors; Prata © 2011 The Prata Project Authors. All under the SIL Open Font License 1.1
-   (https://openfontlicense.org). Sofia Sans has no ₽ glyph: the ruble sign falls back to the system face. */
+   Project Authors; Prata © 2011 The Prata Project Authors; the ₽ faces © 2022 The Noto Project Authors. All under the
+   SIL Open Font License 1.1: licence text and copyright lines in public/fonts/OFL.txt (shipped as dist/fonts/OFL.txt). */
 
 @font-face {
   font-family: 'Sofia Sans';
@@ -35,6 +35,30 @@
   font-display: swap;
   src: url('/fonts/sofia-sans-extra-condensed-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ₽ (U+20BD): Sofia Sans has no ruble sign in any subset, so both families borrow it from Noto Sans, one glyph each,
+   as Google Fonts serves it for text=₽: rub-text.woff2 is Noto Sans at width 100 (the advance matches Sofia Sans' Р
+   within 2%), rub-condensed.woff2 is Noto Sans at width 62.5 (at 900 its stem is 0.155 em against Sofia Extra
+   Condensed's 0.150 em). Both are variable in weight, so the sign follows the figures from 400 to 900.
+   size-adjust brings Noto's cap height (0.714 em) to Sofia's (0.655 em, which is also the figure height). */
+@font-face {
+  font-family: 'Sofia Sans';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/rub-text.woff2') format('woff2');
+  unicode-range: U+20BD;
+  size-adjust: 91.74%;
+}
+@font-face {
+  font-family: 'Sofia Sans Extra Condensed';
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+  src: url('/fonts/rub-condensed.woff2') format('woff2');
+  unicode-range: U+20BD;
+  size-adjust: 91.74%;
 }
 
 @font-face {
