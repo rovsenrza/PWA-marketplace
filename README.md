@@ -15,6 +15,17 @@ npm test           # typecheck + unit (Vitest) + fresh build + browser tests (Pl
 
 Requires Node 20+. The build output (`dist/`) is fully static with relative paths, so it can go into any folder on any static host (Apache, nginx, S3, Netlify, GitHub Pages).
 
+## Версии для просмотра
+
+V1 сохранена на `main` (коммит `76dc1b8`), V2 разрабатывается на `redesign-v2`. У каждой версии отдельный опубликованный сайт: корзина и настройки не смешиваются между версиями. Панель управления доступна по `/admin.html` на сайте соответствующей версии.
+
+- V1: https://super-app-v1-review.spunkywasp8.chatgpt.site
+- V2: https://super-app-design-review.spunkywasp8.chatgpt.site
+- Описание дизайна V1: [docs/DESIGN-v1.md](docs/DESIGN-v1.md).
+- Описание дизайна V2: [docs/DESIGN.md](docs/DESIGN.md).
+
+Это интерактивные прототипы: изменения каталога в админке видны в приложении в том же браузере. Общего серверного каталога и обработки платежей пока нет.
+
 ## Публикация демо
 
 Заказчику вместо скриншотов можно отправить ссылку на рабочий прототип. Сборка `dist/` статическая, с относительными путями, поэтому подходит любой бесплатный статический хостинг. На ноутбуке прототип открывается в рамке телефона и показывает QR-код своей же ссылки, на телефоне занимает весь экран. Панель управления лежит рядом: `…/admin.html`.

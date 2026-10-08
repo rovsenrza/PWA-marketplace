@@ -1,0 +1,711 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-04T17:41:42.407217+00:00",
+  "title": "Design System: Супер-Апп",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Cool Ground",
+        "canonical": "#F2F3F6",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#232426",
+          "#3F4042",
+          "#5D5D60",
+          "#7F8083",
+          "#A3A4A7",
+          "#C9CACD",
+          "#EDEEF1"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#808080",
+          "#A4A4A4",
+          "#CACACA",
+          "#EEEEEE"
+        ]
+      },
+      "sunk": {
+        "role": "neutral",
+        "displayName": "Sunk",
+        "canonical": "#F2F3F6",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#232426",
+          "#3F4042",
+          "#5D5D60",
+          "#7F8083",
+          "#A3A4A7",
+          "#C9CACD",
+          "#EDEEF1"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Deep Ink",
+        "canonical": "#0B1A2E",
+        "tonalRamp": [
+          "#040B17",
+          "#192534",
+          "#334154",
+          "#4E5F75",
+          "#70829A",
+          "#96A6BD",
+          "#BDCCE0",
+          "#E2F0FF"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Slate",
+        "canonical": "#4E5A6B",
+        "tonalRamp": [
+          "#060B14",
+          "#1D252F",
+          "#37404E",
+          "#535E6F",
+          "#758193",
+          "#9AA6B6",
+          "#C1CBDA",
+          "#E6EFFC"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Muted Slate",
+        "canonical": "#5E6876",
+        "tonalRamp": [
+          "#070B12",
+          "#1E242D",
+          "#39404C",
+          "#555E6C",
+          "#77818F",
+          "#9CA5B3",
+          "#C3CBD7",
+          "#E8EFFA"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#E3E6EB",
+        "tonalRamp": [
+          "#090B0E",
+          "#222428",
+          "#3D4044",
+          "#5B5E62",
+          "#7E8085",
+          "#A2A5A9",
+          "#C8CBCF",
+          "#ECEFF4"
+        ]
+      },
+      "brand": {
+        "role": "primary",
+        "displayName": "Marketplace Blue",
+        "canonical": "#1259F5",
+        "tonalRamp": [
+          "#000039",
+          "#000378",
+          "#002AA8",
+          "#084ADA",
+          "#2E72FF",
+          "#72A2FF",
+          "#ADCBFF",
+          "#E2EFFF"
+        ]
+      },
+      "brand-deep": {
+        "role": "primary",
+        "displayName": "Pressed Blue",
+        "canonical": "#0C47CC",
+        "tonalRamp": [
+          "#00003D",
+          "#00106E",
+          "#03319B",
+          "#1950CB",
+          "#3A76F7",
+          "#73A2FF",
+          "#AECBFF",
+          "#E2EFFF"
+        ]
+      },
+      "brand-soft": {
+        "role": "primary",
+        "displayName": "Blue Wash",
+        "canonical": "#E9F0FF",
+        "tonalRamp": [
+          "#080B11",
+          "#20242C",
+          "#3B404A",
+          "#585E69",
+          "#7A808D",
+          "#9FA5B0",
+          "#C6CBD5",
+          "#EAEFF8"
+        ]
+      },
+      "sale": {
+        "role": "secondary",
+        "displayName": "Sale Magenta",
+        "canonical": "#E5195E",
+        "tonalRamp": [
+          "#200005",
+          "#4B0017",
+          "#7C002C",
+          "#AE0043",
+          "#E32961",
+          "#FF6688",
+          "#FFB0BB",
+          "#FFE5E8"
+        ]
+      },
+      "ok": {
+        "role": "tertiary",
+        "displayName": "In-Cart Green",
+        "canonical": "#0E9F62",
+        "tonalRamp": [
+          "#001104",
+          "#002E14",
+          "#004E2A",
+          "#007141",
+          "#14985E",
+          "#5ABB86",
+          "#8DE0AF",
+          "#BBFFD6"
+        ]
+      },
+      "sale-soft": {
+        "role": "secondary",
+        "displayName": "Problem Wash",
+        "canonical": "#FFE8F0",
+        "tonalRamp": [
+          "#29000E",
+          "#5C0020",
+          "#990035",
+          "#D6004B",
+          "#FF1A69",
+          "#FF5C95",
+          "#FFA3C3",
+          "#FFE0EB"
+        ]
+      },
+      "sale-deep": {
+        "role": "secondary",
+        "displayName": "Pressed Magenta",
+        "canonical": "#B80C47",
+        "tonalRamp": [
+          "#26020F",
+          "#560621",
+          "#900937",
+          "#C90D4E",
+          "#F1286D",
+          "#F56697",
+          "#F9A9C4",
+          "#FDE2EB"
+        ]
+      },
+      "sale-line": {
+        "role": "secondary",
+        "displayName": "Pink Hairline",
+        "canonical": "#F6C2D4",
+        "tonalRamp": [
+          "#240510",
+          "#500C23",
+          "#85143B",
+          "#BB1C53",
+          "#E13772",
+          "#EA719B",
+          "#F3AFC7",
+          "#FBE4EC"
+        ]
+      },
+      "ok-soft": {
+        "role": "tertiary",
+        "displayName": "Published Wash",
+        "canonical": "#E3F6EC",
+        "tonalRamp": [
+          "#0A1F14",
+          "#16452D",
+          "#25744A",
+          "#34A268",
+          "#51C789",
+          "#83D7AB",
+          "#BAE9D0",
+          "#E8F8EF"
+        ]
+      },
+      "wait": {
+        "role": "tertiary",
+        "displayName": "Pending Amber",
+        "canonical": "#B26A00",
+        "tonalRamp": [
+          "#291800",
+          "#5C3700",
+          "#995B00",
+          "#D68000",
+          "#FFA21A",
+          "#FFBD5C",
+          "#FFDAA3",
+          "#FFF3E0"
+        ]
+      },
+      "wait-soft": {
+        "role": "tertiary",
+        "displayName": "Pending Wash",
+        "canonical": "#FFF3DC",
+        "tonalRamp": [
+          "#291B00",
+          "#5C3C00",
+          "#996500",
+          "#D68D00",
+          "#FFB01A",
+          "#FFC75C",
+          "#FFE0A3",
+          "#FFF5E0"
+        ]
+      },
+      "seg-track": {
+        "role": "neutral",
+        "displayName": "Segment Track",
+        "canonical": "#E6E8EC",
+        "tonalRamp": [
+          "#121317",
+          "#282C34",
+          "#424957",
+          "#5C667A",
+          "#7D879C",
+          "#A2AAB9",
+          "#CBCFD7",
+          "#EEEFF2"
+        ]
+      },
+      "chevron": {
+        "role": "neutral",
+        "displayName": "Chevron Grey",
+        "canonical": "#A3ABB8",
+        "tonalRamp": [
+          "#121417",
+          "#282C34",
+          "#434A56",
+          "#5D6879",
+          "#7D899B",
+          "#A3ABB8",
+          "#CBD0D7",
+          "#EEEFF2"
+        ]
+      },
+      "switch-off": {
+        "role": "neutral",
+        "displayName": "Switch Off",
+        "canonical": "#D5D9E0",
+        "tonalRamp": [
+          "#111417",
+          "#272C35",
+          "#414958",
+          "#5B677B",
+          "#7B889E",
+          "#A1AABA",
+          "#CACFD8",
+          "#EDEFF2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "Header app name; ink with a blue first letter."
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page titles (Каталог, Корзина, Избранное)."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Home section heads and sheet titles."
+      },
+      "title-group": {
+        "displayName": "Group Title",
+        "purpose": "In-page headings; replaces former tracked uppercase labels."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Names in tiles, store groups, company cards."
+      },
+      "price": {
+        "displayName": "Price",
+        "purpose": "Product price, always above the title, tabular numerals."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Line titles and running copy."
+      },
+      "body-card": {
+        "displayName": "Card Body",
+        "purpose": "Product titles in cards, clamped to two lines."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Store names, descriptions, counts in Muted Slate, sentence case."
+      },
+      "label-button": {
+        "displayName": "Button Label",
+        "purpose": "CTA labels."
+      },
+      "label-tab": {
+        "displayName": "Tab Label",
+        "purpose": "Tab bar labels; 600 when active."
+      },
+      "wordmark-desktop": {
+        "displayName": "Admin Wordmark",
+        "purpose": "Sidebar wordmark in the admin."
+      },
+      "title-drawer": {
+        "displayName": "Drawer Title",
+        "purpose": "Editor drawer h2 titles."
+      },
+      "count": {
+        "displayName": "Count",
+        "purpose": "Admin summary-row counts, tabular numerals."
+      },
+      "label-nav": {
+        "displayName": "Nav Label",
+        "purpose": "Admin sidebar items; 600 when active."
+      },
+      "label-field": {
+        "displayName": "Field Label",
+        "purpose": "Always-visible label above admin fields."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient",
+        "value": "0 1px 2px rgba(11,26,46,.04), 0 4px 14px rgba(11,26,46,.06)",
+        "purpose": "Promo slide and general white containers."
+      },
+      {
+        "name": "bar-up",
+        "value": "0 -1px 0 rgba(11,26,46,.06), 0 -6px 18px rgba(11,26,46,.05)",
+        "purpose": "Tab bar and product bottom action bar."
+      },
+      {
+        "name": "sheet",
+        "value": "0 -8px 32px rgba(11,26,46,.16)",
+        "purpose": "Bottom sheets."
+      },
+      {
+        "name": "float",
+        "value": "0 2px 6px rgba(11,26,46,.08), 0 8px 20px rgba(11,26,46,.14)",
+        "purpose": "Floating round assistant button."
+      },
+      {
+        "name": "hairline",
+        "value": "0 1px 0 #E3E6EB",
+        "purpose": "Header and store info strip bottom edge."
+      },
+      {
+        "name": "focus-ring",
+        "value": "0 0 0 3px rgba(18,89,245,.14)",
+        "purpose": "Input focus halo (4px on the search field)."
+      },
+      {
+        "name": "drawer",
+        "value": "-12px 0 40px rgba(11,26,46,.14)",
+        "purpose": "Right-side editor drawers and the phone sidebar drawer; scrim rgba(11,26,46,.38)."
+      },
+      {
+        "name": "pop",
+        "value": "0 2px 6px rgba(11,26,46,.06), 0 10px 28px rgba(11,26,46,.12)",
+        "purpose": "Toast and map labels."
+      },
+      {
+        "name": "segment",
+        "value": "0 1px 3px rgba(11,26,46,.1)",
+        "purpose": "Selected segment of a segmented control."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.22, 1, .36, 1)",
+        "purpose": "System ease for colour and press transitions."
+      },
+      {
+        "name": "press",
+        "value": "transform: scale(.985) over 200ms",
+        "purpose": "Tappable cards and rows on :active (room picker uses .97 over 180ms)."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "transition/animation duration .01ms",
+        "purpose": "prefers-reduced-motion: reduce."
+      },
+      {
+        "name": "drawer-in",
+        "value": "translateX(40px) and opacity 0 to none over 320ms on the system ease",
+        "purpose": "Admin editor drawers entering from the right."
+      },
+      {
+        "name": "page-in",
+        "value": "translateY(6px) and opacity 0 to none over 350ms on the system ease",
+        "purpose": "Admin page change."
+      },
+      {
+        "name": "sidebar",
+        "value": "transform 300ms on the system ease",
+        "purpose": "Phone sidebar drawer."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone-frame",
+        "value": "single phone-width column; desktop shows the same app inside a phone frame"
+      },
+      {
+        "name": "admin-laptop",
+        "value": "above 1080px: sidebar plus two-column overview, content max 1280px"
+      },
+      {
+        "name": "admin-tablet",
+        "value": "1080px: overview and sections drop to one column"
+      },
+      {
+        "name": "admin-phone",
+        "value": "860px: sidebar becomes an off-canvas drawer, table rows stack, drawers go full width"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Marketplace Blue action: manager CTA, checkout, Telegram, onboarding.",
+      "html": "<button class=\"ds-btn-primary\">Отправить заказ менеджеру</button>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-btn-primary{height:48px;padding:0 20px;border:0;border-radius:14px;background:var(--mk-brand);color:#fff;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s var(--mk-ease),transform .12s var(--mk-ease);} .ds-btn-primary:hover{background:var(--mk-brand-2);} .ds-btn-primary:active{background:var(--mk-brand-2);transform:scale(.985);} .ds-btn-primary:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "White button with a hairline ring: Max, show phone number.",
+      "html": "<button class=\"ds-btn-secondary\">Написать в Max</button>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-btn-secondary{height:48px;padding:0 20px;border:0;border-radius:14px;background:var(--mk-card);color:var(--mk-ink);box-shadow:inset 0 0 0 1px var(--mk-line);font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s var(--mk-ease);} .ds-btn-secondary:hover{background:var(--mk-sunk);} .ds-btn-secondary:active{background:var(--mk-line);} .ds-btn-secondary:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;}"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Full-width search with a 2px blue border and a square blue filter button.",
+      "html": "<div class=\"ds-search\"><input class=\"ds-search-input\" placeholder=\"Поиск по товарам и услугам\"><button class=\"ds-search-filter\" aria-label=\"Фильтры\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\"><path d=\"M6 4v16M12 4v16M18 4v16\"/><circle cx=\"6\" cy=\"9\" r=\"2\" fill=\"#1259F5\"/><circle cx=\"12\" cy=\"15\" r=\"2\" fill=\"#1259F5\"/><circle cx=\"18\" cy=\"8\" r=\"2\" fill=\"#1259F5\"/></svg></button></div>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-search{display:flex;gap:8px;width:320px;} .ds-search-input{flex:1;height:46px;padding:0 14px;border:2px solid var(--mk-brand);border-radius:16px;background:var(--mk-card);color:var(--mk-ink);font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;font-size:15px;caret-color:var(--mk-brand);transition:box-shadow .2s var(--mk-ease);} .ds-search-input::placeholder{color:var(--mk-ink-3);} .ds-search-input:focus{outline:none;box-shadow:0 0 0 4px rgba(18,89,245,.14);} .ds-search-filter{width:46px;height:46px;border:0;border-radius:16px;background:var(--mk-brand);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;} .ds-search-filter:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;}"
+    },
+    {
+      "name": "Filter Chips",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Pill chips; the selected chip fills with Deep Ink, not blue.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip on\">Интерьер</button><button class=\"ds-chip\">Экстерьер</button><button class=\"ds-chip\">Ландшафт</button></div>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-chips{display:flex;gap:6px;} .ds-chip{height:30px;padding:0 12px;border:0;border-radius:999px;background:var(--mk-card);color:var(--mk-ink);box-shadow:inset 0 0 0 1px var(--mk-line);font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s var(--mk-ease);} .ds-chip:hover{background:var(--mk-sunk);} .ds-chip.on{background:var(--mk-ink);color:#fff;box-shadow:none;} .ds-chip:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;}"
+    },
+    {
+      "name": "Product Card",
+      "kind": "card",
+      "refersTo": "card-product",
+      "description": "Price-first product card: photo well, sale badge, 18px/800 tabular price, 2-line title, store, 36px blue cart button.",
+      "html": "<article class=\"ds-pc\"><div class=\"ds-pc-photo\"><span class=\"ds-pc-sale\">−15%</span><button class=\"ds-pc-cart\" aria-label=\"В корзину\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"20\" r=\"1.5\"/><circle cx=\"18\" cy=\"20\" r=\"1.5\"/><path d=\"M2 3h3l2.6 12.4a1.5 1.5 0 0 0 1.5 1.1h8.8a1.5 1.5 0 0 0 1.5-1.2L21 7H6\"/></svg></button></div><div class=\"ds-pc-body\"><div class=\"ds-pc-row\"><span class=\"ds-pc-price\">57 240 ₽</span><span class=\"ds-pc-old\">67 300 ₽</span></div><p class=\"ds-pc-title\">Кровать «Samanta» с мягким изголовьем, 160×200</p><p class=\"ds-pc-store\">Любимый Дом</p></div></article>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-pc{width:172px;background:var(--mk-card);border-radius:20px;overflow:hidden;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;transition:transform .2s var(--mk-ease);} .ds-pc:active{transform:scale(.985);} .ds-pc-photo{position:relative;aspect-ratio:1/1;background:var(--mk-sunk);} .ds-pc-sale{position:absolute;top:8px;left:8px;background:var(--mk-sale);color:#fff;font-size:11px;font-weight:700;padding:2px 6px;border-radius:8px;} .ds-pc-cart{position:absolute;right:10px;bottom:10px;width:36px;height:36px;border:0;border-radius:12px;background:var(--mk-brand);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s var(--mk-ease);} .ds-pc-cart:hover{background:var(--mk-brand-2);} .ds-pc-cart.in{background:var(--mk-ok);} .ds-pc-cart:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;} .ds-pc-body{padding:10px 12px 12px;} .ds-pc-row{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;} .ds-pc-price{font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--mk-ink);font-variant-numeric:tabular-nums;} .ds-pc-old{font-size:12px;color:var(--mk-ink-3);text-decoration:line-through;} .ds-pc-title{margin:4px 0 0;font-size:13px;line-height:1.35;color:var(--mk-ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;} .ds-pc-store{margin:6px 0 0;font-size:12px;color:var(--mk-ink-3);}"
+    },
+    {
+      "name": "Catalog Tile and Row",
+      "kind": "custom",
+      "refersTo": "card-row",
+      "description": "Root catalog as a 2-column tile grid; deeper levels as single-column rows with a 64px photo and chevron.",
+      "html": "<div class=\"ds-dir-grid\"><div class=\"ds-tile\"><div><h5>Спецтехника</h5><p>Аренда с экипажем и подачей на объект</p></div><div class=\"ds-tile-img\"></div></div><div class=\"ds-tile\"><div><h5>Дизайнеры</h5><p>Проекты интерьеров</p></div><div class=\"ds-tile-img\"></div></div></div><div class=\"ds-row\"><div class=\"ds-row-img\"></div><div><h5>Земляные работы</h5><p>18 единиц в аренду</p></div><svg class=\"ds-chev\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 18l6-6-6-6\"/></svg></div>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-dir-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:320px;margin-bottom:8px;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;} .ds-tile{display:flex;flex-direction:column;min-height:148px;padding:12px 0 0 12px;background:var(--mk-card);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .2s var(--mk-ease);} .ds-tile:active,.ds-row:active{transform:scale(.985);} .ds-tile>div:first-child{flex:1;padding-right:12px;} .ds-tile h5,.ds-row h5{margin:0;font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--mk-ink);line-height:1.25;} .ds-row h5{font-weight:600;} .ds-tile p{margin:3px 0 0;font-size:11.5px;line-height:1.35;color:var(--mk-ink-3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;} .ds-tile-img{width:62%;height:74px;margin:8px 0 0 auto;border-radius:14px 0 0 0;background:var(--mk-sunk);} .ds-row{display:flex;align-items:center;gap:14px;width:320px;padding:8px 14px 8px 8px;background:var(--mk-card);border-radius:20px;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;cursor:pointer;transition:transform .2s var(--mk-ease);} .ds-row>div:nth-child(2){flex:1;} .ds-row p{margin:3px 0 0;font-size:12.5px;color:var(--mk-ink-3);} .ds-row-img{width:64px;height:64px;border-radius:12px;background:var(--mk-sunk);flex-shrink:0;} .ds-chev{width:18px;height:18px;color:#A3ABB8;flex-shrink:0;}"
+    },
+    {
+      "name": "Back Button",
+      "kind": "nav",
+      "refersTo": "button-back",
+      "description": "36px white square with an ink chevron, placed before the page title.",
+      "html": "<div class=\"ds-backhead\"><button class=\"ds-back\" aria-label=\"Назад\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 18l-6-6 6-6\"/></svg></button><h3>Спецтехника</h3></div>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-backhead{display:flex;align-items:center;gap:10px;padding:12px;background:var(--mk-page);font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;} .ds-backhead h3{margin:0;font-size:22px;font-weight:800;letter-spacing:-.025em;color:var(--mk-ink);} .ds-back{width:36px;height:36px;border:0;border-radius:12px;background:var(--mk-card);color:var(--mk-ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s var(--mk-ease);} .ds-back:hover{background:var(--mk-sunk);} .ds-back:active{background:var(--mk-line);} .ds-back:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;}"
+    },
+    {
+      "name": "Store Group with Manager CTA",
+      "kind": "card",
+      "refersTo": "card-product",
+      "description": "Favorites/cart group per store: photo, name strip, item row, total, soft chat plus primary manager CTA.",
+      "html": "<section class=\"ds-group\"><div class=\"ds-group-photo\"></div><div class=\"ds-group-name\"><b>Любимый Дом</b><span>1 тов.</span></div><div class=\"ds-group-item\"><div class=\"ds-group-thumb\"></div><div style=\"flex:1\"><div class=\"ds-group-price\">34 200 ₽</div><p>Шкаф-купе «Уют»</p></div><svg class=\"ds-chev\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 18l6-6-6-6\"/></svg></div><div class=\"ds-group-foot\"><div class=\"ds-group-sum\"><span>Итого по магазину:</span><b>34 200 ₽</b></div><div class=\"ds-group-actions\"><button class=\"ds-group-chat\" aria-label=\"Чат\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linejoin=\"round\"><path d=\"M4 5h16v11H9l-5 4z\"/></svg></button><button class=\"ds-group-send\">Отправить заказ менеджеру</button></div></div></section>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-group{width:330px;background:var(--mk-card);border-radius:20px;overflow:hidden;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;} .ds-group-photo{height:84px;background:linear-gradient(var(--mk-sunk),var(--mk-sunk));} .ds-group-name{display:flex;align-items:baseline;gap:8px;padding:12px 14px 4px;} .ds-group-name b{font-size:17px;font-weight:700;letter-spacing:-.015em;color:var(--mk-ink);} .ds-group-name span{font-size:12px;color:var(--mk-ink-3);} .ds-group-item{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;} .ds-group-thumb{width:56px;height:56px;border-radius:10px;background:var(--mk-sunk);} .ds-group-price{font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--mk-ink);font-variant-numeric:tabular-nums;} .ds-group-item p{margin:3px 0 0;font-size:14px;color:var(--mk-ink);} .ds-group-foot{padding:12px 14px 14px;border-top:1px solid var(--mk-line);} .ds-group-sum{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:14px;color:var(--mk-ink-2);} .ds-group-sum b{font-size:18px;font-weight:800;color:var(--mk-ink);font-variant-numeric:tabular-nums;} .ds-group-actions{display:flex;gap:8px;} .ds-group-chat{width:48px;height:48px;border:0;border-radius:14px;background:var(--mk-brand-soft);color:var(--mk-brand);display:flex;align-items:center;justify-content:center;cursor:pointer;} .ds-group-send{flex:1;height:48px;border:0;border-radius:14px;background:var(--mk-brand);color:#fff;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s var(--mk-ease);} .ds-group-send:hover,.ds-group-send:active{background:var(--mk-brand-2);} .ds-group-chat:focus-visible,.ds-group-send:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;} .ds-chev{width:18px;height:18px;color:#A3ABB8;}"
+    },
+    {
+      "name": "Company Card",
+      "kind": "card",
+      "refersTo": "card-row",
+      "description": "White flat card for companies and vacancies with the blue verified check after the name.",
+      "html": "<article class=\"ds-firm\"><div class=\"ds-firm-body\"><h4 class=\"ds-firm-name\">СтройКомплект<svg class=\"ds-verified\" viewBox=\"0 0 24 24\" aria-label=\"Проверенная компания\"><circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"/><path d=\"M7.5 12.3l3 3 6-6.3\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></h4><p class=\"ds-firm-salary\">от 80 000 ₽</p><p class=\"ds-firm-co\">Монтажник окон</p><p class=\"ds-firm-desc\">Монтаж ПВХ-конструкций на объектах в городе и области.</p><span class=\"ds-firm-go\">Подробнее</span></div><div class=\"ds-firm-photo\"></div></article>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-firm{display:flex;width:330px;background:var(--mk-card);border-radius:20px;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;cursor:pointer;transition:transform .2s var(--mk-ease);} .ds-firm:active{transform:scale(.985);} .ds-firm-body{flex:1;padding:14px;min-width:0;} .ds-firm-name{display:flex;align-items:center;gap:6px;margin:0;font-size:16px;font-weight:700;letter-spacing:-.015em;color:var(--mk-ink);line-height:1.25;} .ds-verified{width:17px;height:17px;color:var(--mk-brand);flex-shrink:0;} .ds-firm-salary{margin:6px 0 0;font-size:17px;font-weight:800;letter-spacing:-.02em;color:var(--mk-ink);} .ds-firm-co{margin:4px 0 0;font-size:13px;font-weight:500;color:var(--mk-ink-2);} .ds-firm-desc{margin:6px 0 0;font-size:12.5px;line-height:1.4;color:var(--mk-ink-3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;} .ds-firm-go{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:var(--mk-brand);} .ds-firm-photo{width:112px;aspect-ratio:1;margin:12px 12px 12px 0;border-radius:12px;background:var(--mk-sunk);flex-shrink:0;}"
+    },
+    {
+      "name": "Tab Bar",
+      "kind": "nav",
+      "refersTo": "tab-bar",
+      "description": "Opaque white 64px tab bar; active item in Marketplace Blue; magenta cart count.",
+      "html": "<nav class=\"ds-tabs\"><button class=\"ds-tab on\"><svg width=\"25\" height=\"25\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linejoin=\"round\"><path d=\"M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/></svg><span>Главная</span></button><button class=\"ds-tab\"><svg width=\"25\" height=\"25\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"20\" r=\"1.5\"/><circle cx=\"25\" cy=\"20\" r=\"1.5\"/><path d=\"M2 3h3l2.6 12.4a1.5 1.5 0 0 0 1.5 1.1h8.8a1.5 1.5 0 0 0 1.5-1.2L21 7H6\"/></svg><span>Корзина</span><i class=\"ds-badge\">3</i></button><button class=\"ds-tab\"><svg width=\"25\" height=\"25\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linejoin=\"round\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg><span>Избранное</span></button></nav>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-ok:#0E9F62;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-tabs{display:flex;width:330px;height:64px;background:#fff;box-shadow:0 -1px 0 rgba(11,26,46,.06),0 -6px 18px rgba(11,26,46,.05);font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;} .ds-tab{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border:0;background:none;color:#8B94A2;cursor:pointer;transition:color .2s var(--mk-ease);} .ds-tab span{margin-top:3px;font-size:10.5px;font-weight:500;} .ds-tab:hover{color:var(--mk-ink-2);} .ds-tab.on{color:var(--mk-brand);} .ds-tab.on span{font-weight:600;} .ds-tab:focus-visible{outline:2px solid var(--mk-brand);outline-offset:-4px;border-radius:8px;} .ds-badge{position:absolute;top:8px;left:calc(50% + 4px);min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--mk-sale);color:#fff;font-size:10px;font-style:normal;font-weight:700;line-height:16px;box-shadow:0 0 0 2px #fff;}"
+    },
+    {
+      "name": "Admin Sidebar",
+      "kind": "nav",
+      "refersTo": "admin-sidebar",
+      "description": "White 256px sidebar: wordmark, grouped nav, Blue Wash active item, magenta attention count.",
+      "html": "<nav class=\"ds-side\"><div class=\"ds-wm\"><b>С</b>упер-Апп<p>Управление</p></div><button class=\"ds-nav on\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/></svg>Обзор</button><button class=\"ds-nav\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z\"/></svg>Модерация<i class=\"ds-count\">2</i></button><h6>Каталог</h6><button class=\"ds-nav\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l9 5-9 5-9-5z\"/><path d=\"M3 13l9 5 9-5\"/></svg>Товары</button><button class=\"ds-nav\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 16V4M7 9l5-5 5 5\"/><path d=\"M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3\"/></svg>Импорт из 1С / Excel</button></nav>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-sale-soft:#FFE8F0;--mk-sale-deep:#B80C47;--mk-ok:#0E9F62;--mk-ok-soft:#E3F6EC;--mk-wait:#B26A00;--mk-wait-soft:#FFF3DC;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-side{width:256px;padding:22px 12px 16px;background:var(--mk-card);box-shadow:1px 0 0 var(--mk-line);font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;} .ds-wm{padding:0 10px 18px;font-size:21px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--mk-ink);} .ds-wm b{color:var(--mk-brand);} .ds-wm p{margin:6px 0 0;font-size:12.5px;font-weight:500;letter-spacing:0;color:var(--mk-ink-3);} .ds-side h6{margin:14px 0 4px;padding:0 10px;font-size:12px;font-weight:500;color:var(--mk-ink-3);} .ds-nav{width:100%;display:flex;align-items:center;gap:11px;padding:9px 10px;border:0;border-radius:12px;background:none;color:var(--mk-ink-2);font:inherit;font-size:14.5px;font-weight:500;text-align:left;cursor:pointer;transition:background .15s var(--mk-ease),color .15s var(--mk-ease);} .ds-nav:hover{background:var(--mk-sunk);color:var(--mk-ink);} .ds-nav.on{background:var(--mk-brand-soft);color:var(--mk-brand);font-weight:600;} .ds-nav:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;} .ds-count{margin-left:auto;min-width:22px;height:20px;padding:0 6px;border-radius:999px;background:var(--mk-sale);color:#fff;font-size:11.5px;font-style:normal;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}"
+    },
+    {
+      "name": "Top Bar and Role Switcher",
+      "kind": "nav",
+      "refersTo": "segmented",
+      "description": "26/800 page title with a subline; segmented role switcher with a white selected segment on a #E6E8EC track.",
+      "html": "<header class=\"ds-top\"><div><h1>Обзор</h1><div class=\"ds-sub\">Что требует внимания сегодня</div></div><div class=\"ds-seg\"><button class=\"on\">Администратор</button><button>Магазин</button><button>Агентство</button></div></header>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-sale-soft:#FFE8F0;--mk-sale-deep:#B80C47;--mk-ok:#0E9F62;--mk-ok-soft:#E3F6EC;--mk-wait:#B26A00;--mk-wait-soft:#FFF3DC;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-top{display:flex;align-items:center;gap:16px;width:640px;padding:14px 32px;background:var(--mk-page);font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;} .ds-top h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.03em;color:var(--mk-ink);} .ds-sub{margin-top:2px;font-size:13px;color:var(--mk-ink-3);} .ds-seg{margin-left:auto;display:inline-flex;gap:2px;padding:3px;background:#E6E8EC;border-radius:12px;} .ds-seg button{border:0;background:none;padding:7px 12px;border-radius:8px;font:inherit;font-size:13.5px;font-weight:500;color:var(--mk-ink-2);white-space:nowrap;cursor:pointer;transition:background .15s var(--mk-ease),color .15s var(--mk-ease);} .ds-seg button:hover{color:var(--mk-ink);} .ds-seg button.on{background:var(--mk-card);color:var(--mk-ink);font-weight:600;box-shadow:0 1px 3px rgba(11,26,46,.1);} .ds-seg button:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;}"
+    },
+    {
+      "name": "Row Table with Status Badges",
+      "kind": "custom",
+      "refersTo": "list-row",
+      "description": "White list card of hairline-separated grid rows; tinted status badges (ok published only, wait pending only, bad, off) and a white deal badge.",
+      "html": "<div class=\"ds-list\"><div class=\"ds-lrow ds-head\"><div>Товар</div><div>Статус</div><div>Цена</div></div><div class=\"ds-lrow\"><div class=\"ds-cell\"><div class=\"ds-thumb\"></div><div><b>Кровать «Samanta» 160×200</b><span>Любимый Дом</span></div></div><div><span class=\"ds-badge ok\">Опубликован</span></div><div class=\"ds-price\">57 240 ₽</div></div><div class=\"ds-lrow\"><div class=\"ds-cell\"><div class=\"ds-thumb\"></div><div><b>Шкаф-купе «Уют»</b><span>Постройка</span></div></div><div><span class=\"ds-badge wait\">На проверке</span></div><div class=\"ds-price\">34 200 ₽</div></div><div class=\"ds-lrow\"><div class=\"ds-cell\"><div class=\"ds-thumb\"></div><div><b>Кухня «Дриада»</b><span>Кухни Дриада</span></div></div><div><span class=\"ds-badge bad\">Нет фото</span></div><div class=\"ds-price\">120 000 ₽</div></div><div class=\"ds-lrow\"><div class=\"ds-cell\"><div class=\"ds-thumb\"></div><div><b>2-комн., 54 м²</b><span>Агентство «Дом»</span></div></div><div><span class=\"ds-badge deal\">Продажа</span></div><div class=\"ds-price\">6 300 000 ₽</div></div></div>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-sale-soft:#FFE8F0;--mk-sale-deep:#B80C47;--mk-ok:#0E9F62;--mk-ok-soft:#E3F6EC;--mk-wait:#B26A00;--mk-wait-soft:#FFF3DC;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-list{width:600px;background:var(--mk-card);border-radius:20px;overflow:hidden;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;color:var(--mk-ink);} .ds-lrow{display:grid;grid-template-columns:minmax(0,2.2fr) 1fr 1fr;align-items:center;gap:14px;padding:12px 20px;border-top:1px solid var(--mk-line);transition:background .12s var(--mk-ease);} .ds-lrow:first-child{border-top:0;} .ds-head{padding:12px 20px 10px;font-size:12.5px;font-weight:500;color:var(--mk-ink-3);} .ds-lrow:not(.ds-head):hover{background:#FAFBFC;} .ds-cell{display:flex;align-items:center;gap:12px;min-width:0;} .ds-cell b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .ds-cell span{display:block;font-size:12.5px;color:var(--mk-ink-3);} .ds-thumb{width:48px;height:48px;border-radius:12px;background:var(--mk-sunk);flex-shrink:0;} .ds-price{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;} .ds-badge{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap;} .ds-badge::before{content:\"\";width:6px;height:6px;border-radius:99px;background:currentColor;} .ds-badge.ok{background:var(--mk-ok-soft);color:var(--mk-ok);} .ds-badge.wait{background:var(--mk-wait-soft);color:var(--mk-wait);} .ds-badge.bad{background:var(--mk-sale-soft);color:var(--mk-sale);} .ds-badge.off{background:var(--mk-sunk);color:var(--mk-ink-3);} .ds-badge.deal{background:var(--mk-card);color:var(--mk-ink);box-shadow:inset 0 0 0 1px var(--mk-line);} .ds-badge.deal::before{display:none;}"
+    },
+    {
+      "name": "Summary Rows",
+      "kind": "custom",
+      "refersTo": "summary-row",
+      "description": "Counts as rows instead of coloured stat tiles: 20/800 tabular count, label, optional ghost action; a problem count turns magenta.",
+      "html": "<div class=\"ds-sum\"><div><b>12</b><span>в каталоге</span><button class=\"ds-ghost\">Смотреть</button></div><div><b>3</b><span>на проверке у администратора</span></div><div class=\"warn\"><b>1</b><span>отклонены — нужно исправить</span><button class=\"ds-ghost\">Исправить</button></div></div>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-sale-soft:#FFE8F0;--mk-sale-deep:#B80C47;--mk-ok:#0E9F62;--mk-ok-soft:#E3F6EC;--mk-wait:#B26A00;--mk-wait-soft:#FFF3DC;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-sum{width:440px;background:var(--mk-card);border-radius:20px;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;} .ds-sum>div{display:flex;align-items:center;gap:14px;padding:14px 20px;border-top:1px solid var(--mk-line);} .ds-sum>div:first-child{border-top:0;} .ds-sum b{min-width:64px;font-size:20px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--mk-ink);} .ds-sum span{flex:1;font-size:14px;color:var(--mk-ink-2);} .ds-sum .warn b{color:var(--mk-sale);} .ds-ghost{height:34px;padding:0 8px;border:0;border-radius:12px;background:none;color:var(--mk-brand);font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s var(--mk-ease);} .ds-ghost:hover{background:var(--mk-brand-soft);} .ds-ghost:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;}"
+    },
+    {
+      "name": "Moderation Actions",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Одобрить as brand primary beside Отклонить as the danger secondary (magenta text, pink hairline, #B80C47 on hover).",
+      "html": "<div class=\"ds-mod\"><button class=\"ds-btn ds-primary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12.5l4.5 4.5L19 7.5\"/></svg>Одобрить</button><button class=\"ds-btn ds-danger\">Отклонить</button></div>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-sale-soft:#FFE8F0;--mk-sale-deep:#B80C47;--mk-ok:#0E9F62;--mk-ok-soft:#E3F6EC;--mk-wait:#B26A00;--mk-wait-soft:#FFF3DC;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-mod{display:flex;gap:8px;width:300px;font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;} .ds-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border:0;border-radius:12px;font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;transition:background .15s var(--mk-ease),transform .1s var(--mk-ease);} .ds-btn:active{transform:scale(.98);} .ds-primary{background:var(--mk-brand);color:#fff;} .ds-primary:hover{background:var(--mk-brand-2);} .ds-danger{background:var(--mk-card);color:var(--mk-sale);box-shadow:inset 0 0 0 1px #F6C2D4;} .ds-danger:hover{background:var(--mk-sale-soft);color:var(--mk-sale-deep);} .ds-btn:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;}"
+    },
+    {
+      "name": "Editor Drawer",
+      "kind": "custom",
+      "refersTo": "drawer",
+      "description": "Right-side editor on Cool Ground: white head with h2, optional tab row, white panels, white foot with 48px buttons.",
+      "html": "<aside class=\"ds-drawer\"><div class=\"ds-dh\"><h2>Новый магазин</h2><button class=\"ds-x\" aria-label=\"Закрыть\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6L6 18\"/></svg></button></div><div class=\"ds-tabs\"><button class=\"on\">Фото и адреса</button><button>Часы</button><button>Менеджеры</button></div><div class=\"ds-db\"><section class=\"ds-panel\"><h4>Название и описание</h4><p>Так магазин увидят покупатели.</p><label class=\"ds-field\"><span>Название</span><input class=\"ds-input\" value=\"Любимый Дом\"></label><label class=\"ds-sw\"><input type=\"checkbox\" checked><i></i>Показывать в приложении</label></section></div><div class=\"ds-df\"><button class=\"ds-b2\">Отмена</button><button class=\"ds-b1\">Сохранить</button></div></aside>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-sale-soft:#FFE8F0;--mk-sale-deep:#B80C47;--mk-ok:#0E9F62;--mk-ok-soft:#E3F6EC;--mk-wait:#B26A00;--mk-wait-soft:#FFF3DC;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-drawer{width:560px;max-width:100%;display:flex;flex-direction:column;background:var(--mk-page);box-shadow:-12px 0 40px rgba(11,26,46,.14);font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;color:var(--mk-ink);} .ds-dh{display:flex;align-items:center;gap:12px;padding:18px 24px;background:var(--mk-card);box-shadow:0 1px 0 var(--mk-line);} .ds-dh h2{flex:1;margin:0;font-size:20px;font-weight:800;letter-spacing:-.025em;} .ds-x{width:36px;height:36px;border:0;border-radius:12px;background:none;color:var(--mk-ink-2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;} .ds-x:hover{background:var(--mk-sunk);color:var(--mk-ink);} .ds-tabs{display:flex;gap:4px;padding:0 20px;background:var(--mk-card);box-shadow:0 1px 0 var(--mk-line);} .ds-tabs button{border:0;background:none;padding:12px 10px;font:inherit;font-size:14px;font-weight:500;color:var(--mk-ink-3);box-shadow:inset 0 -2px 0 transparent;cursor:pointer;} .ds-tabs button.on{color:var(--mk-ink);font-weight:600;box-shadow:inset 0 -2px 0 var(--mk-brand);} .ds-db{padding:20px 24px;} .ds-panel{background:var(--mk-card);border-radius:20px;padding:18px;} .ds-panel h4{margin:0 0 4px;font-size:16px;font-weight:700;letter-spacing:-.01em;} .ds-panel>p{margin:0 0 14px;font-size:13px;color:var(--mk-ink-3);} .ds-field{display:block;margin-bottom:14px;} .ds-field>span{display:block;margin-bottom:6px;font-size:13px;font-weight:500;color:var(--mk-ink-2);} .ds-input{width:100%;box-sizing:border-box;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:12px;background:var(--mk-sunk);color:var(--mk-ink);font:inherit;font-size:14.5px;caret-color:var(--mk-brand);transition:border-color .15s var(--mk-ease),background .15s var(--mk-ease),box-shadow .15s var(--mk-ease);} .ds-input:focus{outline:none;background:#fff;border-color:var(--mk-brand);box-shadow:0 0 0 3px rgba(18,89,245,.14);} .ds-sw{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;} .ds-sw input{position:absolute;opacity:0;} .ds-sw i{position:relative;width:40px;height:24px;border-radius:99px;background:#D5D9E0;transition:background .2s var(--mk-ease);} .ds-sw i::after{content:\"\";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:99px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s var(--mk-ease);} .ds-sw input:checked+i{background:var(--mk-brand);} .ds-sw input:checked+i::after{transform:translateX(16px);} .ds-sw input:focus-visible+i{outline:2px solid var(--mk-brand);outline-offset:2px;} .ds-df{display:flex;gap:10px;padding:14px 24px;background:var(--mk-card);box-shadow:0 -1px 0 var(--mk-line);} .ds-df button{flex:1;height:48px;border:0;border-radius:14px;font:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s var(--mk-ease);} .ds-b1{background:var(--mk-brand);color:#fff;} .ds-b1:hover{background:var(--mk-brand-2);} .ds-b2{background:var(--mk-card);color:var(--mk-ink);box-shadow:inset 0 0 0 1px var(--mk-line);} .ds-b2:hover{background:var(--mk-sunk);} .ds-df button:focus-visible,.ds-x:focus-visible,.ds-tabs button:focus-visible{outline:2px solid var(--mk-brand);outline-offset:2px;}"
+    },
+    {
+      "name": "Import Stepper and Drop Zone",
+      "kind": "custom",
+      "refersTo": "panel",
+      "description": "Four-step pill stepper (done, current, future) above a dashed drop zone that turns blue on hover.",
+      "html": "<div class=\"ds-imp\"><div class=\"ds-steps\"><span class=\"ds-step done\"><i>1</i>Файл</span><span class=\"ds-step on\"><i>2</i>Колонки</span><span class=\"ds-step\"><i>3</i>Похожие</span><span class=\"ds-step\"><i>4</i>Фото</span></div><div class=\"ds-drop\" tabindex=\"0\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 16V4M7 9l5-5 5 5\"/><path d=\"M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3\"/></svg><b>Перетащите файл 1С или Excel</b><span>.xlsx, .xls, .csv до 50 МБ</span></div></div>",
+      "css": ":host{--mk-page:#F2F3F6;--mk-card:#FFFFFF;--mk-sunk:#F2F3F6;--mk-ink:#0B1A2E;--mk-ink-2:#4E5A6B;--mk-ink-3:#5E6876;--mk-line:#E3E6EB;--mk-brand:#1259F5;--mk-brand-2:#0C47CC;--mk-brand-soft:#E9F0FF;--mk-sale:#E5195E;--mk-sale-soft:#FFE8F0;--mk-sale-deep:#B80C47;--mk-ok:#0E9F62;--mk-ok-soft:#E3F6EC;--mk-wait:#B26A00;--mk-wait-soft:#FFF3DC;--mk-ease:cubic-bezier(.22,1,.36,1);} .ds-imp{width:520px;padding:16px;background:var(--mk-page);font-family:'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;} .ds-steps{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;} .ds-step{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px 0 6px;border-radius:999px;background:var(--mk-card);color:var(--mk-ink-3);font-size:13.5px;font-weight:500;} .ds-step i{width:26px;height:26px;border-radius:99px;display:flex;align-items:center;justify-content:center;background:var(--mk-sunk);color:var(--mk-ink-3);font-size:13px;font-style:normal;font-weight:700;} .ds-step.on{color:var(--mk-ink);font-weight:600;} .ds-step.on i{background:var(--mk-brand);color:#fff;} .ds-step.done{color:var(--mk-ink-2);} .ds-step.done i{background:var(--mk-ok-soft);color:var(--mk-ok);} .ds-drop{padding:40px 20px;border:2px dashed #C9CFD8;border-radius:20px;background:#FAFBFC;text-align:center;cursor:pointer;transition:border-color .15s var(--mk-ease),background .15s var(--mk-ease);} .ds-drop:hover,.ds-drop:focus-visible{outline:none;border-color:var(--mk-brand);background:var(--mk-brand-soft);} .ds-drop svg{display:block;width:34px;height:34px;margin:0 auto 12px;color:var(--mk-brand);} .ds-drop b{display:block;font-size:17px;font-weight:700;color:var(--mk-ink);} .ds-drop span{display:block;margin-top:4px;font-size:13.5px;color:var(--mk-ink-3);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Regional Counter",
+    "overview": "A light, cool marketplace in the Ozon canon, scaled to one region's real stores. The ground is a cool off-white; everything a buyer touches is a white card set on it with no border. Prices are the loudest type on any screen, set heavy and near-black. One saturated blue does every action and marks the active place in the app. A warm magenta-red appears only when something is on sale or new. The chrome (header, tab bar, back buttons) is white and quiet, so photos of products and storefronts carry the colour.\n\nDensity is marketplace-dense: a 2-column grid with an 8px gap, 20px side gutters, cards that open straight into photo, price, title. Stores read as real places. Their photo sits on top and their name and details sit on a white strip below it, never as white type over a darkened photo. Contact moves to a person: carts and favorites are grouped per store, and each group ends with its own manager button.\n\nThe world replaced a dark sapphire glass theme with glowing edges and decorative gradients. None of that comes back.\n\nThe admin panel is the back office of the same counter, not a second world. It keeps the ground, the white borderless cards, Onest, the one blue and the hairline, and adds a laptop layer: a white left sidebar, a sticky title bar, dense row tables, and right-side editor drawers. Status is spoken by small tinted badges and counts in rows, never by coloured tiles. On a phone the sidebar becomes a drawer and tables become stacked rows.",
+    "keyCharacteristics": [
+      "Cool off-white ground with white borderless cards; depth from tone, not lines.",
+      "Price first: 18px/800 tabular numerals above a 2-line title.",
+      "One action blue; magenta-red is reserved for sale and \"new\" signals.",
+      "Onest throughout, heavy (800) for headings and prices, regular for titles.",
+      "Rounded but not soft: 12px controls, 20px cards, 24px sheets, pills only for chips.",
+      "Sentence case everywhere; no tracked capitals.",
+      "Admin: the same world on a laptop, with a white 256px sidebar, row tables with hairlines, and right-side drawers."
+    ],
+    "rules": [
+      {
+        "name": "The One Blue Rule",
+        "body": "Blue is the only action colour. Third-party brand colours are mapped onto the system: Telegram becomes Marketplace Blue, Max becomes a white secondary button. If two buttons in a group would both be blue, one of them is secondary.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sale-Only Magenta Rule",
+        "body": "Magenta-red means \"price signal or saved\": sale, new, discounted price, cart count, saved heart. It is never a decorative accent, a heading colour or a second action colour. In the admin it also means \"needs fixing\": the moderation count in the sidebar, the \"bad\" badge (Отклонён, Нет фото), reject reasons, a non-zero rejected count and the Отклонить button's text. It is still never a fill for a primary action.",
+        "section": "colors"
+      },
+      {
+        "name": "The Published Green Rule",
+        "body": "Green (ok) means the item is live for buyers: in the buyer app, \"in cart\"; in the admin, the published state only (Опубликован, Активна, В приложении). Pending is amber, problems are magenta, neutral facts are grey or white. Green is not a general \"success\" colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Story Ring Exception",
+        "body": "The only gradient in the system is the story ring: blue to magenta for store stories, amber to orange (#FFB800 to #FF6B00) for \"Лайфхак\" stories. It identifies the stories feature. It is not available to banners, buttons or backgrounds.",
+        "section": "colors"
+      },
+      {
+        "name": "The Price-First Rule",
+        "body": "In any product unit the price comes before the title, heavier and larger than anything else in the card, in tabular numerals. The old price follows on the same baseline at 12px Muted Slate, struck through.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence-Case Rule",
+        "body": "Labels and headings are sentence case with no added tracking. A small caption is 12.5px/500 Muted Slate; a section label is an 18px/700 ink heading. No tracked uppercase labels above headings.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two Densities Rule",
+        "body": "The catalog root shows sections as a 2-column tile grid (name and 2-line description top-left, a photo cropped into the bottom-right corner, 148px minimum height). Every deeper level shows a single-column list of rows (64px photo, name, description, chevron). Tiles are for the first choice, rows are for scanning.",
+        "section": "layout"
+      },
+      {
+        "name": "The Rows Not Tiles Rule",
+        "body": "Admin numbers live in rows: summary rows (count, label, an optional ghost action) and table cells. There are no coloured stat tiles. A count turns magenta only when it is a problem to fix.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Card Rule",
+        "body": "Cards in a feed or list never carry a border or a shadow. Contrast between Card White and Cool Ground does the work. If a card seems to need a border to stand out, the problem is the ground behind it. Admin tables, summary rows, panels and storefront cards follow the same rule.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** put the price before the title in every product unit, at 18px/800 with tabular numerals.",
+      "**Do** set every card as Card White on Cool Ground with 20px corners and no border.",
+      "**Do** group cart and favorites by store, and end each group with its own manager CTA.",
+      "**Do** put store and promo words on a white strip under the photo.",
+      "**Do** map third-party channel colours to the system: Telegram is the primary blue button, Max is the white secondary button.",
+      "**Do** use the blue SVG verified check after a verified company's name.",
+      "**Do** turn any section label into an 18px/700 sentence-case ink heading or a 12.5px/500 Muted Slate caption.",
+      "**Do** use the 2-column tile grid at the catalog root and single-column rows below it.",
+      "**Do** build admin screens from the sidebar, the sticky title bar, row tables and right-side drawers on Cool Ground.",
+      "**Do** show admin counts as summary rows or table cells, with a 20px/800 tabular count.",
+      "**Do** keep a visible label above every admin field.",
+      "**Do** pair Одобрить (brand primary) with Отклонить (danger secondary) at equal width."
+    ],
+    "donts": [
+      "**Don't** bring back the dark sapphire glass, glowing edges, aurora backgrounds or decorative gradients. The story ring is the only gradient.",
+      "**Don't** use Sale Magenta for anything other than sale, new, discounted price, cart count and saved heart.",
+      "**Don't** add a second action colour, or paint Telegram cyan or Max violet.",
+      "**Don't** put borders or shadows on feed or list cards.",
+      "**Don't** set tracked uppercase labels or eyebrows above headings.",
+      "**Don't** set white text over a darkened photo for store names or promo copy.",
+      "**Don't** make the tab bar or header translucent.",
+      "**Don't** use coloured stat tiles in the admin.",
+      "**Don't** use green for anything other than \"in cart\" and the published state.",
+      "**Don't** fill a primary action with Sale Magenta; rejecting is a secondary button."
+    ]
+  }
+}
