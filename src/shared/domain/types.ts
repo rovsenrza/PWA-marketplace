@@ -3,6 +3,10 @@
  * (seed.js + localStorage) and will become the API contract later.
  * Fields are optional where real records vary.
  */
+import type { SavedStorefront } from '../storefront/types';
+
+/** Storefront types (blocks, themes, filter definitions) are part of the domain model too. */
+export type * from '../storefront/types';
 
 export type PublicationStatus = 'published' | 'pending' | 'rejected' | 'draft';
 
@@ -20,6 +24,8 @@ export interface Product {
   images?: string[];
   description?: string;
   badge?: 'sale' | 'new' | 'hit' | string;
+  /** Values for the store's own filters and the consumption calculator: 'Основа': 'гипс', 'Фасовка, кг': 30. */
+  attrs?: Record<string, string | number>;
   status: PublicationStatus;
   rejectReason?: string;
 }
@@ -38,6 +44,8 @@ export interface Shop {
   telegram?: string;
   video?: string;
   rating?: string;
+  /** The store's own page as saved by the admin; `resolveStorefront` fills in and repairs whatever is missing. */
+  storefront?: SavedStorefront;
 }
 
 export interface Story {
