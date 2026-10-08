@@ -675,17 +675,10 @@ function toggleLhUseful(id) {
     if (item) renderLhArticleReact(item);
 }
 
+// Товар в статье и смете лайфхака: общая ячейка (src/app/ui/product-cell.ts); extra (количество и пометка
+// строки сметы) — строкой под названием
 function lhProductCardHtml(prod, extra) {
-    if (!prod) return '';
-    extra = extra || '';
-    return `<button type="button" onclick="event.stopPropagation(); openProductFromLifehack('${prod.id}')" class="w-full flex gap-3 p-2 bg-white border border-slate-100 rounded-2xl text-left shadow-sm active:scale-[0.99] transition-transform">
-        <img src="${lhEsc(prod.image || '')}" class="w-16 h-16 rounded-xl object-cover bg-slate-100 shrink-0" alt="">
-        <div class="min-w-0 flex-1">
-            <p class="text-[13px] font-bold text-slate-900 line-clamp-2 leading-snug">${lhEsc(prod.title)}</p>
-            <p class="text-[14px] font-extrabold text-[#1e6091] mt-0.5">${lhEsc(prod.price || '')}</p>
-            <p class="text-[11px] text-slate-400">${lhEsc(prod.store || '')}${extra ? ' · ' + lhEsc(extra) : ''}</p>
-        </div>
-    </button>`;
+    return prod && typeof productCellHtml === 'function' ? productCellHtml(prod, 'mini', extra || '') : '';
 }
 
 function openProductFromLifehack(id) {

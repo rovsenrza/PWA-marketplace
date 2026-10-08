@@ -113,31 +113,9 @@ function productPassport(prod) {
 }
 
 
+// Карточка товара в сетке: общая ячейка со «спинкой» магазина (src/app/ui/product-cell.ts)
 function productCardHtml(prod) {
-    if (!prod) return '';
-    const pass = productPassport(prod);
-    const goods = pmIsGoods(prod);
-    const inCart = cartHasProduct(prod.id);
-    const isFav = state.favorites && state.favorites.includes(prod.id);
-    const nPhoto = (Array.isArray(prod.images) && prod.images.length > 1) ? prod.images.length : 0;
-    const sale = prod.oldPrice && prod.badge === 'sale';
-    const unit = pass.unitShort ? ' <em>' + pmEsc(pass.unitShort) + '</em>' : '';
-    const cart = goods
-        ? '<button type="button" onclick="event.stopPropagation(); addToCart(\'' + prod.id + '\')" class="pc-cart' + (inCart ? ' in' : '') + '"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg></button>'
-        : '';
-    return '<div onclick="openProductModal(\'' + prod.id + '\')" class="pc-card product-card" data-category="' + pmEsc(prod.category || 'мебель') + '">' +
-        '<div class="pc-photo">' +
-        '<img src="' + pmEsc(prod.image || '') + '" alt="">' +
-        (getBadgeHtml(prod) ? '<div class="pc-badge">' + getBadgeHtml(prod) + '</div>' : '') +
-        (nPhoto ? '<span class="pc-photos">' + nPhoto + ' фото</span>' : '') +
-        '<button type="button" onclick="event.stopPropagation(); toggleFavorite(\'' + prod.id + '\')" class="pc-fav' + (isFav ? ' on' : '') + '"><svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>' +
-        '</div>' +
-        '<div class="pc-body">' +
-        '<div class="pc-price">' + pmEsc(prod.price || '') + unit + (sale ? '<span class="pc-old">' + pmEsc(prod.oldPrice) + '</span>' : '') + '</div>' +
-        '<h5 class="pc-title line-clamp-2">' + pmEsc(prod.title || '') + '</h5>' +
-        '<p class="pc-store">' + pmEsc(prod.store || '') + '</p>' +
-        '</div>' + cart +
-        '</div>';
+    return prod && typeof productCellHtml === 'function' ? productCellHtml(prod, 'grid') : '';
 }
 
 
@@ -557,21 +535,11 @@ function pmTrackRecent(id) {
 }
 
 
+// Мини-карточка для лент «Похожие» и «Недавно смотрели»: общая ячейка (src/app/ui/product-cell.ts).
+// Кнопки корзины нет у всего, что не товар (недвижимость), — ячейка решает это сама; commercial оставлен для вызовов.
+// Сердце и корзина перерисовывают ленты через события app:favorites-changed / app:cart-changed (features/boot.js).
 function pmMiniCard(prod, commercial) {
-    if (!prod) return '';
-    const inCart = !commercial && cartHasProduct(prod.id);
-    const isFav = state.favorites && state.favorites.includes(prod.id);
-    const cartBtn = commercial ? '' : '<button type="button" onclick="event.stopPropagation(); addToCart(\'' + prod.id + '\'); pmRefreshCart(); renderPmSimilar(); renderPmRecent();" class="absolute bottom-2 right-2 w-7 h-7 rounded-full flex items-center justify-center shadow-sm ' + (inCart ? 'bg-[#1e6091] text-white' : 'bg-white text-slate-700') + '"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg></button>';
-    const pass = productPassport(prod);
-    const unit = pass.unitShort ? ' <span class="text-[11px] font-bold text-slate-400">' + pmEsc(pass.unitShort) + '</span>' : '';
-    return '<div class="pc-mini" onclick="openProductModal(\'' + prod.id + '\')">' +
-        '<div class="pc-photo relative">' +
-        '<img src="' + pmEsc(prod.image || '') + '" alt="">' +
-        '<button type="button" onclick="event.stopPropagation(); toggleFavorite(\'' + prod.id + '\'); pmRefreshFav(); renderPmSimilar(); renderPmRecent();" class="pc-fav' + (isFav ? ' on' : '') + '"><svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>' +
-        cartBtn +
-        '</div>' +
-        '<span class="pc-price">' + pmEsc(prod.price || '') + unit + '</span>' +
-        '<span class="pc-title line-clamp-2">' + pmEsc(prod.title || '') + '</span></div>';
+    return prod && typeof productCellHtml === 'function' ? productCellHtml(prod, 'mini') : '';
 }
 
 

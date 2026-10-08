@@ -33,41 +33,10 @@ function renderRecommendations() {
         if (typeof pmIsGoods === 'function' && !pmIsGoods(p)) continue;
         picked.push(p.id);
     }
-    const esc = typeof pmEsc === 'function' ? pmEsc : (v => String(v || ''));
-    const heart = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>';
-    let html = '';
-    picked.forEach(id => {
-        const prod = productsDb[id];
-        const isFav = state.favorites && state.favorites.includes(prod.id);
-        const inCart = cartHasProduct(prod.id);
-        const meta = typeof pmCategoryMeta === 'function' ? pmCategoryMeta(prod).chip : (prod.category || '');
-        const badge = (prod.badge === 'sale' && prod.oldPrice) ? '<span class="rec-sale">Скидка</span>' : '';
-        html += `
-        <div class="rec-card cursor-pointer" onclick="openProductModal('${prod.id}')">
-            <div class="rec-photo relative overflow-hidden">
-                <img src="${esc(prod.image)}" class="w-full h-full object-cover" alt="${esc(prod.title)}" loading="lazy">
-                ${badge}
-                <button type="button" onclick="event.stopPropagation(); toggleFavorite('${prod.id}')" class="rec-fav lg lg--circle${isFav ? ' on' : ''}" aria-label="${isFav ? 'Убрать из избранного' : 'В избранное'}" aria-pressed="${isFav ? 'true' : 'false'}">
-                    <svg viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor">${heart}</svg>
-                </button>
-            </div>
-            <div class="rec-body">
-                <div class="rec-price-row">
-                    <span class="rec-price">${esc(prod.price)}</span>
-                    ${prod.oldPrice ? `<span class="rec-old">${esc(prod.oldPrice)}</span>` : ''}
-                </div>
-                <h5 class="rec-title">${esc(prod.title)}</h5>
-                <p class="rec-meta">${esc(meta)}</p>
-                <p class="rec-store">${esc(prod.store || '')}</p>
-            </div>
-            <button type="button" onclick="event.stopPropagation(); addToCart('${prod.id}')" class="rec-add${inCart ? ' in' : ''}" aria-label="${inCart ? 'В корзине' : 'В корзину'}">
-                ${inCart
-                    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M5 13l4 4L19 7"/></svg>'
-                    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-width="2.4" d="M12 5v14M5 12h14"/></svg>'}
-            </button>
-        </div>`;
-    });
-    container.innerHTML = html;
+    // карточки ленты — общая ячейка со «спинкой» магазина (src/app/ui/product-cell.ts)
+    container.innerHTML = typeof productCellHtml === 'function'
+        ? picked.map(id => productCellHtml(productsDb[id], 'rail')).join('')
+        : '';
     renderHomeCategories();
 }
 
