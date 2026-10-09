@@ -73,7 +73,7 @@ Every product unit is `src/app/ui/product-cell.ts`: photo on the ground tone wit
 
 **The Store Dot Rule.** The V2 spine is now a quiet store line: an 8px dot of the store's ink beside its name in ink-3. The same dot marks promo names, catalogue store rows and cart group headers. Story rings are filled with the store ink behind a ground-coloured gap. Storefront covers keep the full store ink field (`--sf-ink` with its contrast-aware foreground); opening a store still expands the ink over 420ms with a direct opening under reduced motion.
 
-Home: stories, a white promo card, then 96×112 white category tiles with the name on top and the picture at the foot. The catalogue root is a two-column list of white 104px rows with the picture at lower right. Real PNG cut-outs are planned for both; the CSS already switches `.png` sources to `object-fit: contain`, but the cut-outs are pending and the current images are photos.
+Category tiles on home and catalogue rows use generated PNG cut-outs (public/cat/, 320px, transparent): photoreal product groups shown with object-fit: contain straight on the white card.
 
 ## Implementation and verification
 

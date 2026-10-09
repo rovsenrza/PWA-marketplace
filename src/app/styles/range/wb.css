@@ -295,3 +295,7 @@ html[data-theme] #phone-container[data-ui] .home-cat-label--long { overflow-wrap
 /* contrast: the sale badge reads dark on the lighter dark-theme red; inactive tab labels use ink-3 (4.5:1+) */
 html[data-theme="dark"] #phone-container[data-ui] .r-sticker:not(.r-sticker--new) { color: #1A1B20; }
 html[data-theme] #phone-container[data-ui] #app-tabbar > button:not(.text-blue-600) { color: var(--r-ink-3) !important; }
+/* cut-out pictures sit straight on the card: no fill behind the transparency, in either theme */
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row:has(img[src$=".png"]) :is(.dir-thumb-wrap, img) { background: transparent !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row:has(img[src$=".png"]) > .dir-thumb-wrap { width: 68px !important; height: 64px !important; }
+html[data-theme] #phone-container[data-ui] .home-cat img[src$=".png"] { background: transparent !important; }

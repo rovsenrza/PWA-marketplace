@@ -303,7 +303,7 @@
       "Do not add borders, hairlines or shadows",
       "Do not set text above 18px or 600",
       "Do not put white text on orange",
-      "Do not claim PNG category cut-outs exist until they ship",
+      "Category pictures are transparent PNG cut-outs (public/cat/), shown with object-fit: contain on the white card, never cropped",
       "Do not mix the V1, V2 and V3 visual systems"
     ]
   }
