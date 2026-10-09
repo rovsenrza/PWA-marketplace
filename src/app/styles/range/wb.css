@@ -362,3 +362,97 @@ html[data-theme] #phone-container[data-ui] .fav-banner-copy { position: static !
 html[data-theme] #phone-container[data-ui] .fav-banner .fav-shop { font: 600 16px/22px var(--r-font) !important; color: var(--r-ink) !important; }
 html[data-theme] #phone-container[data-ui] .fav-banner .fav-shop::before { content: ''; display: inline-block; width: 8px; height: 8px; margin: 0 8px 2px 0; border-radius: 999px; background: var(--spine); vertical-align: middle; }
 html[data-theme] #phone-container[data-ui] .fav-banner .fav-heart { position: absolute !important; top: 8px; right: 6px; background: none !important; }
+
+/* ---------- fix batch 3: the last dark-glass screens, text over photos ---------- */
+/* text set over a photograph stays white above its veil: the subview heading rule must not reach it */
+html[data-theme] #phone-container[data-ui] :is(.ls-list-card, .lh-hero, .re-hero, .sc-hero, .promo-hero, [class*="hero"]:has(> img)) :is(h1, h2, h3, h4, h5, p, span:not(.r-sticker):not(.lh-fmt):not(.tag)) { color: #FFFFFF !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card { border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card h4 { font-size: 18px !important; font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card .veil { background: linear-gradient(90deg, rgba(10, 12, 16, .62) 0%, rgba(10, 12, 16, .18) 70%) !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card :is(.go, .tag) { background: #FFFFFF !important; color: #1A1B20 !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card :is(.go, .tag) * { color: #1A1B20 !important; }
+
+/* landscape passport and the landscape storefront: the light world instead of the night-blue glass */
+html[data-theme] #phone-container[data-ui] #ls-studio-modal,
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode { background: var(--r-ground) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#ls-studio-modal, #shop-catalog-modal.ls-mode) :is(h1, h2, h3, h4, strong, b, .ls-zone strong, .ls-work h4) { color: var(--r-ink) !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] :is(#ls-studio-modal, #shop-catalog-modal.ls-mode) :is(p, span, em, i, small, .ls-note, .ls-addr) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(#ls-studio-modal, #shop-catalog-modal.ls-mode) :is(.ls-kicker, .ls-zone b, .ls-est span) { color: var(--r-ink-3) !important; text-transform: none !important; letter-spacing: 0 !important; font-size: 12px !important; font-weight: 500 !important; }
+html[data-theme] #phone-container[data-ui] .ls-pass-top { padding: 16px 16px 10px !important; background: var(--r-paper) !important; border-radius: 0 0 16px 16px; }
+html[data-theme] #phone-container[data-ui] .ls-pass-top h2 { font-size: 18px !important; font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] .ls-close { background: var(--r-sunk) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] .ls-pass-hero { margin: 10px 12px !important; border-radius: var(--w-r-card) !important; background: var(--r-sunk) !important; }
+html[data-theme] #phone-container[data-ui] .ls-pass-hero .veil { background: linear-gradient(180deg, transparent 55%, rgba(10, 12, 16, .45)) !important; }
+html[data-theme] #phone-container[data-ui] .ls-season { background: rgba(255, 255, 255, .92) !important; color: #1A1B20 !important; border-radius: var(--w-r-ctl) !important; font-size: 12px !important; backdrop-filter: none !important; }
+html[data-theme] #phone-container[data-ui] .ls-season.on { background: var(--r-orange) !important; color: var(--r-on-orange) !important; }
+html[data-theme] #phone-container[data-ui] .ls-scroll { padding: 0 12px 108px !important; }
+html[data-theme] #phone-container[data-ui] .ls-sec { color: var(--r-ink) !important; font-size: 16px !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: 0 !important; margin: 16px 4px 8px !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-zone, .ls-zone:first-child, .ls-work, .ls-est, .ls-tl, .ls-plot, .ls-arch, .ls-note) { background: var(--r-paper) !important; border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] .ls-note { padding: 12px 14px !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-mosaic, .ls-film) img { border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .ls-tl-item::before { background: var(--r-orange) !important; }
+html[data-theme] #phone-container[data-ui] .ls-plot-btn { background: var(--r-sunk) !important; color: var(--r-ink) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .ls-plot-btn.on { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] .ls-bar { background: var(--r-paper) !important; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) !important; border-radius: 16px 16px 0 0; gap: 8px; }
+html[data-theme] #phone-container[data-ui] .ls-bar-main,
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode .ls-cta { background: var(--r-orange) !important; color: var(--r-on-orange) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .ls-bar-ghost { background: var(--r-sunk) !important; color: var(--r-ink) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-bar-main, .ls-bar-ghost) * { color: inherit !important; }
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode :is(.shop-perk, .shop-person-photo) { background: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode #shop-catalog-hero ~ * :is(h1, h2, h3, h4, p, span) { color: inherit; }
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode :is(#shop-catalog-hero-veil + *, [id*="hero"]) :is(h1, h2, h3, h4, p, span) { color: #FFFFFF !important; }
+
+/* company page: a white page under its photo cover */
+html[data-theme] #phone-container[data-ui] #company-catalog-modal { background: var(--r-ground) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal > .relative:first-child .absolute.bottom-5 :is(h1, h2, h3, span, p) { color: #FFFFFF !important; text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal > .relative:first-child > .absolute.inset-0:not(img) { background: linear-gradient(180deg, rgba(10, 12, 16, .2), rgba(10, 12, 16, .62)) !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal .flex-1.overflow-y-auto { background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal .flex-1.overflow-y-auto :is(h3, h4, h5, b, strong) { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal .flex-1.overflow-y-auto :is(p, span:not(.r-sticker)) { color: var(--r-ink-2) !important; text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal .flex-1.overflow-y-auto .px-5 > div:not(.grid) { background: var(--r-paper); border-radius: var(--w-r-card); padding: 12px; }
+html[data-theme] #phone-container[data-ui] :is(.bg-\[\#12283c\], .bg-\[\#16324a\], .bg-\[\#0f1c28\], .bg-\[\#1a2332\]) { background-color: var(--r-paper) !important; color: var(--r-ink) !important; }
+
+/* detail modals (vacancy, portfolio, machinery, product about): sentence-case heads, readable values */
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal, #pm-about-sheet, #shop-catalog-modal) :is(h3, h4, h5, .uppercase) { text-transform: none !important; letter-spacing: 0 !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal, #pm-about-sheet, #shop-catalog-modal, #company-catalog-modal, #feedback-modal) :is(.text-slate-300, .text-slate-400, .text-gray-400, .text-white\/60, .text-white\/70, [class*="text-slate-400"]) { color: var(--r-ink-3) !important; }
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal, #pm-about-sheet) { background: var(--r-paper) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal) :is(.bg-blue-600, .bg-blue-500, .bg-\[\#2563eb\], .bg-\[\#1e6091\]) { background: var(--r-orange) !important; color: var(--r-on-orange) !important; }
+html[data-theme] #phone-container[data-ui] #pm-about-sheet * { color: var(--r-ink); }
+html[data-theme] #phone-container[data-ui] #pm-about-sheet :is(dt, .text-slate-400, .text-slate-500) { color: var(--r-ink-3) !important; }
+
+/* ---------- fix batch 4 ---------- */
+/* legacy rules that still asked for 700–800 or a size above the ceiling */
+html[data-theme] #phone-container[data-ui] :is(.comm-chip, .ls-list-card .tag, .sc-firm-salary, .lh-jump, #portfolio-about-label, #portfolio-prices-label, [id^="comm-chip-"], [id^="comm-mode-"], [class*="text-[9px]"].font-bold) { font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-atlas-head h3, #st-modal-price, #rec-modal h3, #subview-specific-calc h4) { font-size: 18px !important; line-height: 24px !important; }
+/* small uppercase section labels in the detail modals read as sentence-case headings */
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal) [class*="text-[9px]"] { font-size: 13px !important; text-transform: none !important; letter-spacing: 0 !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#portfolio-hours, #vacancy-hours) { color: var(--r-ink) !important; }
+/* machinery sheet: copy over the photo is white; price and status follow the theme; the request is the primary action */
+html[data-theme] #phone-container[data-ui] :is(#st-modal-cat, #st-modal-title) { color: #FFFFFF !important; text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] #st-modal-price { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#st-modal-price-sub, #st-modal-avail) { color: var(--r-ink-3) !important; }
+html[data-theme] #phone-container[data-ui] #spectech-modal .st-cta { background: var(--r-orange) !important; color: var(--r-on-orange) !important; border-radius: var(--w-r-ctl) !important; }
+/* portfolio room chips and specialist chips: quiet fill, ink when chosen, in both themes */
+html[data-theme] #phone-container[data-ui] :is(#portfolio-modal .co-room, .comm-chip) { background: var(--r-sunk) !important; color: var(--r-ink) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] :is(#portfolio-modal .co-room.on, .comm-chip.on) { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] #subview-spec-private .shrink-0[class*="text-[10px]"] { background: var(--r-orange-wash) !important; color: var(--r-orange-text) !important; }
+/* lifehack «За 3 шага» panel and any other pale-blue legacy panel follow the card */
+html[data-theme] #phone-container[data-ui] :is(.bg-\[\#f8fbfe\], .bg-\[\#f0f6fc\], .bg-\[\#eef5fc\], .bg-sky-50, .bg-blue-50) { background-color: var(--r-paper) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(.text-slate-900, .text-slate-800, .text-gray-900) { color: var(--r-ink) !important; }
+/* the quiet text on the fill reads at 4.5:1 */
+html[data-theme] #phone-container[data-ui] :is(#pm-about-sheet span.k, #pm-about-sheet i, #auth-tab-register, #auth-tab-login, #comm-mode-map, #comm-mode-list) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(#comm-mode-list, #comm-mode-map).on, html[data-theme] #phone-container[data-ui] [id^="comm-mode-"][class*="bg-"] { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #spectech-modal :is(#st-modal-cat, #st-modal-title) { color: #FFFFFF !important; }
+html[data-theme] #phone-container[data-ui] #spectech-modal #st-modal-price { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #pm-about-sheet :is(span.k, i, .text-slate-400) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(#company-catalog-modal, #portfolio-modal) .co-room { background: var(--r-sunk) !important; color: var(--r-ink) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] :is(#company-catalog-modal, #portfolio-modal) .co-room.on { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] #subview-re-commercial :is(#comm-mode-list, #comm-mode-map) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] #subview-re-commercial :is(#comm-mode-list, #comm-mode-map):is(.on, [class*="bg-"]) { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] :is(#lh-ba-tag, .lh-ba-hint, .lh-step-n, [class*="text-[10px]"].font-extrabold, #pm-sheet-pill-specs, #pm-sheet-pill-desc, #pm-about-sheet span.v) { font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] [class*="text-[10px]"].font-extrabold { text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] :is(.bg-\[\#f3f7fb\], .bg-\[\#f5f8fb\], .bg-\[\#eef3f8\]) { background-color: var(--r-ground) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #spectech-modal .bg-white { background-color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] :is(#pm-about-sheet, #pm-sheet-specs, #pm-sheet-desc) :is(span.k, i, .text-slate-400) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-pass-hero, .ls-mosaic, .ls-film) i { color: #FFFFFF !important; }
+html[data-theme] #phone-container[data-ui] .lh-step-n { background: var(--r-orange-wash) !important; color: var(--r-orange-text) !important; }
