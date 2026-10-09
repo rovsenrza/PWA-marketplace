@@ -25,7 +25,8 @@ html[data-theme] #phone-container[data-ui] :is(.rounded-2xl, .rounded-3xl, [clas
 html[data-theme] #phone-container[data-ui] .rounded-full { border-radius: 999px !important; }
 html[data-theme] #phone-container[data-ui] :is(.rounded-t-2xl, .rounded-t-3xl, [class*="rounded-t-["]) { border-radius: 16px 16px 0 0 !important; }
 /* tailwind surfaces: white stays the card, the light greys become the ground or the control fill */
-html[data-theme] #phone-container[data-ui] :is(.bg-slate-50, .bg-gray-50, .bg-\[\#f8fafc\], .bg-\[\#F8FAFC\]) { background-color: var(--r-ground) !important; }
+/* the legacy light panels sit on the ground: they are the white cards of this world */
+html[data-theme] #phone-container[data-ui] :is(.bg-slate-50, .bg-gray-50, .bg-\[\#f8fafc\], .bg-\[\#F8FAFC\], .bg-\[\#f5f7f9\]) { background-color: var(--r-paper) !important; }
 html[data-theme] #phone-container[data-ui] :is(.bg-slate-100, .bg-gray-100) { background-color: var(--r-sunk) !important; }
 html[data-theme] #phone-container[data-ui] :focus-visible { outline: 2px solid var(--r-orange) !important; outline-offset: 2px !important; }
 html[data-theme] #phone-container[data-ui] :where(:focus-visible) { border-radius: inherit; }
@@ -233,7 +234,7 @@ html[data-theme] #phone-container[data-ui] #onb-footer > button { border-radius:
 html[data-theme] #phone-container[data-ui] .onb-badge { border-radius: 6px !important; }
 
 /* ---------- profile ---------- */
-html[data-theme] #phone-container[data-ui] #view-profile > div { border-radius: var(--w-r-card); background: var(--r-paper); margin: 0 12px 8px; }
+
 html[data-theme] #phone-container[data-ui] .lg-seg { border-radius: var(--w-r-ctl); padding: 3px; gap: 0; background: var(--r-sunk); }
 html[data-theme] #phone-container[data-ui] .lg-seg::before { top: 3px; left: 3px; width: calc((100% - 6px) / 3); height: calc(100% - 6px); border-radius: 8px; background: var(--r-paper); transition-timing-function: var(--r-ease); }
 html[data-theme] #phone-container[data-ui] .lg-seg button { height: 36px; border-radius: 8px !important; background: transparent; color: var(--r-ink-2); font-weight: 500; }
@@ -299,3 +300,65 @@ html[data-theme] #phone-container[data-ui] #app-tabbar > button:not(.text-blue-6
 html[data-theme] #phone-container[data-ui] #view-directory .dir-row:has(img[src$=".png"]) :is(.dir-thumb-wrap, img) { background: transparent !important; }
 html[data-theme] #phone-container[data-ui] #view-directory .dir-row:has(img[src$=".png"]) > .dir-thumb-wrap { width: 68px !important; height: 64px !important; }
 html[data-theme] #phone-container[data-ui] .home-cat img[src$=".png"] { background: transparent !important; }
+
+/* ---------- fix batch 2: containers, fills and insets ---------- */
+/* profile: the title sits on the ground; settings and the sign-in are white cards with a real inset */
+html[data-theme] #phone-container[data-ui] #view-profile { padding: 12px 12px 0 !important; }
+html[data-theme] #phone-container[data-ui] #view-profile > div:first-child { background: none !important; padding: 0 4px; }
+html[data-theme] #phone-container[data-ui] #view-profile :is(.prof-settings, #profile-unauth, #profile-auth > div) { background: var(--r-paper) !important; border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] #profile-unauth { padding: 12px !important; }
+html[data-theme] #phone-container[data-ui] #profile-unauth :is(#form-login, #form-register) { background: none !important; padding: 12px 0 0 !important; }
+html[data-theme] #phone-container[data-ui] #view-profile .r-consent-sheet { background: var(--r-paper) !important; }
+/* swipe-to-delete rows: the red action stays under an opaque row and inside the card's corners */
+html[data-theme] #phone-container[data-ui] .lg-swipe { overflow: hidden !important; border-radius: 0 !important; background: var(--r-paper); }
+html[data-theme] #phone-container[data-ui] .lg-swipe-content,
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card { background: var(--r-paper) !important; border-radius: 0 !important; }
+html[data-theme] #phone-container[data-ui] .lg-swipe:not(.is-open):not([data-open]) .lg-swipe-action { visibility: hidden; }
+html[data-theme] #phone-container[data-ui] .lg-swipe:has(.lg-swipe-content[style*="translate"]) .lg-swipe-action { visibility: visible; }
+html[data-theme] #phone-container[data-ui] .cart-card .cart-card-x { width: 32px !important; height: 32px !important; background: transparent !important; color: var(--r-ink-3) !important; border-radius: 999px !important; }
+/* empty states are cards with room to breathe */
+html[data-theme] #phone-container[data-ui] :is(.cart-orders-empty, .cart-empty, .fav-empty) { padding: 20px 16px !important; color: var(--r-ink-3) !important; font-size: 14px !important; text-align: center; }
+/* favourites: one white card per store, the ink only as the dot */
+html[data-theme] #phone-container[data-ui] .fav-card { overflow: hidden; }
+html[data-theme] #phone-container[data-ui] .fav-banner { background: var(--r-paper) !important; color: var(--r-ink) !important; padding: 14px 12px 6px !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner * { color: inherit !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner :is(span, small) { color: var(--r-ink-3) !important; font-size: 13px !important; font-weight: 400 !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner svg { color: var(--r-bad) !important; }
+html[data-theme] #phone-container[data-ui] .fav-badge-wrap * { text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] .fav-item { background: var(--r-paper) !important; }
+/* tab bar: no focus frame after a tap; keyboard focus shows as a soft fill */
+html[data-theme] #phone-container[data-ui] #app-tabbar > button:focus { outline: none !important; }
+html[data-theme] #phone-container[data-ui] #app-tabbar > button:focus-visible { background: var(--r-sunk) !important; }
+/* product page: a white page (as on WB), the seller a quiet card, technical table only when it has rows */
+html[data-theme] #phone-container[data-ui] #product-modal,
+html[data-theme] #phone-container[data-ui] #product-modal #pm-scroll { background: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] #product-modal .pm-hero { background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] #product-modal #pm-main-image { border-radius: 0 !important; background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] .pm-chip, html[data-theme] #phone-container[data-ui] .pm-chip * { text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] .pm-technical:not(:has(#pm-technical-table > *)):not(:has(#pm-store-services > *)) { display: none !important; }
+html[data-theme] #phone-container[data-ui] #product-modal .pm-seller { background: var(--r-sunk) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #product-modal .pm-seller * { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #product-modal .pm-seller :is(small, span:last-child, [class*="go"], [class*="link"]) { color: var(--r-orange-text) !important; }
+/* calculators: panels are white cards; the chosen layout is tinted orange, the others sit in the quiet fill */
+html[data-theme] #phone-container[data-ui] #subview-specific-calc :is(.bg-slate-50, .bg-white.rounded-2xl) { padding: 14px !important; border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] #subview-specific-calc { background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] .lay-btn { background: var(--r-sunk) !important; color: var(--r-ink-2) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .lay-btn[class~="border-[#1e6091]"] { background: var(--r-orange-wash) !important; color: var(--r-orange-text) !important; }
+html[data-theme] #phone-container[data-ui] .lay-btn[class~="border-[#1e6091]"] * { color: var(--r-orange-text) !important; }
+/* real-estate catalogue: the sheet is white, the old pine-green actions follow the app (primary orange, chosen segment ink) */
+html[data-theme] #phone-container[data-ui] #subview-re-catalog > div:not(:first-child) { background: var(--r-paper) !important; border-radius: 16px 16px 0 0 !important; }
+html[data-theme] #phone-container[data-ui] :is(.bg-\[\#16332c\], .bg-\[\#1c3a34\]) { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] button.w-full.bg-\[\#16332c\] { background: var(--r-orange) !important; color: var(--r-on-orange) !important; }
+html[data-theme] #phone-container[data-ui] .re-type-btn span { color: var(--r-ink-2) !important; font-size: 12px !important; }
+/* cart row: the remove key floats at the row's corner instead of taking a line of its own */
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card { position: relative; padding: 10px 12px !important; }
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card-top { position: absolute !important; top: 6px; right: 6px; padding: 0 !important; background: none !important; z-index: 1; }
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card-top > .min-w-0 { display: none !important; }
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card-body { padding: 0 36px 0 0 !important; }
+/* favourites head: the store's name in ink with its dot, the count quiet; the banner photo and veil step aside */
+html[data-theme] #phone-container[data-ui] .fav-banner :is(img, .fav-banner-veil) { display: none !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner { position: relative; min-height: 0 !important; height: auto !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner-copy { position: static !important; display: flex !important; align-items: center; justify-content: space-between; padding-right: 40px; }
+html[data-theme] #phone-container[data-ui] .fav-banner .fav-shop { font: 600 16px/22px var(--r-font) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner .fav-shop::before { content: ''; display: inline-block; width: 8px; height: 8px; margin: 0 8px 2px 0; border-radius: 999px; background: var(--spine); vertical-align: middle; }
+html[data-theme] #phone-container[data-ui] .fav-banner .fav-heart { position: absolute !important; top: 8px; right: 6px; background: none !important; }
