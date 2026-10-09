@@ -74,13 +74,12 @@ function legacyScripts(bundles: Record<string, string> = {}): Plugin {
 }
 
 /**
- * The self-hosted faces (public/fonts/) every screen of the buyer app is set in: the text and the numeral faces in both
- * subsets, and the two ruble signs. Precached with the shell, so a first visit that goes offline right after still opens
- * in its own type. Unbounded and Prata (storefront voices) are cached on first use, like the admin panel.
+ * The self-hosted faces (public/fonts/) every screen of the buyer app is set in: Google Sans in its cyrillic, latin and
+ * latin-ext (₽) subsets. Precached with the shell, so a first visit that goes offline right after still opens
+ * in its own type.
  */
 const SHELL_FONTS = [
-  'sofia-sans-cyrillic', 'sofia-sans-latin', 'sofia-sans-extra-condensed-cyrillic', 'sofia-sans-extra-condensed-latin',
-  'rub-text', 'rub-condensed',
+  'google-sans-cyrillic', 'google-sans-latin', 'google-sans-latin-ext',
 ].map((name) => `fonts/${name}.woff2`);
 
 /**

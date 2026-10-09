@@ -54,7 +54,7 @@ html[data-theme] #phone-container[data-ui] { border-color: var(--r-ink) !importa
    (rounded up, so it always covers that row); at --app-fit 1 it lies exactly on the frame's own border. */
 @media (min-width: 721px) and (not (display-mode: standalone)) {
   #app-stage { position: relative; }
-  #app-stage::after { content: ''; position: absolute; inset: 0; box-sizing: border-box; border: round(up, calc(12px * var(--app-fit)), 1px) solid var(--r-ink); pointer-events: none; }
+  #app-stage::after { content: ''; position: absolute; inset: 0; box-sizing: border-box; border: 0; pointer-events: none; }
 }
 
 /* The column: off below 1024px and in the installed app, which is full-bleed. */
@@ -68,15 +68,15 @@ html[data-theme] #phone-container[data-ui] { border-color: var(--r-ink) !importa
   .stage-copy ::selection { background: var(--r-orange); color: var(--r-on-orange); }
 
   /* the wordmark of the header (chrome.css), set at 82px: the orange plate and its 45° corner scale with the type */
-  .stage-mark { display: flex; align-items: baseline; margin: 0; font-family: var(--r-font-x); font-weight: 900; font-size: 82px; line-height: 1; letter-spacing: 0; text-transform: uppercase; color: var(--r-ink); }
-  .stage-mark b { margin-left: .133em; padding: .1em .4em 0 .233em; background: var(--r-orange); color: var(--r-on-orange); font-weight: 900; clip-path: polygon(0 0, calc(100% - .333em) 0, 100% .333em, 100% 100%, 0 100%); }
-  .stage-tag { margin: 14px 0 0; font-size: 24px; font-weight: 600; line-height: 1.2; color: var(--r-ink); }
-  .stage-note { margin: 28px 0 0; padding-top: 24px; border-top: var(--r-band) solid var(--r-ink); font-size: 20px; line-height: 1.45; color: var(--r-ink-2); text-wrap: balance; }
+  .stage-mark { display: flex; align-items: baseline; margin: 0; font-family: var(--r-font-x); font-weight: 600; font-size: 18px; line-height: 1; letter-spacing: 0; text-transform: none; color: var(--r-ink); }
+  .stage-mark b { margin-left: .133em; padding: .1em .4em 0 .233em; background: var(--r-orange); color: var(--r-on-orange); font-weight: 600; border-radius: .12em; }
+  .stage-tag { margin: 14px 0 0; font-size: 18px; font-weight: 600; line-height: 1.2; color: var(--r-ink); }
+  .stage-note { margin: 28px 0 0; padding-top: 24px; border-top: 0; font-size: 17px; line-height: 1.45; color: var(--r-ink-2); text-wrap: balance; }
 
   /* the code sits on the bottom edge of the frame, under its own band */
-  .stage-qr { margin: auto 0 0; padding-top: 24px; border-top: var(--r-band) solid var(--r-ink); }
+  .stage-qr { margin: auto 0 0; padding-top: 24px; border-top: 0; }
   /* the frame is the page ink: a visible frame on the white paper, and in the dark theme the same light as the plate */
-  .stage-qr__code { width: max-content; border: var(--r-band) solid var(--r-ink); background: var(--stage-qr-paper); color: var(--stage-qr-ink); forced-color-adjust: none; }
+  .stage-qr__code { width: max-content; border: 0; background: var(--stage-qr-paper); color: var(--stage-qr-ink); forced-color-adjust: none; }
   .stage-qr__code svg { display: block; }
-  .stage-qr__cap { margin-top: 14px; font-size: 20px; font-weight: 700; line-height: 1.2; color: var(--r-ink); }
+  .stage-qr__cap { margin-top: 14px; font-size: 17px; font-weight: 600; line-height: 1.2; color: var(--r-ink); }
 }

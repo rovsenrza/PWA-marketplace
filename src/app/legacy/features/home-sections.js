@@ -68,11 +68,13 @@ function renderHomeCategories() {
         const foreground = typeof onInk === 'function' ? onInk(ink) : (['#FE5000','#FFC20E','#00A19A','#4C8C2B'].includes(ink) ? '#111110' : '#FFFFFF');
         return `<button type="button" class="home-cat${all ? ' on' : ''}" onclick="${escHtml(action)}" style="--cat-ink:${ink};--cat-text:${foreground}"><span class="home-cat-label${label.length > 11 ? ' home-cat-label--long' : ''}">${escHtml(label)}</span>${photo ? `<img src="${escHtml(photo)}" alt="" loading="lazy">` : `<span class="home-cat-all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">${HOME_CAT_ICONS.all}</svg></span>`}</button>`;
     };
-    let html = tile('openProductCatalogFromHome()', 'Все товары', '#111110', '', true);
+    /* V3: each category has its own cut-out picture (public/cat/, generated product shots on transparency) */
+    const art = { 'стройматериалы': 'stroymaterialy', 'кухня': 'kuhnya', 'гостиная': 'gostinaya', 'спальня': 'spalnya', 'ванная': 'vannaya', 'мебель': 'mebel', 'декор': 'dekor', 'недвижимость': 'nedvizhimost', 'освещение': 'osveshchenie' };
+    let html = tile('openProductCatalogFromHome()', 'Все товары', '#111110', 'cat/all.png', true);
     order.filter(c => has[c]).forEach((c, i) => {
         const meta = typeof pmCategoryMeta === 'function' ? pmCategoryMeta({ category: c }) : { id: c, title: c, chip: c };
         const product = Object.values(productsDb).find(p => p.status === 'published' && String(p.category).toLowerCase() === c);
-        html += tile(`openCategoryProducts('${escJsArg(meta.id)}', '${escJsArg(meta.title)}')`, meta.chip, inks[i % inks.length], product && product.image, false);
+        html += tile(`openCategoryProducts('${escJsArg(meta.id)}', '${escJsArg(meta.title)}')`, meta.chip, inks[i % inks.length], art[c] ? `cat/${art[c]}.png` : (product && product.image), false);
     });
     box.innerHTML = html;
 }

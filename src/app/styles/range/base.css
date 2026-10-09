@@ -4,20 +4,20 @@
    into its own <b>, <i> and <span> (restated on *, the family would reset them to Sofia Sans) */
 #phone-container[data-ui] * { font-family: inherit !important; }
 #phone-container[data-ui] :is(.r-x, .r-x *) { font-family: var(--r-font-x) !important; }
-#phone-container[data-ui] .r-caps { text-transform: uppercase; }
+#phone-container[data-ui] .r-caps { text-transform: none; }
 #phone-container[data-ui] .r-num { font-variant-numeric: tabular-nums lining-nums; }
 
 #phone-container[data-ui] :is(.rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl,
   [class*="rounded-["], [class*="rounded-t-"], [class*="rounded-b-"], [class*="rounded-l-"], [class*="rounded-r-"],
-  [class*="rounded-tl-"], [class*="rounded-tr-"], [class*="rounded-bl-"], [class*="rounded-br-"]) { border-radius: 0 !important; }
-#phone-container[data-ui] :is(.shadow-sm, .shadow, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl) { box-shadow: 0 0 0 1px var(--r-rule) !important; }
+  [class*="rounded-tl-"], [class*="rounded-tr-"], [class*="rounded-bl-"], [class*="rounded-br-"]) { border-radius: var(--w-r-ctl) !important; }
+#phone-container[data-ui] :is(.shadow-sm, .shadow, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl) { box-shadow: none !important; }
 
 /* the second selector outweighs glass.css's dark-theme selection colour */
 #phone-container[data-ui] ::selection,
 html[data-theme] #phone-container[data-ui] ::selection { background: var(--r-orange); color: var(--r-on-orange); }
 #phone-container[data-ui] :focus-visible { outline: 2px solid var(--r-orange) !important; outline-offset: 2px !important; }
 /* the old focus rule rounded every focused element (8px); focus keeps the square */
-#phone-container[data-ui] :where(:focus-visible:not(.rounded-full)) { border-radius: 0; }
+#phone-container[data-ui] :where(:focus-visible:not(.rounded-full)) { border-radius: var(--w-r-ctl); }
 #phone-container[data-ui] * { scrollbar-width: thin; scrollbar-color: var(--r-n4) transparent; }
 /* rails that hide their scrollbar keep it hidden (a non-auto scrollbar-width switches off ::-webkit-scrollbar) */
 #phone-container[data-ui] :is(.no-scrollbar, .ls-film) { scrollbar-width: none; }
@@ -30,7 +30,7 @@ html[data-theme] #phone-container[data-ui] ::selection { background: var(--r-ora
 #phone-container[data-ui] #catalog-search-input:focus { box-shadow: none !important; }
 
 /* the Liquid Glass layer is retired: controls are solid */
-#phone-container[data-ui] .lg { background: transparent !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: none !important; border-radius: 0 !important; }
+#phone-container[data-ui] .lg { background: transparent !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: none !important; border-radius: var(--w-r-ctl) !important; }
 #phone-container[data-ui] .lg::before { content: none !important; }
 #phone-container[data-ui] .home-aurora { display: none !important; }
 #phone-container[data-ui] * { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
@@ -48,8 +48,8 @@ html[data-theme] #phone-container[data-ui] {
   --glass-sheen-low: transparent;
   --glass-shadow: 0 0 transparent;
   --glass-lens: transparent;
-  --lg-rims: 0 0 0 1px var(--r-rule);
-  --lg-rims-sm: 0 0 0 1px var(--r-rule);
+  --lg-rims: none;
+  --lg-rims-sm: none;
 }
 
 /* legacy primary fills become the orange next action; legacy brand text becomes orange text */

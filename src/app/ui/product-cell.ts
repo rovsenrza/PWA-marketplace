@@ -1,7 +1,7 @@
 /**
  * The product cell: one renderer for every grid and rail of goods (home, the catalogue, category goods, the
  * product page's «Похожие» and «Недавние», lifehack picks, storefronts). Every cell carries its store's spine,
- * the store's ink band with its name, so a buyer tells stores apart by colour before reading a name.
+ * drawn in V3 as the store line: a dot of the store's ink beside its name, so stores stay apart by colour.
  *
  *  - productCellHtml: pure. A product and its state in, markup out; every value is escaped (html`…`).
  *  - productCell: the same for a product as the app has it now (cart, favourites, the store's ink, the unit).

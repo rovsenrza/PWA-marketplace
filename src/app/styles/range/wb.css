@@ -1,0 +1,458 @@
+/* V3 — Russian e-commerce (WB / Ozon grammar). Loaded last.
+   The page is the off-white ground (#F4F5F7); content sits on white cards with a 14px radius; controls take 10px.
+   Nothing is outlined and nothing casts a shadow: parts separate only by ground-vs-card contrast and radius.
+   Type is Google Sans, at most 18px and at most 600 (fonts.css caps the face itself at 600).
+   Product grids: 3px between columns, 10px between rows. */
+
+/* ---------- global rules of the world ---------- */
+html[data-theme] #phone-container[data-ui] *,
+html[data-theme] #phone-container[data-ui] *::before,
+html[data-theme] #phone-container[data-ui] *::after { box-shadow: none !important; text-shadow: none !important; font-synthesis: none; }
+html[data-theme] #phone-container[data-ui] :where(*:not(.animate-spin):not([class*="spinner"]):not(input[type="checkbox"]):not(input[type="radio"])),
+html[data-theme] #phone-container[data-ui] :where(*)::before,
+html[data-theme] #phone-container[data-ui] :where(*)::after { border-style: none !important; }
+html[data-theme] #phone-container[data-ui] hr { height: 0; margin: 0; }
+html[data-theme] #phone-container[data-ui] :is(b, strong, h1, h2, h3, h4, h5, h6, th, .font-bold, .font-extrabold, .font-black) { font-weight: 600 !important; }
+/* tailwind sizes above the ceiling come down to it */
+html[data-theme] #phone-container[data-ui] :is(.text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl) { font-size: 18px !important; line-height: 24px !important; }
+html[data-theme] #phone-container[data-ui] :is(h1, h2) { font-size: 18px !important; line-height: 24px !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] :is(h3, h4) { letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] .uppercase { text-transform: none !important; letter-spacing: 0 !important; }
+/* rounded tailwind classes follow the two radii (the V2 layer set them square) */
+html[data-theme] #phone-container[data-ui] :is(.rounded, .rounded-sm, .rounded-md) { border-radius: var(--w-r-sm) !important; }
+html[data-theme] #phone-container[data-ui] :is(.rounded-lg, .rounded-xl) { border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] :is(.rounded-2xl, .rounded-3xl, [class*="rounded-["]) { border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] .rounded-full { border-radius: 999px !important; }
+html[data-theme] #phone-container[data-ui] :is(.rounded-t-2xl, .rounded-t-3xl, [class*="rounded-t-["]) { border-radius: 16px 16px 0 0 !important; }
+/* tailwind surfaces: white stays the card, the light greys become the ground or the control fill */
+/* the legacy light panels sit on the ground: they are the white cards of this world */
+html[data-theme] #phone-container[data-ui] :is(.bg-slate-50, .bg-gray-50, .bg-\[\#f8fafc\], .bg-\[\#F8FAFC\], .bg-\[\#f5f7f9\]) { background-color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] :is(.bg-slate-100, .bg-gray-100) { background-color: var(--r-sunk) !important; }
+html[data-theme] #phone-container[data-ui] :focus-visible { outline: 2px solid var(--r-orange) !important; outline-offset: 2px !important; }
+html[data-theme] #phone-container[data-ui] :where(:focus-visible) { border-radius: inherit; }
+
+/* ---------- surfaces ---------- */
+html[data-theme] #phone-container[data-ui] :is(#view-catalog, #view-directory, #view-cart, #view-favorites, #view-profile, #view-category-products, [id^="subview-"]) { background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] #main-scroll-container { background: var(--r-ground) !important; }
+/* a screen's lists and cards: white, rounded */
+html[data-theme] #phone-container[data-ui] :is([id^="subview-"], #view-category-products) :is(.dir-row, .sc-firm, .mk-card, .sp-card, .st-card, .re-card, .lh-card, [onclick^="openPortfolioModal"], [onclick^="openCompanyCatalogModal"], [onclick^="openSpecialist"]) {
+  background: var(--r-paper) !important; border-radius: var(--w-r-card) !important; padding: 12px !important; margin-bottom: 8px !important;
+}
+html[data-theme] #phone-container[data-ui] [id^="subview-"] :is(.bg-white) { border-radius: var(--w-r-card); }
+html[data-theme] #phone-container[data-ui] [id^="subview-"] :is(.dir-thumb-wrap, .sc-firm-photo, img) { border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] [id^="subview-"] img.rounded-full, html[data-theme] #phone-container[data-ui] [id^="subview-"] .rounded-full img { border-radius: 999px !important; }
+
+/* ---------- chrome ---------- */
+html[data-theme] #phone-container[data-ui] #app-header { background: var(--r-paper) !important; padding-bottom: 8px !important; border-radius: 0 0 16px 16px !important; }
+html[data-theme] #phone-container[data-ui] .lg-wordmark { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+html[data-theme] #phone-container[data-ui] .lg-wordmark b { padding: 2px 8px; border-radius: var(--w-r-sm); clip-path: none; }
+html[data-theme] #phone-container[data-ui] .lg-tagline { font-size: 12px; font-weight: 400; color: var(--r-ink-3); }
+html[data-theme] #phone-container[data-ui] #app-header .lg--circle { border-radius: 999px !important; }
+html[data-theme] #phone-container[data-ui] #app-header .lg-dot { border-radius: 999px !important; }
+html[data-theme] #phone-container[data-ui] #app-tabbar { background: var(--r-paper) !important; border-radius: 16px 16px 0 0 !important; }
+html[data-theme] #phone-container[data-ui] #app-tabbar > button { border-radius: var(--w-r-ctl); color: var(--r-ink-4) !important; }
+html[data-theme] #phone-container[data-ui] #app-tabbar > button.text-blue-600 { color: var(--r-orange-text) !important; }
+html[data-theme] #phone-container[data-ui] #app-tabbar > button > span:not(#cart-badge) { font-size: 10px !important; font-weight: 500 !important; }
+html[data-theme] #phone-container[data-ui] #app-tabbar .tab-lens { display: none !important; }
+html[data-theme] #phone-container[data-ui] #cart-badge { border-radius: 999px !important; font-family: var(--r-font) !important; font-size: 11px !important; font-weight: 600 !important; }
+
+/* search: a white field on the ground, the filter key in the field's own fill */
+html[data-theme] #phone-container[data-ui] #view-catalog .lg-search { height: 44px !important; background: var(--r-sunk) !important; border-radius: 12px !important; overflow: hidden; }
+html[data-theme] #phone-container[data-ui] #search-input,
+html[data-theme] #phone-container[data-ui] .lg-search #search-input { height: 44px !important; background: transparent !important; border-radius: 12px !important; font: 15px var(--r-font) !important; }
+html[data-theme] #phone-container[data-ui] #view-catalog .lg-search button.lg-search-filter,
+html[data-theme] #phone-container[data-ui] #view-catalog .lg-search-filter { width: 44px !important; height: 44px !important; background: transparent !important; color: var(--r-ink-2) !important; border-radius: 12px !important; }
+html[data-theme] #phone-container[data-ui] #view-catalog .lg-search button.lg-search-filter svg { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(#quick-search-filters, #filter-panel) { background: var(--r-paper) !important; border-radius: var(--w-r-card) !important; }
+
+/* ---------- primitives ---------- */
+html[data-theme] #phone-container[data-ui] .r-head { border-top: 0; padding: 4px 0 8px; align-items: center; }
+html[data-theme] #phone-container[data-ui] .r-head__t,
+html[data-theme] #phone-container[data-ui] #view-catalog .r-head__t { font-family: var(--r-font) !important; font-size: 18px !important; line-height: 24px !important; font-weight: 600 !important; text-transform: none; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] .r-head__a { font-size: 14px; font-weight: 500; color: var(--r-ink-3); }
+
+html[data-theme] #phone-container[data-ui] .r-btn { height: 44px; border-radius: var(--w-r-ctl) !important; font-size: 15px; font-weight: 600; }
+html[data-theme] #phone-container[data-ui] .r-btn--sm { height: 36px; font-size: 14px; }
+html[data-theme] #phone-container[data-ui] .r-btn--line { background: var(--r-sunk); color: var(--r-ink); }
+html[data-theme] #phone-container[data-ui] .r-btn--line:active { background: var(--r-n3); }
+html[data-theme] #phone-container[data-ui] .r-btn:disabled { background: var(--r-sunk); color: var(--r-ink-4); }
+
+html[data-theme] #phone-container[data-ui] .r-chip { height: 34px; padding: 0 12px; border-radius: var(--w-r-ctl) !important; background: var(--r-sunk); color: var(--r-ink); font-size: 14px; font-weight: 500; }
+html[data-theme] #phone-container[data-ui] :is(.r-chip.is-on, .r-chip[aria-pressed="true"]) { background: var(--r-ink); color: var(--r-paper); }
+
+html[data-theme] #phone-container[data-ui] .r-sticker { height: 20px; padding: 0 6px; border-radius: 6px; background: var(--r-bad); color: #FFFFFF; font-family: var(--r-font) !important; font-size: 12px; font-weight: 600; clip-path: none; }
+html[data-theme] #phone-container[data-ui] .r-sticker--new { background: var(--r-ink); color: var(--r-paper); }
+
+html[data-theme] #phone-container[data-ui] .r-price { font-family: var(--r-font) !important; gap: 0 6px; }
+html[data-theme] #phone-container[data-ui] .r-price b { font-size: 18px; font-weight: 600 !important; letter-spacing: -0.01em; }
+html[data-theme] #phone-container[data-ui] .r-price i { font-size: 16px; font-weight: 600; }
+html[data-theme] #phone-container[data-ui] .r-price s { font-size: 12px; font-weight: 400; color: var(--r-ink-3); text-decoration-thickness: 1px; }
+
+html[data-theme] #phone-container[data-ui] :is(.r-input, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) { background: var(--r-sunk) !important; color: var(--r-ink) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] :is(.r-input, input, select, textarea):focus { outline: 2px solid var(--r-orange) !important; outline-offset: 0 !important; }
+html[data-theme] #phone-container[data-ui] .r-pict > i { border-radius: 12px; background: var(--r-sunk); }
+html[data-theme] #phone-container[data-ui] .r-back,
+html[data-theme] #phone-container[data-ui] .mk-back { width: 36px !important; height: 36px !important; display: inline-grid !important; place-items: center; border-radius: 999px !important; background: var(--r-paper) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] .r-plate { padding: 2px 8px; border-radius: var(--w-r-sm); clip-path: none; font-family: var(--r-font) !important; }
+/* section titles of the old screens */
+html[data-theme] #phone-container[data-ui] .oz-h1 { font-size: 18px !important; font-weight: 600 !important; letter-spacing: 0 !important; }
+
+/* ---------- the store spine becomes a quiet store line: a dot of the store's ink and its name ---------- */
+html[data-theme] #phone-container[data-ui] .r-spine { min-height: 22px; padding: 0; gap: 6px; background: none; color: var(--r-ink-3); font-family: var(--r-font) !important; font-size: 12px; font-weight: 500; text-transform: none; }
+html[data-theme] #phone-container[data-ui] .r-spine::before { content: ''; flex: 0 0 8px; width: 8px; height: 8px; border-radius: 999px; background: var(--spine, var(--r-ink)); }
+
+/* ---------- product grid and cell ---------- */
+html[data-theme] #phone-container[data-ui] .r-grid { column-gap: var(--w-gap-x); row-gap: var(--w-gap-y); gap: var(--w-gap-y) var(--w-gap-x); background: transparent; border-block: 0; }
+html[data-theme] #phone-container[data-ui] .r-grid--bleed { margin-inline: -12px; }
+html[data-theme] #phone-container[data-ui] .r-rail { gap: var(--w-gap-x); background: transparent; border-block: 0; }
+html[data-theme] #phone-container[data-ui] .r-rail::after { content: none; }
+html[data-theme] #phone-container[data-ui] .r-rail > .r-cell { flex: 0 0 148px; }
+
+html[data-theme] #phone-container[data-ui] .r-cell { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto auto; border-radius: var(--w-r-card); overflow: hidden; background: var(--r-paper); }
+html[data-theme] #phone-container[data-ui] .r-cell__media { border-radius: var(--w-r-card); background: var(--r-ground); }
+html[data-theme] #phone-container[data-ui] .r-cell__media > .r-sticker { top: auto; bottom: 8px; left: 8px; }
+html[data-theme] #phone-container[data-ui] .r-cell__fav { top: 6px; right: 6px; width: 34px; height: 34px; border-radius: 999px; background: rgba(255, 255, 255, .86); color: var(--r-n9); }
+html[data-theme] #phone-container[data-ui] .r-cell__fav[aria-pressed="true"] { color: var(--r-bad); }
+html[data-theme] #phone-container[data-ui] .r-cell__body { gap: 2px; padding: 8px 8px 2px; }
+html[data-theme] #phone-container[data-ui] .r-cell__title,
+html[data-theme] #phone-container[data-ui] #view-catalog .r-cell__title { font-size: 13px !important; font-weight: 400 !important; line-height: 17px; color: var(--r-ink-2) !important; min-height: 34px; }
+html[data-theme] #phone-container[data-ui] .r-cell:has(> .r-cell__cart) :is(.r-cell__title, .r-cell__note) { padding-right: 0; }
+html[data-theme] #phone-container[data-ui] .r-cell__note { font-size: 12px; font-weight: 400; color: var(--r-ink-3); }
+html[data-theme] #phone-container[data-ui] .r-cell__spine { grid-row: 3; padding: 0 8px; }
+html[data-theme] #phone-container[data-ui] .r-cell__cart { grid-column: 1; grid-row: 4; align-self: stretch; width: auto; height: 36px; margin: 6px 8px 8px; gap: 6px; display: flex; align-items: center; justify-content: center; border-radius: var(--w-r-ctl); font-size: 14px; font-weight: 500; }
+html[data-theme] #phone-container[data-ui] .r-cell__cart svg { width: 18px; height: 18px; }
+html[data-theme] #phone-container[data-ui] .r-cell__cart::after { content: 'В корзину'; }
+html[data-theme] #phone-container[data-ui] .r-cell__cart.is-on { background: var(--r-sunk); color: var(--r-ink); }
+html[data-theme] #phone-container[data-ui] .r-cell__cart.is-on::after { content: 'В корзине'; }
+html[data-theme] #phone-container[data-ui] .r-cell--mini .r-cell__media { height: 120px; }
+html[data-theme] #phone-container[data-ui] .r-cell--mini .r-price b { font-size: 16px; }
+html[data-theme] #phone-container[data-ui] .r-cell:has(.r-cell__open:active) .r-cell__body { background: transparent; }
+html[data-theme] #phone-container[data-ui] .r-cell:has(.r-cell__open:active) { background: var(--r-sunk); }
+@media (hover: hover) {
+  html[data-theme] #phone-container[data-ui] .r-cell__open:hover { text-decoration: none; color: var(--r-ink); }
+}
+html[data-theme] #phone-container[data-ui] .r-cell__open:focus-visible::before { border-radius: var(--w-r-card); }
+
+/* ---------- home ---------- */
+html[data-theme] #phone-container[data-ui] #view-catalog > * + * { margin-top: 12px !important; }
+html[data-theme] #phone-container[data-ui] #view-catalog > .px-5 { padding-inline: 12px !important; }
+html[data-theme] #phone-container[data-ui] #view-catalog .r-head { padding: 0 4px !important; }
+/* stories: the ring is the store's ink drawn as a fill behind a paper gap (no line) */
+html[data-theme] #phone-container[data-ui] #stories-container { padding: 0 12px 4px !important; }
+html[data-theme] #phone-container[data-ui] .r-story__ring { padding: 3px !important; background: var(--story-ink) !important; border-radius: 999px !important; }
+html[data-theme] #phone-container[data-ui] .r-story__ring img { padding: 2px; background: var(--r-ground); border-radius: 999px !important; }
+html[data-theme] #phone-container[data-ui] .r-story.is-viewed .r-story__ring { padding: 3px !important; background: var(--r-n3) !important; }
+html[data-theme] #phone-container[data-ui] .r-story__name { font: 400 12px/16px var(--r-font) !important; color: var(--r-ink-2); text-align: center; }
+html[data-theme] #phone-container[data-ui] #view-catalog button[onclick^="scrollStories"] { border-radius: 999px !important; background: var(--r-paper) !important; }
+/* promo: a white card, the copy on paper, the store's ink only as the dot beside its name */
+html[data-theme] #phone-container[data-ui] .home-promo-card { height: 180px !important; border-radius: var(--w-r-card) !important; background: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] .promo-slide { border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] .promo-copy { background: var(--r-paper) !important; color: var(--r-ink) !important; padding: 14px 12px 12px 14px !important; }
+html[data-theme] #phone-container[data-ui] .promo-slide h4.promo-name,
+html[data-theme] #phone-container[data-ui] .promo-name { font: 600 17px/22px var(--r-font) !important; color: var(--r-ink) !important; display: -webkit-box !important; }
+html[data-theme] #phone-container[data-ui] .promo-name::before { content: ''; display: inline-block; width: 8px; height: 8px; margin: 0 6px 2px 0; border-radius: 999px; background: var(--promo-ink); vertical-align: middle; }
+html[data-theme] #phone-container[data-ui] .promo-slide p.promo-desc,
+html[data-theme] #phone-container[data-ui] .promo-desc { color: var(--r-ink-3) !important; opacity: 1 !important; font: 13px/18px var(--r-font) !important; white-space: normal !important; display: -webkit-box !important; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+html[data-theme] #phone-container[data-ui] .promo-slide button.promo-go,
+html[data-theme] #phone-container[data-ui] .promo-go { background: var(--r-orange) !important; color: var(--r-on-orange) !important; border-radius: var(--w-r-ctl) !important; font: 500 14px var(--r-font) !important; min-height: 36px !important; padding: 0 14px !important; }
+html[data-theme] #phone-container[data-ui] .promo-pager { font: 500 12px var(--r-font) !important; color: var(--r-ink-3); }
+html[data-theme] #phone-container[data-ui] .promo-photo { border-radius: 0 var(--w-r-card) var(--w-r-card) 0; }
+html[data-theme] #phone-container[data-ui] .r-promo-key { border-radius: 999px !important; background: rgba(255, 255, 255, .9) !important; color: #1A1B20 !important; width: 32px !important; height: 32px !important; }
+/* categories: white tiles, the name on top, the picture at the foot */
+html[data-theme] #phone-container[data-ui] .home-cats-scroll { padding: 0 12px !important; }
+html[data-theme] #phone-container[data-ui] .home-cats { gap: 6px !important; background: transparent !important; }
+html[data-theme] #phone-container[data-ui] .home-cat { width: 96px !important; min-width: 96px !important; height: 112px !important; border-radius: var(--w-r-card) !important; background: var(--r-paper) !important; color: var(--r-ink) !important; position: relative !important; }
+html[data-theme] #phone-container[data-ui] .home-cat-label,
+html[data-theme] #phone-container[data-ui] .home-cat.on .home-cat-label { height: auto !important; padding: 10px 10px 0 !important; font: 500 13px/16px var(--r-font) !important; color: var(--r-ink) !important; align-items: flex-start !important; position: relative; z-index: 1; }
+html[data-theme] #phone-container[data-ui] .home-cat-label--long { font-size: 12px !important; }
+html[data-theme] #phone-container[data-ui] .home-cat img { position: absolute; right: 0; bottom: 0; width: 100% !important; height: 64px !important; object-fit: cover !important; border-radius: 0 0 var(--w-r-card) var(--w-r-card); }
+html[data-theme] #phone-container[data-ui] .home-cat img[src$=".png"] { width: 78px !important; height: 70px !important; object-fit: contain !important; border-radius: 0; right: 4px; bottom: 4px; }
+html[data-theme] #phone-container[data-ui] .home-cat-all { height: auto !important; margin-top: auto; padding: 10px !important; color: var(--r-orange-text); }
+html[data-theme] #phone-container[data-ui] .home-cat.on { background: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] .home-see-all { font: 500 14px var(--r-font) !important; color: var(--r-ink-3) !important; }
+html[data-theme] #phone-container[data-ui] :is(.home-strip, #home-brand-banner) { border-radius: var(--w-r-card) !important; overflow: hidden; }
+html[data-theme] #phone-container[data-ui] .home-strip-go { border-radius: var(--w-r-ctl) !important; background: var(--r-sunk) !important; }
+html[data-theme] #phone-container[data-ui] .r-empty { border-radius: var(--w-r-card); }
+
+/* ---------- catalogue root: white rows, the picture at the right ---------- */
+html[data-theme] #phone-container[data-ui] #view-directory { padding: 12px 0 24px !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-head { padding: 0 16px 12px !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-head h3 { font: 600 18px/24px var(--r-font) !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-list { display: grid !important; grid-template-columns: 1fr 1fr; gap: 6px !important; padding: 0 12px !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row { position: relative !important; display: block !important; height: 104px !important; min-height: 104px !important; margin: 0 !important; padding: 0 !important; border-radius: var(--w-r-card) !important; background: var(--r-paper) !important; color: var(--r-ink) !important; overflow: hidden !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row > .flex-1 { position: relative; z-index: 1; padding: 10px 12px !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row h5 { font: 500 14px/18px var(--r-font) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row p { display: none !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row > .dir-thumb-wrap { position: absolute !important; right: 0; bottom: 0; width: 64% !important; height: 62px !important; border-radius: var(--w-r-ctl) 0 var(--w-r-card) 0 !important; overflow: hidden; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row img { border-radius: 0 !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row img[src$=".png"] { object-fit: contain !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row:has(img[src$=".png"]) > .dir-thumb-wrap { width: 76px !important; height: 72px !important; right: 6px; bottom: 6px; border-radius: 0 !important; background: none !important; }
+/* stores: white cards, photo at the left */
+html[data-theme] #phone-container[data-ui] #shops-list-container { display: grid !important; gap: 8px; margin: 0 !important; }
+html[data-theme] #phone-container[data-ui] .r-store-row { grid-template-columns: 112px 1fr !important; min-height: 112px !important; border-radius: var(--w-r-card) !important; overflow: hidden; background: var(--r-paper) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] .r-store-row > img { grid-column: 1; grid-row: 1; min-height: 112px !important; border-radius: var(--w-r-card); }
+html[data-theme] #phone-container[data-ui] .r-store-row__field { grid-column: 2; grid-row: 1; background: var(--r-paper) !important; color: var(--r-ink) !important; padding: 12px !important; }
+html[data-theme] #phone-container[data-ui] .r-store-row h4 { font: 600 16px/20px var(--r-font) !important; }
+html[data-theme] #phone-container[data-ui] .r-store-row h4::before { content: ''; display: inline-block; width: 8px; height: 8px; margin: 0 6px 2px 0; border-radius: 999px; background: var(--store-ink, var(--section-ink, var(--r-orange))); vertical-align: middle; }
+html[data-theme] #phone-container[data-ui] .r-store-row p { font: 400 13px/18px var(--r-font) !important; color: var(--r-ink-3) !important; margin-top: 4px !important; }
+html[data-theme] #phone-container[data-ui] .r-store-row span { font: 400 13px/18px var(--r-font) !important; color: var(--r-ink-2) !important; opacity: 1 !important; }
+html[data-theme] #phone-container[data-ui] .r-store-row b { font: 500 14px var(--r-font) !important; color: var(--r-orange-text) !important; }
+html[data-theme] #phone-container[data-ui] [id^="subview-"] :is(.lg-crumb, .dir-back) { min-height: 36px !important; }
+html[data-theme] #phone-container[data-ui] [id^="subview-"] .goods-head h3 { font: 600 18px/24px var(--r-font) !important; text-transform: none !important; }
+html[data-theme] #phone-container[data-ui] #view-category-products .r-grid,
+html[data-theme] #phone-container[data-ui] [id^="subview-"] .r-grid { margin-inline: -8px; }
+
+/* ---------- cart and favourites ---------- */
+html[data-theme] #phone-container[data-ui] :is(.cart-card, .fav-card, .cart-empty, .fav-empty, .cart-orders-empty, #cart-checkout-box) { border-radius: var(--w-r-card) !important; background: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] :is(.cart-card-photo, .cart-qty) { border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .cart-qty { background: var(--r-sunk) !important; }
+html[data-theme] #phone-container[data-ui] .cart-qty :is(button, span) { border-radius: var(--w-r-ctl) !important; background: transparent !important; }
+html[data-theme] #phone-container[data-ui] :is(.cart-group, .fav-group, [class*="cart-store"], [class*="fav-store"]) { border-radius: var(--w-r-card); overflow: hidden; }
+
+/* ---------- product page ---------- */
+html[data-theme] #phone-container[data-ui] #product-modal { background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] .pm-hero { border-radius: 0 0 var(--w-r-card) var(--w-r-card) !important; background: var(--r-paper) !important; overflow: hidden; }
+html[data-theme] #phone-container[data-ui] .pm-head button { border-radius: 999px !important; background: rgba(255, 255, 255, .9) !important; color: #1A1B20 !important; }
+html[data-theme] #phone-container[data-ui] .pm-hero-nav { border-radius: 999px !important; }
+html[data-theme] #phone-container[data-ui] .pm-thumbs img { border-radius: var(--w-r-sm) !important; }
+html[data-theme] #phone-container[data-ui] #product-modal :is(.pm-chip, .pm-about-open, .pm-calc, .pm-spec-tile, .pm-trust, .pm-qty, #pm-cart-btn) { border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] :is(.pm-chip, .pm-spec-tile, .pm-trust, .pm-about-open, .pm-calc) { background: var(--r-sunk) !important; }
+html[data-theme] #phone-container[data-ui] .pm-seller { border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] .pm-bottom-bar { background: var(--r-paper) !important; border-radius: 16px 16px 0 0 !important; }
+html[data-theme] #phone-container[data-ui] .pm-bottom-bar #pm-fav-btn { border-radius: var(--w-r-ctl) !important; background: var(--r-sunk) !important; }
+html[data-theme] #phone-container[data-ui] #pm-photo-count { border-radius: 999px !important; font: 500 12px var(--r-font) !important; }
+html[data-theme] #phone-container[data-ui] #pm-badge > * { border-radius: 6px !important; clip-path: none !important; }
+html[data-theme] #phone-container[data-ui] .pm-about-sheet { border-radius: 16px 16px 0 0 !important; }
+
+/* ---------- sheets, modals, onboarding ---------- */
+html[data-theme] #phone-container[data-ui] :is(#assistant-sheet, #lg-notif-sheet, #about-sheet, #compare-modal, #buyer-editor, .lg-sheet, [class*="-sheet"]:not(button)) { border-top-left-radius: 16px !important; border-top-right-radius: 16px !important; }
+html[data-theme] #phone-container[data-ui] :is(.lg-sheet-grab, .sheet-grabber, .assistant-grab)::before { border-radius: 999px !important; background: var(--r-n3) !important; }
+html[data-theme] #phone-container[data-ui] #sv-progress > div { border-radius: 999px !important; }
+html[data-theme] #phone-container[data-ui] #onb-slides-container .slide-item > div { border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] #onb-dots-container button { border-radius: 999px !important; }
+html[data-theme] #phone-container[data-ui] #onb-footer > button { border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .onb-badge { border-radius: 6px !important; }
+
+/* ---------- profile ---------- */
+
+html[data-theme] #phone-container[data-ui] .lg-seg { border-radius: var(--w-r-ctl); padding: 3px; gap: 0; background: var(--r-sunk); }
+html[data-theme] #phone-container[data-ui] .lg-seg::before { top: 3px; left: 3px; width: calc((100% - 6px) / 3); height: calc(100% - 6px); border-radius: 8px; background: var(--r-paper); transition-timing-function: var(--r-ease); }
+html[data-theme] #phone-container[data-ui] .lg-seg button { height: 36px; border-radius: 8px !important; background: transparent; color: var(--r-ink-2); font-weight: 500; }
+html[data-theme] #phone-container[data-ui] .lg-seg button.on { background: transparent; color: var(--r-ink); font-weight: 600; }
+html[data-theme] #phone-container[data-ui] #dash-admin [onclick^="statGoTo"] { background: var(--r-paper) !important; color: var(--r-ink) !important; border-radius: var(--w-r-card) !important; text-align: left; }
+html[data-theme] #phone-container[data-ui] #dash-admin [onclick^="statGoTo"] :is(p, .text-white) { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #dash-admin [onclick^="statGoTo"] p:first-child { font: 600 18px/1 var(--r-font) !important; }
+html[data-theme] #phone-container[data-ui] #dash-admin [onclick^="statGoTo"] p:last-child { color: var(--r-ink-3) !important; opacity: 1; font-size: 11px; }
+html[data-theme] #phone-container[data-ui] :is(#dash-admin, #dash-shop) button.text-\[10px\]:is(.bg-\[\#1e6091\], .bg-blue-600) { background: var(--r-sunk) !important; color: var(--r-ink) !important; }
+
+/* ---------- storefront ---------- */
+html[data-theme] #phone-container[data-ui] .sf-page :is(button, input, select) { border-radius: var(--w-r-ctl); }
+html[data-theme] #phone-container[data-ui] .sf-block { border-radius: var(--w-r-card); }
+html[data-theme] #phone-container[data-ui] .sf-h { font-family: var(--r-font) !important; font-size: 18px !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: 0 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme] #phone-container[data-ui] .lg-seg::before { transition: none; }
+}
+
+/* ---------- legacy rules that asked for heavier or larger type ---------- */
+html[data-theme] #phone-container[data-ui] :is(.cart-check-kicker, #pm-cat-label, #pm-cat-chip span, #pm-qty, .cart-back, span.k, .lh-daily-cta, .lh-daily-k, .lh-fmt, .lh-hero-cta, .pm-about-ico, .st-avail, .font-semibold) { font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] #view-cart .cart-back,
+html[data-theme] #phone-container[data-ui] #view-favorites :is(.cart-back, h3),
+html[data-theme] #phone-container[data-ui] #view-cart h3 { font-size: 18px !important; line-height: 24px !important; letter-spacing: 0 !important; font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] #product-modal .pm-bottom-bar,
+html[data-theme] #phone-container[data-ui] #tab-cart #cart-badge { box-shadow: none !important; }
+html[data-theme] #phone-container[data-ui] #product-modal :is(#pm-hero, .pm-seller),
+html[data-theme] #phone-container[data-ui] #subview-lifehacks span { box-shadow: none !important; }
+html[data-theme] #phone-container[data-ui] #subview-lifehacks :is(span[class*="font-"], span[style*="font-weight"]) { font-weight: 600 !important; }
+
+/* ---------- fix batch 1 ---------- */
+/* a back key that carries its label («Главная») is a pill, not a circle */
+html[data-theme] #phone-container[data-ui] .r-back.lg-crumb { width: auto !important; padding: 0 14px 0 8px !important; gap: 2px; display: inline-flex !important; font: 500 14px var(--r-font) !important; }
+html[data-theme] #phone-container[data-ui] .r-back.lg-crumb svg { width: 20px; height: 20px; }
+/* cart groups: one white card per store, the store's ink only as the dot */
+html[data-theme] #phone-container[data-ui] .cart-store-group { padding: 4px 0 12px; margin: 0 0 10px; border-radius: var(--w-r-card); background: var(--r-paper); }
+html[data-theme] #phone-container[data-ui] .cart-group-head { background: none !important; color: var(--r-ink) !important; font: 600 16px var(--r-font) !important; text-transform: none !important; }
+html[data-theme] #phone-container[data-ui] .cart-group-head > span:first-child::before { content: ''; display: inline-block; width: 8px; height: 8px; margin: 0 8px 2px 0; border-radius: 999px; background: var(--spine); vertical-align: middle; }
+html[data-theme] #phone-container[data-ui] .cart-group-head > span:last-child { font-size: 13px; font-weight: 400; color: var(--r-ink-3); }
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card { background: transparent !important; }
+html[data-theme] #phone-container[data-ui] :is(.cart-group-foot, .cart-manager-actions) { padding-inline: 12px; }
+/* lifehacks: the tip of the day is a white card; copy over a photo stays white */
+html[data-theme] #phone-container[data-ui] .lh-daily { background: var(--r-paper) !important; color: var(--r-ink) !important; border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] #subview-lifehacks .lh-daily h4 { color: var(--r-ink) !important; font-size: 16px !important; font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] .lh-daily-k { color: var(--r-orange-text) !important; letter-spacing: 0 !important; text-transform: none !important; }
+html[data-theme] #phone-container[data-ui] .lh-daily :is(p, span) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(#subview-lifehacks, #view-catalog) .lh-hero h4 { color: #FFFFFF !important; }
+html[data-theme] #phone-container[data-ui] .lh-hero { border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] .lh-fmt-tile { border-radius: var(--w-r-ctl) !important; background: var(--r-paper) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] .lh-fmt-tile.on { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] .lh-fmt-tile.on * { color: var(--r-paper) !important; }
+/* the heart sits on a light disc over any photo, in both themes */
+html[data-theme] #phone-container[data-ui] .r-cell__fav:not([aria-pressed="true"]) { color: #1A1B20; }
+html[data-theme] #phone-container[data-ui] .r-cell__fav[aria-pressed="true"] { color: var(--r-bad); }
+html[data-theme] #phone-container[data-ui] :is(.lh-fmt-tile, .lh-fact) :is(span, b) { font-weight: 500 !important; }
+/* long category names hyphenate by the Russian dictionary (html lang="ru") instead of breaking at any letter */
+html[data-theme] #phone-container[data-ui] .home-cat-label,
+html[data-theme] #phone-container[data-ui] .home-cat-label--long { overflow-wrap: normal !important; word-break: normal !important; hyphens: auto; -webkit-hyphens: auto; }
+/* contrast: the sale badge reads dark on the lighter dark-theme red; inactive tab labels use ink-3 (4.5:1+) */
+html[data-theme="dark"] #phone-container[data-ui] .r-sticker:not(.r-sticker--new) { color: #1A1B20; }
+html[data-theme] #phone-container[data-ui] #app-tabbar > button:not(.text-blue-600) { color: var(--r-ink-3) !important; }
+/* cut-out pictures sit straight on the card: no fill behind the transparency, in either theme */
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row:has(img[src$=".png"]) :is(.dir-thumb-wrap, img) { background: transparent !important; }
+html[data-theme] #phone-container[data-ui] #view-directory .dir-row:has(img[src$=".png"]) > .dir-thumb-wrap { width: 68px !important; height: 64px !important; }
+html[data-theme] #phone-container[data-ui] .home-cat img[src$=".png"] { background: transparent !important; }
+
+/* ---------- fix batch 2: containers, fills and insets ---------- */
+/* profile: the title sits on the ground; settings and the sign-in are white cards with a real inset */
+html[data-theme] #phone-container[data-ui] #view-profile { padding: 12px 12px 0 !important; }
+html[data-theme] #phone-container[data-ui] #view-profile > div:first-child { background: none !important; padding: 0 4px; }
+html[data-theme] #phone-container[data-ui] #view-profile :is(.prof-settings, #profile-unauth, #profile-auth > div) { background: var(--r-paper) !important; border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] #profile-unauth { padding: 12px !important; }
+html[data-theme] #phone-container[data-ui] #profile-unauth :is(#form-login, #form-register) { background: none !important; padding: 12px 0 0 !important; }
+html[data-theme] #phone-container[data-ui] #view-profile .r-consent-sheet { background: var(--r-paper) !important; }
+/* swipe-to-delete rows: the red action stays under an opaque row and inside the card's corners */
+html[data-theme] #phone-container[data-ui] .lg-swipe { overflow: hidden !important; border-radius: 0 !important; background: var(--r-paper); }
+html[data-theme] #phone-container[data-ui] .lg-swipe-content,
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card { background: var(--r-paper) !important; border-radius: 0 !important; }
+html[data-theme] #phone-container[data-ui] .lg-swipe:not(.is-open):not([data-open]) .lg-swipe-action { visibility: hidden; }
+html[data-theme] #phone-container[data-ui] .lg-swipe:has(.lg-swipe-content[style*="translate"]) .lg-swipe-action { visibility: visible; }
+html[data-theme] #phone-container[data-ui] .cart-card .cart-card-x { width: 32px !important; height: 32px !important; background: transparent !important; color: var(--r-ink-3) !important; border-radius: 999px !important; }
+/* empty states are cards with room to breathe */
+html[data-theme] #phone-container[data-ui] :is(.cart-orders-empty, .cart-empty, .fav-empty) { padding: 20px 16px !important; color: var(--r-ink-3) !important; font-size: 14px !important; text-align: center; }
+/* favourites: one white card per store, the ink only as the dot */
+html[data-theme] #phone-container[data-ui] .fav-card { overflow: hidden; }
+html[data-theme] #phone-container[data-ui] .fav-banner { background: var(--r-paper) !important; color: var(--r-ink) !important; padding: 14px 12px 6px !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner * { color: inherit !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner :is(span, small) { color: var(--r-ink-3) !important; font-size: 13px !important; font-weight: 400 !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner svg { color: var(--r-bad) !important; }
+html[data-theme] #phone-container[data-ui] .fav-badge-wrap * { text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] .fav-item { background: var(--r-paper) !important; }
+/* tab bar: no focus frame after a tap; keyboard focus shows as a soft fill */
+html[data-theme] #phone-container[data-ui] #app-tabbar > button:focus { outline: none !important; }
+html[data-theme] #phone-container[data-ui] #app-tabbar > button:focus-visible { background: var(--r-sunk) !important; }
+/* product page: a white page (as on WB), the seller a quiet card, technical table only when it has rows */
+html[data-theme] #phone-container[data-ui] #product-modal,
+html[data-theme] #phone-container[data-ui] #product-modal #pm-scroll { background: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] #product-modal .pm-hero { background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] #product-modal #pm-main-image { border-radius: 0 !important; background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] .pm-chip, html[data-theme] #phone-container[data-ui] .pm-chip * { text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] .pm-technical:not(:has(#pm-technical-table > *)):not(:has(#pm-store-services > *)) { display: none !important; }
+html[data-theme] #phone-container[data-ui] #product-modal .pm-seller { background: var(--r-sunk) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #product-modal .pm-seller * { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #product-modal .pm-seller :is(small, span:last-child, [class*="go"], [class*="link"]) { color: var(--r-orange-text) !important; }
+/* calculators: panels are white cards; the chosen layout is tinted orange, the others sit in the quiet fill */
+html[data-theme] #phone-container[data-ui] #subview-specific-calc :is(.bg-slate-50, .bg-white.rounded-2xl) { padding: 14px !important; border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] #subview-specific-calc { background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] .lay-btn { background: var(--r-sunk) !important; color: var(--r-ink-2) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .lay-btn[class~="border-[#1e6091]"] { background: var(--r-orange-wash) !important; color: var(--r-orange-text) !important; }
+html[data-theme] #phone-container[data-ui] .lay-btn[class~="border-[#1e6091]"] * { color: var(--r-orange-text) !important; }
+/* real-estate catalogue: the sheet is white, the old pine-green actions follow the app (primary orange, chosen segment ink) */
+html[data-theme] #phone-container[data-ui] #subview-re-catalog > div:not(:first-child) { background: var(--r-paper) !important; border-radius: 16px 16px 0 0 !important; }
+html[data-theme] #phone-container[data-ui] :is(.bg-\[\#16332c\], .bg-\[\#1c3a34\]) { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] button.w-full.bg-\[\#16332c\] { background: var(--r-orange) !important; color: var(--r-on-orange) !important; }
+html[data-theme] #phone-container[data-ui] .re-type-btn span { color: var(--r-ink-2) !important; font-size: 12px !important; }
+/* cart row: the remove key floats at the row's corner instead of taking a line of its own */
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card { position: relative; padding: 10px 12px !important; }
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card-top { position: absolute !important; top: 6px; right: 6px; padding: 0 !important; background: none !important; z-index: 1; }
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card-top > .min-w-0 { display: none !important; }
+html[data-theme] #phone-container[data-ui] .cart-store-group .cart-card-body { padding: 0 36px 0 0 !important; }
+/* favourites head: the store's name in ink with its dot, the count quiet; the banner photo and veil step aside */
+html[data-theme] #phone-container[data-ui] .fav-banner :is(img, .fav-banner-veil) { display: none !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner { position: relative; min-height: 0 !important; height: auto !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner-copy { position: static !important; display: flex !important; align-items: center; justify-content: space-between; padding-right: 40px; }
+html[data-theme] #phone-container[data-ui] .fav-banner .fav-shop { font: 600 16px/22px var(--r-font) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] .fav-banner .fav-shop::before { content: ''; display: inline-block; width: 8px; height: 8px; margin: 0 8px 2px 0; border-radius: 999px; background: var(--spine); vertical-align: middle; }
+html[data-theme] #phone-container[data-ui] .fav-banner .fav-heart { position: absolute !important; top: 8px; right: 6px; background: none !important; }
+
+/* ---------- fix batch 3: the last dark-glass screens, text over photos ---------- */
+/* text set over a photograph stays white above its veil: the subview heading rule must not reach it */
+html[data-theme] #phone-container[data-ui] :is(.ls-list-card, .lh-hero, .re-hero, .sc-hero, .promo-hero, [class*="hero"]:has(> img)) :is(h1, h2, h3, h4, h5, p, span:not(.r-sticker):not(.lh-fmt):not(.tag)) { color: #FFFFFF !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card { border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card h4 { font-size: 18px !important; font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card .veil { background: linear-gradient(90deg, rgba(10, 12, 16, .62) 0%, rgba(10, 12, 16, .18) 70%) !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card :is(.go, .tag) { background: #FFFFFF !important; color: #1A1B20 !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .ls-list-card :is(.go, .tag) * { color: #1A1B20 !important; }
+
+/* landscape passport and the landscape storefront: the light world instead of the night-blue glass */
+html[data-theme] #phone-container[data-ui] #ls-studio-modal,
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode { background: var(--r-ground) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#ls-studio-modal, #shop-catalog-modal.ls-mode) :is(h1, h2, h3, h4, strong, b, .ls-zone strong, .ls-work h4) { color: var(--r-ink) !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] :is(#ls-studio-modal, #shop-catalog-modal.ls-mode) :is(p, span, em, i, small, .ls-note, .ls-addr) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(#ls-studio-modal, #shop-catalog-modal.ls-mode) :is(.ls-kicker, .ls-zone b, .ls-est span) { color: var(--r-ink-3) !important; text-transform: none !important; letter-spacing: 0 !important; font-size: 12px !important; font-weight: 500 !important; }
+html[data-theme] #phone-container[data-ui] .ls-pass-top { padding: 16px 16px 10px !important; background: var(--r-paper) !important; border-radius: 0 0 16px 16px; }
+html[data-theme] #phone-container[data-ui] .ls-pass-top h2 { font-size: 18px !important; font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] .ls-close { background: var(--r-sunk) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] .ls-pass-hero { margin: 10px 12px !important; border-radius: var(--w-r-card) !important; background: var(--r-sunk) !important; }
+html[data-theme] #phone-container[data-ui] .ls-pass-hero .veil { background: linear-gradient(180deg, transparent 55%, rgba(10, 12, 16, .45)) !important; }
+html[data-theme] #phone-container[data-ui] .ls-season { background: rgba(255, 255, 255, .92) !important; color: #1A1B20 !important; border-radius: var(--w-r-ctl) !important; font-size: 12px !important; backdrop-filter: none !important; }
+html[data-theme] #phone-container[data-ui] .ls-season.on { background: var(--r-orange) !important; color: var(--r-on-orange) !important; }
+html[data-theme] #phone-container[data-ui] .ls-scroll { padding: 0 12px 108px !important; }
+html[data-theme] #phone-container[data-ui] .ls-sec { color: var(--r-ink) !important; font-size: 16px !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: 0 !important; margin: 16px 4px 8px !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-zone, .ls-zone:first-child, .ls-work, .ls-est, .ls-tl, .ls-plot, .ls-arch, .ls-note) { background: var(--r-paper) !important; border-radius: var(--w-r-card) !important; }
+html[data-theme] #phone-container[data-ui] .ls-note { padding: 12px 14px !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-mosaic, .ls-film) img { border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .ls-tl-item::before { background: var(--r-orange) !important; }
+html[data-theme] #phone-container[data-ui] .ls-plot-btn { background: var(--r-sunk) !important; color: var(--r-ink) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .ls-plot-btn.on { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] .ls-bar { background: var(--r-paper) !important; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) !important; border-radius: 16px 16px 0 0; gap: 8px; }
+html[data-theme] #phone-container[data-ui] .ls-bar-main,
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode .ls-cta { background: var(--r-orange) !important; color: var(--r-on-orange) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] .ls-bar-ghost { background: var(--r-sunk) !important; color: var(--r-ink) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-bar-main, .ls-bar-ghost) * { color: inherit !important; }
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode :is(.shop-perk, .shop-person-photo) { background: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode #shop-catalog-hero ~ * :is(h1, h2, h3, h4, p, span) { color: inherit; }
+html[data-theme] #phone-container[data-ui] #shop-catalog-modal.ls-mode :is(#shop-catalog-hero-veil + *, [id*="hero"]) :is(h1, h2, h3, h4, p, span) { color: #FFFFFF !important; }
+
+/* company page: a white page under its photo cover */
+html[data-theme] #phone-container[data-ui] #company-catalog-modal { background: var(--r-ground) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal > .relative:first-child .absolute.bottom-5 :is(h1, h2, h3, span, p) { color: #FFFFFF !important; text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal > .relative:first-child > .absolute.inset-0:not(img) { background: linear-gradient(180deg, rgba(10, 12, 16, .2), rgba(10, 12, 16, .62)) !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal .flex-1.overflow-y-auto { background: var(--r-ground) !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal .flex-1.overflow-y-auto :is(h3, h4, h5, b, strong) { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal .flex-1.overflow-y-auto :is(p, span:not(.r-sticker)) { color: var(--r-ink-2) !important; text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] #company-catalog-modal .flex-1.overflow-y-auto .px-5 > div:not(.grid) { background: var(--r-paper); border-radius: var(--w-r-card); padding: 12px; }
+html[data-theme] #phone-container[data-ui] :is(.bg-\[\#12283c\], .bg-\[\#16324a\], .bg-\[\#0f1c28\], .bg-\[\#1a2332\]) { background-color: var(--r-paper) !important; color: var(--r-ink) !important; }
+
+/* detail modals (vacancy, portfolio, machinery, product about): sentence-case heads, readable values */
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal, #pm-about-sheet, #shop-catalog-modal) :is(h3, h4, h5, .uppercase) { text-transform: none !important; letter-spacing: 0 !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal, #pm-about-sheet, #shop-catalog-modal, #company-catalog-modal, #feedback-modal) :is(.text-slate-300, .text-slate-400, .text-gray-400, .text-white\/60, .text-white\/70, [class*="text-slate-400"]) { color: var(--r-ink-3) !important; }
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal, #pm-about-sheet) { background: var(--r-paper) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal) :is(.bg-blue-600, .bg-blue-500, .bg-\[\#2563eb\], .bg-\[\#1e6091\]) { background: var(--r-orange) !important; color: var(--r-on-orange) !important; }
+html[data-theme] #phone-container[data-ui] #pm-about-sheet * { color: var(--r-ink); }
+html[data-theme] #phone-container[data-ui] #pm-about-sheet :is(dt, .text-slate-400, .text-slate-500) { color: var(--r-ink-3) !important; }
+
+/* ---------- fix batch 4 ---------- */
+/* legacy rules that still asked for 700–800 or a size above the ceiling */
+html[data-theme] #phone-container[data-ui] :is(.comm-chip, .ls-list-card .tag, .sc-firm-salary, .lh-jump, #portfolio-about-label, #portfolio-prices-label, [id^="comm-chip-"], [id^="comm-mode-"], [class*="text-[9px]"].font-bold) { font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-atlas-head h3, #st-modal-price, #rec-modal h3, #subview-specific-calc h4) { font-size: 18px !important; line-height: 24px !important; }
+/* small uppercase section labels in the detail modals read as sentence-case headings */
+html[data-theme] #phone-container[data-ui] :is(#vacancy-modal, #portfolio-modal, #spectech-modal) [class*="text-[9px]"] { font-size: 13px !important; text-transform: none !important; letter-spacing: 0 !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#portfolio-hours, #vacancy-hours) { color: var(--r-ink) !important; }
+/* machinery sheet: copy over the photo is white; price and status follow the theme; the request is the primary action */
+html[data-theme] #phone-container[data-ui] :is(#st-modal-cat, #st-modal-title) { color: #FFFFFF !important; text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] #st-modal-price { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(#st-modal-price-sub, #st-modal-avail) { color: var(--r-ink-3) !important; }
+html[data-theme] #phone-container[data-ui] #spectech-modal .st-cta { background: var(--r-orange) !important; color: var(--r-on-orange) !important; border-radius: var(--w-r-ctl) !important; }
+/* portfolio room chips and specialist chips: quiet fill, ink when chosen, in both themes */
+html[data-theme] #phone-container[data-ui] :is(#portfolio-modal .co-room, .comm-chip) { background: var(--r-sunk) !important; color: var(--r-ink) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] :is(#portfolio-modal .co-room.on, .comm-chip.on) { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] #subview-spec-private .shrink-0[class*="text-[10px]"] { background: var(--r-orange-wash) !important; color: var(--r-orange-text) !important; }
+/* lifehack «За 3 шага» panel and any other pale-blue legacy panel follow the card */
+html[data-theme] #phone-container[data-ui] :is(.bg-\[\#f8fbfe\], .bg-\[\#f0f6fc\], .bg-\[\#eef5fc\], .bg-sky-50, .bg-blue-50) { background-color: var(--r-paper) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] :is(.text-slate-900, .text-slate-800, .text-gray-900) { color: var(--r-ink) !important; }
+/* the quiet text on the fill reads at 4.5:1 */
+html[data-theme] #phone-container[data-ui] :is(#pm-about-sheet span.k, #pm-about-sheet i, #auth-tab-register, #auth-tab-login, #comm-mode-map, #comm-mode-list) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(#comm-mode-list, #comm-mode-map).on, html[data-theme] #phone-container[data-ui] [id^="comm-mode-"][class*="bg-"] { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #spectech-modal :is(#st-modal-cat, #st-modal-title) { color: #FFFFFF !important; }
+html[data-theme] #phone-container[data-ui] #spectech-modal #st-modal-price { color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #pm-about-sheet :is(span.k, i, .text-slate-400) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(#company-catalog-modal, #portfolio-modal) .co-room { background: var(--r-sunk) !important; color: var(--r-ink) !important; border-radius: var(--w-r-ctl) !important; }
+html[data-theme] #phone-container[data-ui] :is(#company-catalog-modal, #portfolio-modal) .co-room.on { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] #subview-re-commercial :is(#comm-mode-list, #comm-mode-map) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] #subview-re-commercial :is(#comm-mode-list, #comm-mode-map):is(.on, [class*="bg-"]) { background: var(--r-ink) !important; color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] :is(#lh-ba-tag, .lh-ba-hint, .lh-step-n, [class*="text-[10px]"].font-extrabold, #pm-sheet-pill-specs, #pm-sheet-pill-desc, #pm-about-sheet span.v) { font-weight: 600 !important; }
+html[data-theme] #phone-container[data-ui] [class*="text-[10px]"].font-extrabold { text-transform: none !important; letter-spacing: 0 !important; }
+html[data-theme] #phone-container[data-ui] :is(.bg-\[\#f3f7fb\], .bg-\[\#f5f8fb\], .bg-\[\#eef3f8\]) { background-color: var(--r-ground) !important; color: var(--r-ink) !important; }
+html[data-theme] #phone-container[data-ui] #spectech-modal .bg-white { background-color: var(--r-paper) !important; }
+html[data-theme] #phone-container[data-ui] :is(#pm-about-sheet, #pm-sheet-specs, #pm-sheet-desc) :is(span.k, i, .text-slate-400) { color: var(--r-ink-2) !important; }
+html[data-theme] #phone-container[data-ui] :is(.ls-pass-hero, .ls-mosaic, .ls-film) i { color: #FFFFFF !important; }
+html[data-theme] #phone-container[data-ui] .lh-step-n { background: var(--r-orange-wash) !important; color: var(--r-orange-text) !important; }

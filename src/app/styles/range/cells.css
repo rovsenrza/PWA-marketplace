@@ -12,9 +12,9 @@
    whatever hid the cells (the home search hides them by class, which a counting selector would not follow). */
 #phone-container[data-ui] .r-grid {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px;
-  background: var(--r-paper); border-block: 1px solid var(--r-rule);
+  background: var(--r-paper); border-block: 0;
 }
-#phone-container[data-ui] .r-grid > .r-cell { box-shadow: 0 0 0 1px var(--r-rule); }
+#phone-container[data-ui] .r-grid > .r-cell { box-shadow: none; }
 /* the grid runs edge to edge: it cancels the 20px side padding of the screen it sits in */
 #phone-container[data-ui] .r-grid--bleed { margin-inline: -20px; }
 /* a message in place of the goods spans the row */
@@ -22,7 +22,7 @@
 
 #phone-container[data-ui] .r-rail {
   display: flex; gap: 1px; overflow-x: auto; scroll-snap-type: x mandatory;
-  background: var(--r-rule); border-block: 1px solid var(--r-rule);
+  background: var(--r-rule); border-block: 0;
 }
 /* paper after the last cell while the rail is shorter than the screen; once it scrolls, one closing hairline */
 #phone-container[data-ui] .r-rail::after { content: ''; flex: 1 0 0; background: var(--r-paper); }
@@ -46,7 +46,7 @@
 
 #phone-container[data-ui] .r-cell__fav {
   position: absolute; top: 0; right: 0; z-index: 1;
-  display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 0;
+  display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: var(--w-r-ctl);
   background: var(--r-paper); color: var(--r-ink); cursor: pointer;
 }
 #phone-container[data-ui] .r-cell__fav svg { width: 22px; height: 22px; }
@@ -54,7 +54,7 @@
 #phone-container[data-ui] .r-cell__fav[aria-pressed="true"] svg { fill: currentColor; }
 
 #phone-container[data-ui] .r-cell__body { grid-column: 1 / -1; grid-row: 2; display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 10px 12px 8px; transition: background-color .25s var(--r-ease); }
-#phone-container[data-ui] .r-cell .r-price--ask b { font-size: 18px; line-height: 28px; }
+#phone-container[data-ui] .r-cell .r-price--ask b { font-size: 17px; line-height: 28px; }
 
 #phone-container[data-ui] .r-cell__title,
 #phone-container[data-ui] #view-catalog .r-cell__title {
@@ -67,7 +67,7 @@
 /* a word longer than the line («Гидроизоляционный» at 360px) breaks inside the two lines instead of being cut */
 #phone-container[data-ui] .r-cell__open {
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere;
-  width: 100%; padding: 0; border: 0; border-radius: 0; background: none;
+  width: 100%; padding: 0; border: 0; border-radius: var(--w-r-ctl); background: none;
   font: inherit; color: inherit; text-align: left; cursor: pointer;
 }
 /* the whole cell opens the product; the heart, the cart key and the spine sit above this layer */
@@ -79,7 +79,7 @@
 /* a paper hairline under the key keeps the orange apart from the store's ink on the spine */
 #phone-container[data-ui] .r-cell__cart {
   grid-column: 2; grid-row: 2; align-self: end; margin-bottom: 1px; position: relative; z-index: 1;
-  display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 0;
+  display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: var(--w-r-ctl);
   background: var(--r-orange); color: var(--r-on-orange); cursor: pointer;
   transition: background-color .15s var(--r-ease);
 }
@@ -91,7 +91,7 @@
 
 /* mini: a shorter photo and a smaller price (the product page's rails, lifehack picks) */
 #phone-container[data-ui] .r-cell--mini .r-cell__media { aspect-ratio: auto; height: 120px; }
-#phone-container[data-ui] .r-cell--mini .r-price b { font-size: 20px; }
+#phone-container[data-ui] .r-cell--mini .r-price b { font-size: 17px; }
 #phone-container[data-ui] .r-cell--mini .r-price i { font-size: 15px; }
 #phone-container[data-ui] .r-cell--mini .r-price s { font-size: 13px; }
 

@@ -38,7 +38,7 @@ async function edgeShare(app: import('@playwright/test').Page, el: import('@play
   }, { b64: png.toString('base64'), rgb });
 }
 
-test('home: the grid and the rail are product cells, each with its store\'s spine in the store\'s ink', async ({ app }) => {
+test('home: the grid and the rail are product cells, each with its store line: a dot in the store\'s ink', async ({ app }) => {
   const grid = app.locator('#product-grid .r-cell');
   expect(await grid.count()).toBeGreaterThan(4);
   expect(await app.locator('#recommendations-container .r-cell').count()).toBeGreaterThan(2);
@@ -48,7 +48,7 @@ test('home: the grid and the rail are product cells, each with its store\'s spin
     const spine = c.querySelector<HTMLElement>('.r-cell__spine')!;
     const hex = /--spine:(#[0-9A-F]{6})/.exec(c.getAttribute('style') ?? '')![1];
     const rgb = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(', ');
-    return { store: (eval('productsDb') as Record<string, { store: string }>)[c.dataset.product!].store, named: spine.dataset.store, text: spine.textContent, rgb, bg: getComputedStyle(spine).backgroundColor };
+    return { store: (eval('productsDb') as Record<string, { store: string }>)[c.dataset.product!].store, named: spine.dataset.store, text: spine.textContent, rgb, bg: getComputedStyle(spine, '::before').backgroundColor };
   });
   expect(r.named).toBe(r.store);
   expect(r.text).toBe(r.store);
@@ -84,9 +84,10 @@ test('keyboard focus on the title rings the whole cell, over the photo, keys and
     const a = document.activeElement!;
     return `${a.className} ${a.matches(':focus-visible')}`;
   })).toBe('r-cell__open true');
-  /* Orange 021 (#FE5000) on every edge of the cell, the corners under the heart, the cart key and the spine included */
+  /* Orange 021 (#FE5000) on every edge of the cell, the heart and the cart key included; V3 cells are rounded (14px),
+     so the corner arcs leave the straight edge samples short of full */
   const ring = await edgeShare(app, cell, [254, 80, 0]);
-  for (const side of ['top', 'right', 'bottom', 'left'] as const) expect(ring[side], side).toBeGreaterThan(0.95);
+  for (const side of ['top', 'right', 'bottom', 'left'] as const) expect(ring[side], side).toBeGreaterThan(0.85);
   /* the ring's layer lets taps through: the heart is still the top element at its centre… */
   expect(await cell.evaluate((c) => {
     const r = c.querySelector('.r-cell__fav')!.getBoundingClientRect();
@@ -98,11 +99,10 @@ test('keyboard focus on the title rings the whole cell, over the photo, keys and
   await expect(app.locator('#product-modal')).toBeVisible();
 });
 
-test('pressing a cell tones its body at once, without scaling it; pressing a key does not', async ({ app }) => {
+test('pressing a cell tones it at once, without scaling it; pressing a key does not', async ({ app }) => {
   const cell = app.locator(firstGoodsCell).first();
   await cell.scrollIntoViewIfNeeded();
-  const body = cell.locator('.r-cell__body');
-  const tone = () => body.evaluate((b) => getComputedStyle(b).backgroundColor);
+  const tone = () => cell.evaluate((b) => getComputedStyle(b).backgroundColor);
   /* the sunk token (n2) as the browser resolves it */
   const sunk = await cell.evaluate((c) => {
     const probe = document.createElement('i');
@@ -162,7 +162,7 @@ test('Enter on the cart key or the heart keeps focus on that key after the grid 
   expect(await focused()).toEqual({ key: 'r-cell__fav', product: id, inGrid: true, pressed: 'true' });
 });
 
-test('the cart key: in the cart it turns ink with a check, and the tab badge counts it', async ({ app }) => {
+test('the cart key: in the cart it turns to the quiet fill with a check, and the tab badge counts it', async ({ app }) => {
   const cell = app.locator(firstGoodsCell).first();
   const id = (await cell.getAttribute('data-product'))!;
   await expect(cell.locator('.r-cell__cart')).toHaveAttribute('aria-label', 'В корзину');
@@ -172,8 +172,8 @@ test('the cart key: in the cart it turns ink with a check, and the tab badge cou
   await expect(key).toHaveClass(/\bis-on\b/);
   await expect(key).toHaveAttribute('aria-label', 'В корзине');
   expect(await app.evaluate((pid) => (window as any).cartHasProduct(pid), id)).toBe(true);
-  /* in the cart the key is ink (#111110 in the light theme), out of it orange */
-  expect(await key.evaluate((b) => getComputedStyle(b).backgroundColor)).toBe('rgb(17, 17, 16)');
+  /* in the cart the key takes the sunk fill (#EAEBEF in the light theme), out of it orange */
+  expect(await key.evaluate((b) => getComputedStyle(b).backgroundColor)).toBe('rgb(234, 235, 239)');
 });
 
 test('the heart: aria-pressed follows favourites, «очистить» included', async ({ app }) => {
@@ -232,7 +232,7 @@ test('a spine in «Похожие» on the product page opens the store over the
   })).toBe(true);
 });
 
-test('the home search still narrows the grid; an odd number of cells left ends on paper, not on a grey hole', async ({ app }) => {
+test('the home search still narrows the grid; an odd number of cells left ends on the page ground', async ({ app }) => {
   const shown = app.locator('#product-grid .r-cell:visible');
   const total = await shown.count();
   /* the search matches the cell's text, the store on its spine included; take a query that leaves an odd count */
@@ -246,12 +246,12 @@ test('the home search still narrows the grid; an odd number of cells left ends o
   expect(n % 2, 'a query that leaves an odd number of cells').toBe(1);
   expect(n).toBeLessThan(total);
   for (const text of await shown.allInnerTexts()) expect(text.toLowerCase()).toContain(query);
-  /* the slot beside the last cell shown is the grid's own ground: paper, like the cells */
+  /* the slot beside the last cell shown is the page ground showing through the grid (V3: cards on the ground) */
   await shown.last().scrollIntoViewIfNeeded();
   const last = (await shown.last().boundingBox())!;
   const slot = await app.evaluate(([x, y]) => {
     const hit = document.elementFromPoint(x, y) as HTMLElement;
-    return { id: hit.id, bg: getComputedStyle(hit).backgroundColor, paper: getComputedStyle(document.querySelector('.r-cell')!).backgroundColor };
+    return { id: hit.id, bg: getComputedStyle(hit).backgroundColor, paper: 'rgba(0, 0, 0, 0)' };
   }, [last.x + last.width * 1.5, last.y + last.height / 2]);
   expect(slot.id).toBe('product-grid');
   expect(slot.bg).toBe(slot.paper);

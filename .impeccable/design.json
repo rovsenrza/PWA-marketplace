@@ -1,164 +1,310 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-08",
-  "title": "Design System: Супер-Апп — Линейка V2",
+  "generatedAt": "2026-10-09",
+  "title": "Design System: Супер-Апп — Витрина V3",
   "extensions": {
     "colorMeta": {
-      "paper": {
+      "ground": {
         "role": "neutral",
-        "displayName": "paper",
-        "canonical": "#FFFFFF",
+        "displayName": "Off-white ground",
+        "canonical": "#F4F5F7",
         "tonalRamp": [
-          "#FFFFFF",
-          "#F4F4F2",
-          "#E9E9E6",
-          "#D6D6D1",
-          "#ADADA7",
-          "#6B6B66",
-          "#4A4A46",
-          "#333331",
-          "#1F1F1D",
-          "#111110"
+          "#1A1B20",
+          "#24262C",
+          "#33353D",
+          "#4A4D57",
+          "#686C77",
+          "#A3A6AF",
+          "#DCDEE3",
+          "#EAEBEF",
+          "#F4F5F7",
+          "#FFFFFF"
         ]
       },
-      "well": {
+      "card": {
         "role": "neutral",
-        "displayName": "well",
-        "canonical": "#F4F4F2",
+        "displayName": "White card",
+        "canonical": "#FFFFFF",
         "tonalRamp": [
-          "#FFFFFF",
-          "#F4F4F2",
-          "#E9E9E6",
-          "#D6D6D1",
-          "#ADADA7",
-          "#6B6B66",
-          "#4A4A46",
-          "#333331",
-          "#1F1F1D",
-          "#111110"
+          "#1A1B20",
+          "#24262C",
+          "#33353D",
+          "#4A4D57",
+          "#686C77",
+          "#A3A6AF",
+          "#DCDEE3",
+          "#EAEBEF",
+          "#F4F5F7",
+          "#FFFFFF"
+        ]
+      },
+      "fill": {
+        "role": "neutral",
+        "displayName": "Control fill",
+        "canonical": "#EAEBEF",
+        "tonalRamp": [
+          "#1A1B20",
+          "#24262C",
+          "#33353D",
+          "#4A4D57",
+          "#686C77",
+          "#A3A6AF",
+          "#DCDEE3",
+          "#EAEBEF",
+          "#F4F5F7",
+          "#FFFFFF"
         ]
       },
       "ink": {
         "role": "neutral",
-        "displayName": "ink",
-        "canonical": "#111110",
+        "displayName": "Ink",
+        "canonical": "#1A1B20",
         "tonalRamp": [
-          "#FFFFFF",
-          "#F4F4F2",
-          "#E9E9E6",
-          "#D6D6D1",
-          "#ADADA7",
-          "#6B6B66",
-          "#4A4A46",
-          "#333331",
-          "#1F1F1D",
-          "#111110"
+          "#1A1B20",
+          "#24262C",
+          "#33353D",
+          "#4A4D57",
+          "#686C77",
+          "#A3A6AF",
+          "#DCDEE3",
+          "#EAEBEF",
+          "#F4F5F7",
+          "#FFFFFF"
         ]
       },
-      "line": {
+      "ink-2": {
         "role": "neutral",
-        "displayName": "line",
-        "canonical": "#D6D6D1",
+        "displayName": "Secondary ink",
+        "canonical": "#4A4D57",
         "tonalRamp": [
-          "#FFFFFF",
-          "#F4F4F2",
-          "#E9E9E6",
-          "#D6D6D1",
-          "#ADADA7",
-          "#6B6B66",
-          "#4A4A46",
-          "#333331",
-          "#1F1F1D",
-          "#111110"
+          "#1A1B20",
+          "#24262C",
+          "#33353D",
+          "#4A4D57",
+          "#686C77",
+          "#A3A6AF",
+          "#DCDEE3",
+          "#EAEBEF",
+          "#F4F5F7",
+          "#FFFFFF"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Muted ink",
+        "canonical": "#686C77",
+        "tonalRamp": [
+          "#1A1B20",
+          "#24262C",
+          "#33353D",
+          "#4A4D57",
+          "#686C77",
+          "#A3A6AF",
+          "#DCDEE3",
+          "#EAEBEF",
+          "#F4F5F7",
+          "#FFFFFF"
         ]
       },
       "brand": {
-        "role": "accent",
-        "displayName": "brand",
+        "role": "primary",
+        "displayName": "Action orange",
         "canonical": "#FE5000",
+        "dark": "#FF6526",
         "tonalRamp": [
-          "#FFFFFF",
-          "#F4F4F2",
-          "#E9E9E6",
-          "#D6D6D1",
-          "#ADADA7",
-          "#6B6B66",
-          "#4A4A46",
-          "#333331",
-          "#1F1F1D",
+          "#B83A00",
+          "#E04600",
+          "#FE5000",
+          "#FF6526",
+          "#FF8A57",
+          "#FFE9DE"
+        ]
+      },
+      "on-brand": {
+        "role": "primary",
+        "displayName": "Label on orange",
+        "canonical": "#111110",
+        "tonalRamp": [
           "#111110"
+        ]
+      },
+      "brand-text": {
+        "role": "primary",
+        "displayName": "Orange text",
+        "canonical": "#B83A00",
+        "dark": "#FF8A57",
+        "tonalRamp": [
+          "#B83A00",
+          "#FF8A57"
         ]
       },
       "sale": {
-        "role": "accent",
-        "displayName": "sale",
-        "canonical": "#FFDD00",
+        "role": "secondary",
+        "displayName": "Sale red",
+        "canonical": "#D0281E",
+        "dark": "#FF5A4E",
         "tonalRamp": [
-          "#FFFFFF",
-          "#F4F4F2",
-          "#E9E9E6",
-          "#D6D6D1",
-          "#ADADA7",
-          "#6B6B66",
-          "#4A4A46",
-          "#333331",
-          "#1F1F1D",
-          "#111110"
+          "#D0281E",
+          "#FF5A4E",
+          "#FDE7E5"
         ]
       }
     },
+    "darkRamp": [
+      "#F5F6F8",
+      "#ECEDF0",
+      "#DCDEE3",
+      "#C5C7CE",
+      "#A2A5AE",
+      "#5D6069",
+      "#36383F",
+      "#2A2B31",
+      "#111215",
+      "#1C1D22"
+    ],
     "typographyMeta": {
-      "body": {
-        "fontFamily": "Sofia Sans"
+      "heading": {
+        "displayName": "Heading",
+        "purpose": "Screen and section titles at the 18px/600 ceiling."
       },
-      "display": {
-        "fontFamily": "Sofia Sans Extra Condensed",
-        "fontWeight": 900
+      "price": {
+        "displayName": "Price",
+        "purpose": "Current price; 16px in mini cells, old price 12px/400 struck in ink-3."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Cell titles 13px/400 in ink-2; notes and store lines 12px."
       }
     },
-    "shadows": {},
-    "motion": {
-      "storeOpen": {
-        "duration": "420ms",
-        "easing": "cubic-bezier(.32,.72,0,1)"
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.32,.72,0,1)",
+        "purpose": "Default easing for state and sheet transitions."
+      },
+      {
+        "name": "storeOpen",
+        "value": "420ms cubic-bezier(.32,.72,0,1)",
+        "purpose": "Store ink expands to the storefront cover; direct opening under reduced motion."
       }
-    },
-    "breakpoints": {
-      "desktop": "1024px"
-    }
+    ],
+    "breakpoints": [
+      {
+        "name": "desktop",
+        "value": "1024px"
+      }
+    ]
   },
-  "components": [],
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The next action: orange with a black label.",
+      "html": "<button class=\"ds-btn\">Оформить заказ</button>",
+      "css": ".ds-btn{height:44px;padding:0 18px;border:0;border-radius:10px;background:#FE5000;color:#111110;font:600 15px 'Google Sans',system-ui,sans-serif;cursor:pointer;transition:background-color .15s cubic-bezier(.32,.72,0,1)}.ds-btn:active{background:#E04600}.ds-btn:focus-visible{outline:2px solid #FE5000;outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-fill",
+      "description": "Secondary action on the control fill.",
+      "html": "<button class=\"ds-btn2\">Написать менеджеру</button>",
+      "css": ".ds-btn2{height:44px;padding:0 18px;border:0;border-radius:10px;background:#EAEBEF;color:#1A1B20;font:600 15px 'Google Sans',system-ui,sans-serif;cursor:pointer}.ds-btn2:active{background:#DCDEE3}.ds-btn2:focus-visible{outline:2px solid #FE5000;outline-offset:2px}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Filter chip; ink when on.",
+      "html": "<button class=\"ds-chip\">Цемент</button> <button class=\"ds-chip on\" aria-pressed=\"true\">Смеси</button>",
+      "css": ".ds-chip{height:34px;padding:0 12px;border:0;border-radius:10px;background:#EAEBEF;color:#1A1B20;font:500 14px 'Google Sans',system-ui,sans-serif;cursor:pointer}.ds-chip.on{background:#1A1B20;color:#FFFFFF}.ds-chip:focus-visible{outline:2px solid #FE5000;outline-offset:2px}"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Inputs sit on the fill; focus is an orange outline.",
+      "html": "<input class=\"ds-input\" placeholder=\"Искать товары\">",
+      "css": ".ds-input{height:44px;width:260px;padding:0 14px;border:0;border-radius:12px;background:#EAEBEF;color:#1A1B20;font:15px 'Google Sans',system-ui,sans-serif}.ds-input:focus{outline:2px solid #FE5000;outline-offset:0}"
+    },
+    {
+      "name": "Product Cell",
+      "kind": "card",
+      "refersTo": "product-cell",
+      "description": "White card on the ground: photo, red sticker, price, title, store dot line, cart button.",
+      "html": "<div class=\"ds-ground\"><article class=\"ds-cell\"><div class=\"ds-media\"><span class=\"ds-sticker\">−15%</span></div><div class=\"ds-body\"><div class=\"ds-price\"><b>489 ₽</b> <s>575 ₽</s></div><h3 class=\"ds-title\">Штукатурка гипсовая, 30 кг</h3><span class=\"ds-store\" style=\"--ink:#2E7D32\">Постройка</span></div><button class=\"ds-cart\">В корзину</button></article></div>",
+      "css": ".ds-ground{background:#F4F5F7;padding:10px}.ds-cell{width:172px;background:#FFFFFF;border-radius:14px;overflow:hidden;font-family:'Google Sans',system-ui,sans-serif}.ds-media{position:relative;height:160px;background:#F4F5F7;border-radius:14px}.ds-sticker{position:absolute;left:8px;bottom:8px;height:20px;padding:0 6px;border-radius:6px;background:#D0281E;color:#FFFFFF;font:600 12px/20px inherit}.ds-body{padding:8px 8px 2px}.ds-price b{font-size:18px;font-weight:600;color:#1A1B20}.ds-price s{font-size:12px;color:#686C77}.ds-title{margin:2px 0;font-size:13px;font-weight:400;line-height:17px;color:#4A4D57}.ds-store{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#686C77}.ds-store::before{content:'';width:8px;height:8px;border-radius:999px;background:var(--ink)}.ds-cart{display:block;width:calc(100% - 16px);height:36px;margin:6px 8px 8px;border:0;border-radius:10px;background:#FE5000;color:#111110;font:500 14px inherit;cursor:pointer}.ds-cart:active{background:#E04600}.ds-cart:focus-visible{outline:2px solid #FE5000;outline-offset:2px}"
+    },
+    {
+      "name": "Category Tile",
+      "kind": "custom",
+      "refersTo": "home-category",
+      "description": "Home category: white 96x112 tile, name on top, picture at the foot.",
+      "html": "<div class=\"ds-ground\"><a class=\"ds-cat\" href=\"#\">Сухие смеси</a></div>",
+      "css": ".ds-ground{background:#F4F5F7;padding:10px}.ds-cat{display:block;width:96px;height:112px;box-sizing:border-box;padding:10px;border-radius:14px;background:#FFFFFF;color:#1A1B20;font:500 13px/16px 'Google Sans',system-ui,sans-serif;text-decoration:none}.ds-cat:focus-visible{outline:2px solid #FE5000;outline-offset:2px}"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "nav",
+      "refersTo": "segmented",
+      "description": "Profile switch: fill track, white thumb.",
+      "html": "<div class=\"ds-seg\"><button class=\"on\">Покупатель</button><button>Магазин</button></div>",
+      "css": ".ds-seg{display:inline-flex;padding:3px;border-radius:10px;background:#EAEBEF}.ds-seg button{height:36px;padding:0 14px;border:0;border-radius:8px;background:transparent;color:#4A4D57;font:500 14px 'Google Sans',system-ui,sans-serif;cursor:pointer}.ds-seg button.on{background:#FFFFFF;color:#1A1B20;font-weight:600}.ds-seg button:focus-visible{outline:2px solid #FE5000;outline-offset:2px}"
+    }
+  ],
   "narrative": {
-    "northStar": "Every store is one product in a single range.",
-    "overview": "Square packaging panels, large price numerals, ruled cells and store ink spines.",
+    "northStar": "White cards on an off-white ground; the goods do the talking.",
+    "overview": "Russian marketplace grammar (Wildberries, Ozon) over the V2 «Линейка» markup: white rounded cards on an off-white ground, one quiet sans capped at 18px/600, orange for the next action, store ink reduced to a dot except on storefront covers.",
     "keyCharacteristics": [
-      "White stock and process black",
-      "Orange next actions with black copy",
-      "Self-hosted Sofia Sans and Extra Condensed",
-      "Distinct store ink, voice and cover",
-      "Russian mobile-first buyer app with matching admin"
+      "Off-white ground #F4F5F7, pure white cards",
+      "No borders and no shadows anywhere",
+      "Google Sans only, at most 18px and 600",
+      "Orange actions with black labels; red rounded sale badge",
+      "Product grids at 3px columns and 10px rows",
+      "Store identity as an 8px ink dot; storefront covers keep the ink"
     ],
     "rules": [
       {
-        "name": "Store spine",
-        "body": "Carry the store ink into every product cell, story and store group.",
+        "name": "The Ground and Card Rule",
+        "body": "The page is the off-white ground; content sits on pure white cards; controls take the fill.",
         "section": "colors"
       },
       {
-        "name": "Square panels",
-        "body": "Use rules and square corners; no decorative glass or gradients.",
+        "name": "The 18/600 Ceiling",
+        "body": "No text is larger than 18px or heavier than 600.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Line, No-Shadow Rule",
+        "body": "Nothing has a border or a shadow; separation comes only from ground-versus-card contrast and radius.",
+        "section": "elevation"
+      },
+      {
+        "name": "The 3/10 Grid",
+        "body": "Product grids use a 3px column gap and a 10px row gap.",
         "section": "layout"
+      },
+      {
+        "name": "The Store Dot Rule",
+        "body": "Store identity is an 8px dot of the store's ink beside its name; storefront covers keep the full ink.",
+        "section": "colors"
       }
     ],
     "dos": [
-      "Read colours from tokens",
-      "Preserve reduced motion and visible focus",
+      "Read colours from --r-* tokens",
+      "Use orange only for the next action, with black labels",
+      "Round cards at 14px and controls at 10px",
+      "Preserve reduced motion and the orange focus outline",
       "Label authored demo claims as examples"
     ],
     "donts": [
-      "Do not invent ratings or sales figures",
-      "Do not use emoji as UI icons",
-      "Do not mix the V1 and V2 visual systems"
+      "Do not add borders, hairlines or shadows",
+      "Do not set text above 18px or 600",
+      "Do not put white text on orange",
+      "Category pictures are transparent PNG cut-outs (public/cat/), shown with object-fit: contain on the white card, never cropped",
+      "Do not mix the V1, V2 and V3 visual systems"
     ]
   }
 }
